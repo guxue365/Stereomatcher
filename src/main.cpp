@@ -27,12 +27,12 @@
 #include "IStereoMatch.h"
 #include "IStereoEvaluation.h"
 
-#include "BasePreprocessor.h"
-#include "BasePostprocessor.h"
-#include "BasicBlockmatcher.h"
-#include "BasicSGMatcher.h"
-#include "EvaluateRMS.h"
-#include "EvaluateBPP.h"
+#include "preprocess/BasePreprocessor.h"
+#include "postprocess/BasePostprocessor.h"
+#include "stereomatch/BasicBlockmatcher.h"
+#include "stereomatch/BasicSGMatcher.h"
+#include "evaluation/EvaluateRMS.h"
+#include "evaluation/EvaluateBPP.h"
 
 using namespace std;
 using namespace cv;

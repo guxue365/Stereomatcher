@@ -1,30 +1,14 @@
-/*
- * EvaluateRMS.cpp
- *
- *  Created on: 27.04.2018
- *      Author: jung
- */
+#include "evaluation/EvaluateBPP.h"
 
-#include "EvaluateRMS.h"
-
-#include <iostream>
-#include <string>
-
-#include <opencv2/highgui.hpp>
-
-using namespace std;
-using namespace cv;
-
-
-EvaluateRMS::EvaluateRMS() {
+EvaluateBPP::EvaluateBPP(double dTolerance) : mdTolerance(dTolerance) {
 
 }
 
-EvaluateRMS::~EvaluateRMS() {
+EvaluateBPP::~EvaluateBPP() {
 
 }
 
-double EvaluateRMS::Evaluate(const cv::Mat& rGroundTruth, const cv::Mat& rDisparityImage) {
+double EvaluateBPP::Evaluate(const cv::Mat& rGroundTruth, const cv::Mat& rDisparityImage) {
 	assert(rGroundTruth.data!=NULL);
 	assert(rDisparityImage.data!=NULL);
 	assert(rGroundTruth.rows==rDisparityImage.rows);
@@ -36,23 +20,24 @@ double EvaluateRMS::Evaluate(const cv::Mat& rGroundTruth, const cv::Mat& rDispar
 
 	double dError = 0.0;
 
-	moErrorMap = cv::Mat(rGroundTruth.rows, rGroundTruth.cols, CV_32F);
+	moErrorMap = cv::Mat(rGroundTruth.rows, rGroundTruth.cols, CV_32F, 0.0f);
 
 	for(int i=0; i<rGroundTruth.rows; ++i) {
 		for(int j=0; j<rGroundTruth.cols; ++j) {
 			double gt = (double)(rGroundTruth.at<ushort>(i, j));
 			double di = (double)(rDisparityImage.at<ushort>(i, j));
-			double err = (gt-di)*(gt-di);
-			moErrorMap.at<float>(i, j) = (float)(sqrt(err));
-			dError+=err;
+
+			if(abs(gt-di)>=mdTolerance) {
+				dError+=1.0;
+				moErrorMap.at<float>(i, j) = 255.0f;
+			}
 		}
 	}
-
 	dError/=((double)(rGroundTruth.rows)*(double)(rGroundTruth.cols));
 
-	return sqrt(dError);
+	return dError;
 }
 
-cv::Mat EvaluateRMS::getVisualRepresentation() {
+cv::Mat EvaluateBPP::getVisualRepresentation() {
 	return moErrorMap;
 }

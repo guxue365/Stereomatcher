@@ -28,15 +28,15 @@ include_directories(inc/)
 # Create targets
 add_executable( run_stereomatcher src/main.cpp
     src/ImageHandler.cpp
-    src/BasePreprocessor.cpp
-    src/BasicBlockmatcher.cpp
-    src/BasePostprocessor.cpp
-    src/BasicSGMatcher.cpp
+    src/preprocess/BasePreprocessor.cpp
+    src/stereomatch/BasicBlockmatcher.cpp
+    src/postprocess/BasePostprocessor.cpp
+    src/stereomatch/BasicSGMatcher.cpp
     src/ImageControl.cpp
-    src/EvaluateRMS.cpp
-    src/EvaluateBPP.cpp )
+    src/evaluation/EvaluateRMS.cpp
+    src/evaluation/EvaluateBPP.cpp )
 
-add_executable( run_testkitty src/TestStereoKitty.cpp src/EvaluateBPP.cpp src/EvaluateRMS.cpp)
+add_executable( run_testkitty src/TestStereoKitty.cpp src/evaluation/EvaluateBPP.cpp src/evaluation/EvaluateRMS.cpp)
 add_executable( run_bgs src/BackgroundSubtraction.cpp)
 
 target_link_libraries( run_stereomatcher ${OpenCV_LIBS} ${Boost_LIBRARIES})
