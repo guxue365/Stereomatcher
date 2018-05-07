@@ -22,6 +22,10 @@ include_directories(${Boost_INCLUDE_DIRS})
 set(NLOHMANN_JSON_INCLUDE_DIR /home/jung/2018EntwicklungStereoalgorithmus/nlohmann_json/include)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 
+# BGS Library
+set(BGSLIBRARY_INCLUDE_DIR /home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/package_bgs)
+include_directories(${BGSLIBRARY_INCLUDE_DIR})
+
 # Project
 include_directories(inc/)
 
@@ -38,7 +42,10 @@ add_executable( run_stereomatcher src/main.cpp
 
 add_executable( run_testkitty src/TestStereoKitty.cpp src/evaluation/EvaluateBPP.cpp src/evaluation/EvaluateRMS.cpp)
 add_executable( run_bgs src/BackgroundSubtraction.cpp)
+add_executable( run_dbscan src/dbscan.cpp )
 
 target_link_libraries( run_stereomatcher ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries( run_testkitty ${OpenCV_LIBS} ${Boost_LIBRARIES})
-target_link_libraries( run_bgs ${OpenCV_LIBS} ${Boost_LIBRARIES})
+target_link_libraries( run_bgs ${OpenCV_LIBS} ${Boost_LIBRARIES} 
+"/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
+target_link_libraries( run_dbscan ${OpenCV_LIBS} ${Boost_LIBRARIES} )

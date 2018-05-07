@@ -10,6 +10,8 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/video.hpp>
 
+#include <bgslibrary.h>
+
 using namespace std;
 using namespace cv;
 
@@ -50,6 +52,7 @@ int main() {
 	Mat lastframe;
 	Mat mask;
 	Ptr<BackgroundSubtractor> pMOG2 = createBackgroundSubtractorMOG2(10);
+	IBGS* bgs = new WeightedMovingMean();
 	while(true) {
 		Mat frame;
 
@@ -98,10 +101,16 @@ int main() {
 		}
 		rectangle(nrm, cvPoint(left, top), cvPoint(right, bottom), Scalar(255, 0, 255), 5);
 
+		Mat img_mask;
+		Mat img_bkgmodel;
+		bgs->setShowOutput(false);
+		bgs->process(frame, img_mask, img_bkgmodel);
+
+
 		imshow("frame", frame);
-		imshow("bg", nrm);
+		/*imshow("bg", nrm);
 		imshow("mask", mask);
-		imshow("gt", gt);
+		imshow("gt", gt);*/
 
 
 		char c = (char)waitKey(25);
@@ -109,6 +118,8 @@ int main() {
 
 		lastframe = frame;
 	}
+
+	delete bgs;
 
 	cap.release();
 
