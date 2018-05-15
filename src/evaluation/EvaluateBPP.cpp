@@ -1,5 +1,9 @@
 #include "evaluation/EvaluateBPP.h"
 
+#include <iostream>
+
+using namespace std;
+
 EvaluateBPP::EvaluateBPP(double dTolerance) : mdTolerance(dTolerance) {
 
 }

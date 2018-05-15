@@ -28,12 +28,11 @@ string type2str(int type) {
   return r;
 }
 
-ImageControl::ImageControl(ImageHandler& rImageHandler, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher, IStereoEvaluation& rStereoEvaluation) :
+ImageControl::ImageControl(ImageHandler& rImageHandler, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher) :
 	mrImageHandler(rImageHandler),
 	mrPreprocessor(rPreprocessor),
 	mrPostprocessor(rPostProcessor),
-	mrStereomatcher(rStereomatcher),
-	mrStereoEvaluation(rStereoEvaluation) {
+	mrStereomatcher(rStereomatcher) {
 
 }
 
@@ -44,13 +43,15 @@ ImageControl::~ImageControl() {
 void ImageControl::LoadImages() {
 	maLeftImages = mrImageHandler.LoadLeftImages();
 	maRightImages = mrImageHandler.LoadRightImages();
-	maEvaluationImages = mrImageHandler.LoadEvaluationImages();
 	maFilenames = mrImageHandler.GetAllFileNames();
 
 	assert(maLeftImages.size()==maRightImages.size());
 	assert(maLeftImages.size()==maFilenames.size());
 
-	maResultImages.resize(maLeftImages.size());
+	maPreprocessImages.resize(maLeftImages.size());
+	maForegroundImages.resize(maLeftImages.size());
+	maStereoImages.resize(maLeftImages.size());
+	maPostprocessImages.resize(maLeftImages.size());
 }
 
 void ImageControl::Run() {
@@ -65,27 +66,20 @@ void ImageControl::Run() {
 
 		cv::Mat oPostprocessed = mrPostprocessor.Postprocess(oDisparity);
 
-		maResultImages[i] = oPostprocessed;
+		maPreprocessImages[i] = oLeftPreprocessed;
+		maForegroundImages[i] = oLeftPreprocessed;
+		maStereoImages[i] = oDisparity;
+		maPostprocessImages[i] = oPostprocessed;
 	}
 }
 
 void ImageControl::StoreResults() {
-	for(size_t i=0; i<maResultImages.size(); ++i) {
-		mrImageHandler.StoreResult(maResultImages[i], maFilenames[i]);
+	for(size_t i=0; i<maPreprocessImages.size(); ++i) {
+		mrImageHandler.StorePreprocess(maPreprocessImages[i], maFilenames[i]);
+		mrImageHandler.StoreForeground(maForegroundImages[i], maFilenames[i]);
+		mrImageHandler.StoreStereo(maStereoImages[i], maFilenames[i]);
+		mrImageHandler.StorePostprocess(maPostprocessImages[i], maFilenames[i]);
 	}
-}
-
-void ImageControl::Evaluate() {
-	for(size_t i=0; i<maEvaluationImages.size(); ++i) {
-		double dError = mrStereoEvaluation.Evaluate(maEvaluationImages[i], maResultImages[i]);
-		cv::Mat oEvaluationImage = mrStereoEvaluation.getVisualRepresentation();
-		mrImageHandler.StoreEvaluation(oEvaluationImage, maFilenames[i]);
-		cout<<"File "<<maFilenames[i]<<" Error: "<<dError<<endl;
-	}
-}
-
-const std::vector<cv::Mat>& ImageControl::getResultImages() const {
-	return maResultImages;
 }
 
 const std::vector<cv::Mat>& ImageControl::getLeftImages() const {
@@ -96,6 +90,18 @@ const std::vector<cv::Mat>& ImageControl::getRightImages() const {
 	return maRightImages;
 }
 
-const std::vector<cv::Mat>& ImageControl::getEvaluationImages() const {
-	return maEvaluationImages;
+const std::vector<cv::Mat>& ImageControl::getPreprocessImages() const {
+	return maPreprocessImages;
+}
+
+const std::vector<cv::Mat>& ImageControl::getForegroundImages() const {
+	return maForegroundImages;
+}
+
+const std::vector<cv::Mat>& ImageControl::getStereoImages() const {
+	return maStereoImages;
+}
+
+const std::vector<cv::Mat>& ImageControl::getPostprocessImages() const {
+	return maPostprocessImages;
 }

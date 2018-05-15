@@ -18,9 +18,10 @@ cv::Mat BasicBlockmatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Mat oResult(rLeft.rows, rLeft.cols, CV_32F);
 
 	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(0, 21);
-	//sbm->setNumDisparities(0);
 	sbm->setMinDisparity(0);
 	sbm->compute(rLeft, rRight, oResult);
+
+	oResult/=16;
 
 	return oResult;
 }

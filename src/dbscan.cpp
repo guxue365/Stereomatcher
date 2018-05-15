@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <algorithm>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv/cv.hpp>
 
 using namespace std;
 using namespace cv;
@@ -37,12 +39,17 @@ int main() {
 	Mat oResult(oOriginal.rows, oOriginal.cols, CV_8UC3, Scalar(0, 0, 0));
 
 	auto aLabel = dbscan(aPoints, norm2, 10.0, 3);
+	unsigned int iNumLabels = (*max_element(aLabel.begin(), aLabel.end()))-3;
+	cout<<"Num Labels: "<<iNumLabels<<endl;
+	vector<Vec3b> aColors;
+
 
 	uchar* pData = oResult.data;
 	for(size_t k=0; k<aPoints.size(); ++k) {
 		cout<<aLabel[k]<<endl;
 		int i = (int)aPoints[k].x;
 		int j = (int)aPoints[k].y;
+
 		switch(aLabel[k]) {
 		case 3: {  // noise
 			pData[3*(i*oResult.cols+j)+0] = 0;

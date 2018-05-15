@@ -6,10 +6,9 @@
 using namespace std;
 using namespace cv;
 
-ImageHandler::ImageHandler(const std::string& sFolderLeft, const std::string& sFolderRight, const std::string& sFolderEvaluation, const std::string& sFolderResult) :
+ImageHandler::ImageHandler(const std::string& sFolderLeft, const std::string& sFolderRight, const std::string& sFolderResult) :
 		msFolderLeft(sFolderLeft),
 		msFolderRight(sFolderRight),
-		msFolderEvaluation(sFolderEvaluation),
 		msFolderResult(sFolderResult) {
 
 }
@@ -40,17 +39,6 @@ std::vector<cv::Mat> ImageHandler::LoadRightImages() {
 	return aResult;
 }
 
-std::vector<cv::Mat> ImageHandler::LoadEvaluationImages() {
-	vector<string> aFileNames = GetAllFileNames();
-
-	vector<cv::Mat> aResult(aFileNames.size());
-	for(size_t i=0; i<aResult.size(); ++i) {
-		aResult[i] = imread(msFolderEvaluation+aFileNames[i], CV_LOAD_IMAGE_ANYDEPTH);
-		if(aResult[i].data==NULL) 	throw std::string("Error loading file: "+msFolderEvaluation+aFileNames[i]);
-	}
-	return aResult;
-}
-
 std::vector<std::string> ImageHandler::GetAllFileNames() {
 	vector<string> Result;
 
@@ -61,10 +49,19 @@ std::vector<std::string> ImageHandler::GetAllFileNames() {
 	return Result;
 }
 
-void ImageHandler::StoreResult(const cv::Mat& rImage, const std::string& sFilename) {
-	imwrite(msFolderResult+sFilename, rImage);
+void ImageHandler::StorePreprocess(const cv::Mat& rImage, const std::string& sFilename) {
+	imwrite(msFolderResult+"preprocess/"+sFilename, rImage);
 }
 
-void ImageHandler::StoreEvaluation(const cv::Mat& rImageEval, const std::string& sFilename) {
-	imwrite(msFolderResult+"eval/"+sFilename, rImageEval);
+void ImageHandler::StoreForeground(const cv::Mat& rImage, const std::string& sFilename) {
+	imwrite(msFolderResult+"foreground/"+sFilename, rImage);
 }
+
+void ImageHandler::StoreStereo(const cv::Mat& rImage, const std::string& sFilename)  {
+	imwrite(msFolderResult+"stereo/"+sFilename, rImage);
+}
+
+void ImageHandler::StorePostprocess(const cv::Mat& rImage, const std::string& sFilename) {
+	imwrite(msFolderResult+"postprocess/"+sFilename, rImage);
+}
+

@@ -20,5 +20,7 @@ cv::Mat BasicSGMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 16, 7);
 	sgbm->compute(rLeft, rRight, oResult);
 
+	oResult/=16;
+
 	return oResult;
 }

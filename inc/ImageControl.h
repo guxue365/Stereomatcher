@@ -10,29 +10,32 @@
 
 class ImageControl {
 public:
-	ImageControl(ImageHandler& rImageHandler, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher, IStereoEvaluation& rStereoEvaluation);
+	ImageControl(ImageHandler& rImageHandler, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher);
 	virtual ~ImageControl();
 
 	void LoadImages();
 	void Run();
 	void StoreResults();
-	void Evaluate();
 
 	const std::vector<cv::Mat>& getLeftImages() const;
 	const std::vector<cv::Mat>& getRightImages() const;
-	const std::vector<cv::Mat>& getResultImages() const;
-	const std::vector<cv::Mat>& getEvaluationImages() const;
+
+	const std::vector<cv::Mat>& getPreprocessImages() const;
+	const std::vector<cv::Mat>& getForegroundImages() const;
+	const std::vector<cv::Mat>& getStereoImages() const;
+	const std::vector<cv::Mat>& getPostprocessImages() const;
 private:
 	ImageHandler& mrImageHandler;
 	IPreprocessing& mrPreprocessor;
 	IPostProcessing& mrPostprocessor;
 	IStereoMatch& mrStereomatcher;
-	IStereoEvaluation& mrStereoEvaluation;
 
 	std::vector<cv::Mat> maLeftImages;
 	std::vector<cv::Mat> maRightImages;
 	std::vector<std::string> maFilenames;
 
-	std::vector<cv::Mat> maResultImages;
-	std::vector<cv::Mat> maEvaluationImages;
+	std::vector<cv::Mat> maPreprocessImages;
+	std::vector<cv::Mat> maForegroundImages;
+	std::vector<cv::Mat> maStereoImages;
+	std::vector<cv::Mat> maPostprocessImages;
 };
