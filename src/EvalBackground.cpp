@@ -9,10 +9,39 @@
 using namespace std;
 using namespace cv;
 
-std::vector<cv::Rect> FindRectangles(const cv::Mat& rInput, size_t iNumRectangles);
+std::vector<cv::Rect> FindRectangles(const cv::Mat& rInput, int iNumRectangles);
+cv::Mat RegionGrowing(const cv::Mat& rInput);
+std::vector<cv::Point2i> getNeighbors(const cv::Mat& rRegion, cv::Point2i iSeed);
 
 int main() {
-	cv::VideoCapture oImageStream("/home/jung/2018EntwicklungStereoalgorithmus/data/changedetection/dataset/baseline/highway/input/in%06d.jpg");
+	Mat oImage = imread("region_example.png", CV_LOAD_IMAGE_GRAYSCALE);
+	if (oImage.empty()) {
+		cout << "Error loading file" << endl;
+		return -1;
+	}
+
+	Mat oRegion = RegionGrowing(oImage);
+	normalize(oRegion, oRegion, 255, 0, CV_MINMAX);
+	Mat oRegionColor;
+	applyColorMap(oRegion, oRegionColor, COLORMAP_JET);
+
+	
+
+	resize(oImage, oImage, Size(800, 800));
+	resize(oRegionColor, oRegionColor, Size(800, 800));
+	imshow("image", oImage);
+	imshow("region", oRegionColor);
+
+	for (;;) {
+
+		
+
+		char c = (char)waitKey(25);
+		if (c == 27) 	break;
+	}
+
+	return 0;
+	cv::VideoCapture oImageStream("E:/dataset_changedetection/dataset2014/dataset/baseline/highway/input/in%06d.jpg");
 	if(!oImageStream.isOpened()) {
 		cout<<"Error opening files"<<endl;
 		return -1;
@@ -64,12 +93,12 @@ int main() {
 	return 0;
 }
 
-std::vector<cv::Rect> FindRectangles(const cv::Mat& rInput, size_t iNumRectangles) {
+std::vector<cv::Rect> FindRectangles(const cv::Mat& rInput, int iNumRectangles) {
 	vector<Rect> aResult(iNumRectangles);
 
 	std::vector<int> aBounds(iNumRectangles);
 	int iRectSize = rInput.rows/iNumRectangles;
-	for(size_t i=0; i<iNumRectangles; ++i) {
+	for(int i=0; i<iNumRectangles; ++i) {
 		aBounds[i] = i*iRectSize;
 	}
 	aBounds[iNumRectangles-1] = rInput.rows-iRectSize;
@@ -82,4 +111,48 @@ std::vector<cv::Rect> FindRectangles(const cv::Mat& rInput, size_t iNumRectangle
 	}
 
 	return aResult;
+}
+
+cv::Mat RegionGrowing(const cv::Mat& rInput) {
+	assert(rInput.type() == CV_8U);
+	int m = rInput.rows;
+	int n = rInput.cols;
+
+	cv::Mat oResult(m, n, CV_8U, Scalar(0));
+	uchar iLabel = 0;
+
+	for (int i = 0; i < m; ++i) {
+		for (int j = 0; j < n; ++j) {
+			if (rInput.at<uchar>(i, j) > 0 && oResult.at<uchar>(i, j)==0) {
+				++iLabel;
+				cout << "New Label: " << (int)iLabel << endl;
+				std::vector<cv::Point2i> aNeighbors = { cv::Point2i(j, i) };
+				for (size_t k = 0; k < aNeighbors.size(); ++k) {
+					if (oResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) > 0)	continue;
+					oResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) = iLabel;
+					auto aCurrentNeighbors = getNeighbors(rInput, aNeighbors[k]);
+					aNeighbors.insert(aNeighbors.end(), aCurrentNeighbors.begin(), aCurrentNeighbors.end());
+				}
+			}
+		}
+	}
+
+	return oResult;
+}
+
+std::vector<cv::Point2i> getNeighbors(const cv::Mat& rRegion, cv::Point2i iSeed) {
+	std::vector<cv::Point2i> oResult;
+
+	for (int i = -1; i < 2; ++i) {
+		for (int j = -1; j < 2; ++j) {
+			if (i == iSeed.y && j == iSeed.x)	continue;
+			int x = iSeed.x + j;
+			int y = iSeed.y + i;
+			if (rRegion.at<uchar>(y, x) > 0) {
+				oResult.push_back(cv::Point2i(x, y));
+			}
+		}
+	}
+
+	return oResult;
 }
