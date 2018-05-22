@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # OpenCV
 set (OpenCV_DIR /opt/opencv/opencv-3.4.1/share/OpenCV)
 find_package(OpenCV 3.0 REQUIRED)
-include_directories( ${OpenCV_INCLUDE_DIRS} )
+include_directories( ${OpenCV_INCLUDE_DIRS} ) 
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF) 
@@ -44,8 +44,10 @@ add_executable( run_stereomatcher src/main.cpp
 add_executable( run_bgs src/BackgroundSubtraction.cpp)
 add_executable( run_dbscan src/dbscan.cpp )
 add_executable( run_evalbackground src/EvalBackground.cpp )
+add_executable( run_customblockmatcher src/CustomBlockmatcher.cpp )
 
 target_link_libraries( run_stereomatcher ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries( run_bgs ${OpenCV_LIBS} ${Boost_LIBRARIES} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_dbscan ${OpenCV_LIBS} ${Boost_LIBRARIES} )
 target_link_libraries( run_evalbackground ${OpenCV_LIBS} ${Boost_LIBRARIES} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
+target_link_libraries( run_customblockmatcher ${OpenCV_LIBS} )
