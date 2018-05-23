@@ -23,8 +23,10 @@ double norm2(const cv::Point2d&, const cv::Point2d&);
 void TestRegionGrowing();
 
 int main() {
+	//cv::VideoCapture oImageStream("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c0.pgm", CV_LOAD_IMAGE_GRAYSCALE);
 	cv::VideoCapture oImageStream("/home/jung/2018EntwicklungStereoalgorithmus/data/changedetection/dataset/baseline/highway/input/in%06d.jpg");
 	//cv::VideoCapture oImageStream("E:/dataset_changedetection/dataset2014/dataset/baseline/highway/input/in%06d.jpg");
+	cv::VideoWriter oVideowriter("/home/jung/2018EntwicklungStereoalgorithmus/data/out.avi", VideoWriter::fourcc('M','J','P','G'), 15.0, Size(1280, 720));
 	if(!oImageStream.isOpened()) {
 		cout<<"Error opening files"<<endl;
 		return -1;
@@ -58,9 +60,9 @@ int main() {
 
 
 			auto kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
-			auto kernel2 = getStructuringElement(MORPH_CROSS, Size(5, 5));
-			morphologyEx(img_mask2, dpwren_2, MORPH_OPEN, kernel, Size(-1, -1), 2);
-			morphologyEx(dpwren_2, dpwren_2, MORPH_DILATE, kernel2, Size(-1, -1), 3);
+			auto kernel2 = getStructuringElement(MORPH_RECT, Size(5, 5));
+			morphologyEx(img_mask2, dpwren_2, MORPH_OPEN, kernel, Size(-1, -1), 1);
+			morphologyEx(dpwren_2, dpwren_2, MORPH_DILATE, kernel2, Size(-1, -1), 1);
 
 			RegionGrowing(dpwren_2, oRegion);
 			/*oRegion = cv::Mat::zeros(frame.rows, frame.cols, CV_8U);
@@ -77,16 +79,26 @@ int main() {
 				rectangle(dpwren_2, rBound, cv::Scalar(255.0, 0.0, 255.0));
 			}
 
-			imshow("Original", frame);
-			imshow("DPWrenGA", img_mask1);
-			imshow("PBAS", img_mask2);
-			imshow("FD", img_mask3);
-			imshow("dpwren2 filter", dpwren_2);
-			imshow("region", oRegionColor);
+			cvtColor(img_mask1, img_mask1, CV_GRAY2BGR);
+			cvtColor(img_mask2, img_mask2, CV_GRAY2BGR);
+
+			cvtColor(img_mask3, img_mask3, CV_GRAY2BGR);
 
 			Mat row1;
-			hconcat(frame, img_mask1, row1);
-			imshow("row1", row1);
+			hconcat(frame, img_mask3, row1);
+			hconcat(row1, img_mask2, row1);
+
+			Mat row2;
+			hconcat(img_mask1, dpwren_2, row2);
+			hconcat(row2, oRegionColor, row2);
+
+			Mat Result;
+			vconcat(row1, row2, Result);
+
+			resize(Result, Result, Size(1280, 720));
+
+			imshow("result", Result);
+			oVideowriter<<Result;
 
 			char c = (char)waitKey(50);
 			if(c==27) 	break;

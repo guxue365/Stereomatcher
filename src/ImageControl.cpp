@@ -2,6 +2,9 @@
 
 #include <cassert>
 
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
 using namespace std;
 using namespace cv;
 
@@ -28,8 +31,8 @@ string type2str(int type) {
   return r;
 }
 
-ImageControl::ImageControl(ImageHandler& rImageHandler, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher) :
-	mrImageHandler(rImageHandler),
+ImageControl::ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher) :
+	mrImageLoader(rImageLoader),
 	mrPreprocessor(rPreprocessor),
 	mrPostprocessor(rPostProcessor),
 	mrStereomatcher(rStereomatcher) {
@@ -40,68 +43,68 @@ ImageControl::~ImageControl() {
 
 }
 
-void ImageControl::LoadImages() {
-	maLeftImages = mrImageHandler.LoadLeftImages();
-	maRightImages = mrImageHandler.LoadRightImages();
-	maFilenames = mrImageHandler.GetAllFileNames();
-
-	assert(maLeftImages.size()==maRightImages.size());
-	assert(maLeftImages.size()==maFilenames.size());
-
-	maPreprocessImages.resize(maLeftImages.size());
-	maForegroundImages.resize(maLeftImages.size());
-	maStereoImages.resize(maLeftImages.size());
-	maPostprocessImages.resize(maLeftImages.size());
-}
-
 void ImageControl::Run() {
-	for(size_t i=0; i<maLeftImages.size(); ++i) {
-		cv::Mat& rLeftImage = maLeftImages[i];
-		cv::Mat& rRightImage = maRightImages[i];
+	for(;;) {
+		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
+		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
 
-		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(rLeftImage);
-		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(rRightImage);
+		if(oLeftImage.empty() || oRightImage.empty())	 break;
+
+		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage);
+		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage);
 
 		cv::Mat oDisparity = mrStereomatcher.Match(oLeftPreprocessed, oRightPreprocessed);
 
-		cv::Mat oPostprocessed = mrPostprocessor.Postprocess(oDisparity);
+		/*cv::Mat oPostprocessed = mrPostprocessor.Postprocess(oDisparity);
 
-		maPreprocessImages[i] = oLeftPreprocessed;
-		maForegroundImages[i] = oLeftPreprocessed;
-		maStereoImages[i] = oDisparity;
-		maPostprocessImages[i] = oPostprocessed;
+
+		maLeftImages.push_back(oLeftImage);
+		maRightImages.push_back(oRightImage);
+		maPreprocessLeft.push_back(oLeftPreprocessed);
+		maPreprocessRight.push_back(oRightPreprocessed);
+		maForegroundLeft.push_back(oLeftPreprocessed);
+		maForegroundRight.push_back(oRightPreprocessed);
+		maDisparity.push_back(oDisparity);
+		maPostprocessImages.push_back(oPostprocessed);*/
+
+		cv::Mat oOriginal;
+		hconcat(oLeftImage, oRightImage, oOriginal);
+		resize(oOriginal, oOriginal, Size(1280, 320));
+
+		cv::Mat oPreprocess;
+		hconcat(oLeftPreprocessed, oRightPreprocessed, oPreprocess);
+		resize(oPreprocess, oPreprocess, Size(1280, 320));
+
+		cv::Mat oResult;
+		vconcat(oOriginal, oPreprocess, oResult);
+
+		imshow("Result", oResult);
+
+		char c = (char)waitKey(50);
+		if(c==27) 	break;
 	}
 }
 
-void ImageControl::StoreResults() {
-	for(size_t i=0; i<maPreprocessImages.size(); ++i) {
-		mrImageHandler.StorePreprocess(maPreprocessImages[i], maFilenames[i]);
-		mrImageHandler.StoreForeground(maForegroundImages[i], maFilenames[i]);
-		mrImageHandler.StoreStereo(maStereoImages[i], maFilenames[i]);
-		mrImageHandler.StorePostprocess(maPostprocessImages[i], maFilenames[i]);
-	}
+const std::vector<cv::Mat>& ImageControl::getPreprocessLeft() const  {
+	return maPreprocessLeft;
 }
 
-const std::vector<cv::Mat>& ImageControl::getLeftImages() const {
-	return maLeftImages;
+const std::vector<cv::Mat>& ImageControl::getPreprocessRight() const  {
+	return maPreprocessRight;
 }
 
-const std::vector<cv::Mat>& ImageControl::getRightImages() const {
-	return maRightImages;
+const std::vector<cv::Mat>& ImageControl::getForegroundLeft() const  {
+	return maForegroundLeft;
 }
 
-const std::vector<cv::Mat>& ImageControl::getPreprocessImages() const {
-	return maPreprocessImages;
+const std::vector<cv::Mat>& ImageControl::getForegroundRight() const  {
+	return maForegroundRight;
 }
 
-const std::vector<cv::Mat>& ImageControl::getForegroundImages() const {
-	return maForegroundImages;
+const std::vector<cv::Mat>& ImageControl::getDisparity() const  {
+	return maDisparity;
 }
 
-const std::vector<cv::Mat>& ImageControl::getStereoImages() const {
-	return maStereoImages;
-}
-
-const std::vector<cv::Mat>& ImageControl::getPostprocessImages() const {
+const std::vector<cv::Mat>& ImageControl::getPostprocessImages() const  {
 	return maPostprocessImages;
 }

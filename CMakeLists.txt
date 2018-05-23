@@ -30,24 +30,24 @@ include_directories(${BGSLIBRARY_INCLUDE_DIR})
 include_directories(inc/)
 
 # Create targets
-add_executable( run_stereomatcher src/main.cpp
-    src/ImageHandler.cpp
+add_executable( run_stereomatcher src/Stereomatcher.cpp
+    src/imageloader/BaseImageloader.cpp
     src/preprocess/BasePreprocessor.cpp
     src/stereomatch/BasicBlockmatcher.cpp
     src/postprocess/BasePostprocessor.cpp
     src/stereomatch/BasicSGMatcher.cpp
     src/stereomatch/BasicBPMatcher.cpp
-    src/ImageControl.cpp
-    src/evaluation/EvaluateRMS.cpp
-    src/evaluation/EvaluateBPP.cpp )
+    src/ImageControl.cpp )
 
 add_executable( run_bgs src/BackgroundSubtraction.cpp)
 add_executable( run_dbscan src/dbscan.cpp )
 add_executable( run_evalbackground src/EvalBackground.cpp )
 add_executable( run_customblockmatcher src/CustomBlockmatcher.cpp )
+add_executable( run_testbaseimageloader src/TestBaseImageloader.cpp )
 
-target_link_libraries( run_stereomatcher ${OpenCV_LIBS} ${Boost_LIBRARIES})
-target_link_libraries( run_bgs ${OpenCV_LIBS} ${Boost_LIBRARIES} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
-target_link_libraries( run_dbscan ${OpenCV_LIBS} ${Boost_LIBRARIES} )
-target_link_libraries( run_evalbackground ${OpenCV_LIBS} ${Boost_LIBRARIES} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
+target_link_libraries( run_stereomatcher ${OpenCV_LIBS})
+target_link_libraries( run_bgs ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
+target_link_libraries( run_dbscan ${OpenCV_LIBS} )
+target_link_libraries( run_evalbackground ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_customblockmatcher ${OpenCV_LIBS} )
+target_link_libraries( run_testbaseimageloader ${OpenCV_LIBS} )

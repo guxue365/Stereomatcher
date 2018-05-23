@@ -1,3 +1,4 @@
+#include <imageloader/BaseImageloader.h>
 #include <iostream>
 #include <chrono>
 #include <fstream>
@@ -7,18 +8,16 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <nlohmann/json.hpp>
 
 #include "ImageControl.h"
 
-#include "ImageHandler.h"
+#include "IImageLoader.h"
 #include "IPreprocessing.h"
 #include "IPostprocessing.h"
 #include "IStereoMatch.h"
-#include "IStereoEvaluation.h"
 
+#include "imageloader/BaseImageloader.h"
 #include "preprocess/BasePreprocessor.h"
 #include "postprocess/BasePostprocessor.h"
 #include "stereomatch/BasicBlockmatcher.h"
@@ -28,6 +27,10 @@
 using namespace std;
 using namespace cv;
 using json = nlohmann::json;
+
+enum E_IMAGELOADER {
+	LOADER_BASE
+};
 
 enum E_PREPROCESSOR {
 	PREPROC_BASE
@@ -45,18 +48,20 @@ enum E_STEREOMATCHER {
 
 struct Run {
 	std::string msTitle;
-	std::string msImagesLeft;
-	std::string msImagesRight;
+	std::string msImagefolder;
 	std::string msResultfolder;
+	E_IMAGELOADER meImageloader;
 	E_PREPROCESSOR mePreprocessor;
 	E_POSTPROCESSOR mePostProcessor;
 	E_STEREOMATCHER meStereomatcher;
 };
 
+E_IMAGELOADER convertImageloader(const std::string& sImageloader);
 E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor);
 E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor);
 E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher);
 
+ostream& operator << (ostream& os, E_IMAGELOADER eImageloader);
 ostream& operator << (ostream& os, E_PREPROCESSOR ePreprocess);
 ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess);
 ostream& operator << (ostream& os, E_STEREOMATCHER eStereomatch);
@@ -65,6 +70,7 @@ ostream& operator << (ostream& os, E_STEREOMATCHER eStereomatch);
 int main() {
 
 	vector<Run> aRuns;
+	BaseImageloader oBaseImageloader;
 	BasePreprocessor oBasePreprocessor;
 	BasePostprocessor oBasePostprocessor;
 	BasicBlockmatcher oBasicBlockmatcher;
@@ -91,10 +97,10 @@ int main() {
 	for(auto& oJsonRun: oJsonConfig["runs"]) {
 		Run oRun;
 		oRun.msTitle 			= oJsonRun["title"];
-		oRun.msImagesLeft 		= oJsonRun["images_left"];
-		oRun.msImagesRight 		= oJsonRun["images_right"];
+		oRun.msImagefolder 		= oJsonRun["image_folder"];
 		oRun.msResultfolder 	= oJsonRun["result_folder"];
 
+		oRun.meImageloader 		= convertImageloader(oJsonRun["image_loader"]);
 		oRun.mePreprocessor 	= convertPreprocessor(oJsonRun["preprocessor"]);
 		oRun.mePostProcessor 	= convertPostprocessor(oJsonRun["postprocessor"]);
 		oRun.meStereomatcher 	= convertStereomatcher(oJsonRun["stereomatcher"]);
@@ -106,13 +112,30 @@ int main() {
 		for(auto& rRun: aRuns) {
 			cout<<endl<<"---------------------------------------------------------------"<<endl;
 			cout<<"Starting run: "<<rRun.msTitle<<endl<<endl;
-			cout<<"Right image folder: "<<rRun.msImagesLeft<<endl;
-			cout<<"Left image folder: "<<rRun.msImagesRight<<endl;
-			ImageHandler oImageHandler(rRun.msImagesLeft, rRun.msImagesRight, rRun.msResultfolder);
+			cout<<"Image folder: "<<rRun.msImagefolder<<endl;
 
+			IImageLoader* pImageloader;
 			IPreprocessing* pPreprocessor;
 			IPostProcessing* pPostprocessor;
 			IStereoMatch* pStereomatch;
+
+			cout<<"Setting Imageloader: "<<rRun.meImageloader<<endl;
+			switch(rRun.meImageloader) {
+				case E_IMAGELOADER::LOADER_BASE: {
+					pImageloader = &oBaseImageloader;
+					break;
+				}
+				default: {
+					throw std::invalid_argument("Invalid Imageloader");
+				}
+			}
+
+			cout<<"Initialising Imageloader: ";
+			bool bInitLoader = pImageloader->Init(rRun.msImagefolder);
+			cout<<(bInitLoader ? "successful" : "failed")<<endl;
+			if(!bInitLoader) {
+				throw std::invalid_argument("Error initialising loader");
+			}
 
 			cout<<"Setting Preprocessor: "<<rRun.mePreprocessor<<endl;
 			switch(rRun.mePreprocessor) {
@@ -155,10 +178,7 @@ int main() {
 				}
 			}
 
-			ImageControl oImageControl(oImageHandler, *pPreprocessor, *pPostprocessor, *pStereomatch);
-
-			cout<<"Loading images"<<endl;
-			oImageControl.LoadImages();
+			ImageControl oImageControl(*pImageloader, *pPreprocessor, *pPostprocessor, *pStereomatch);
 
 			cout<<"Starting stereo computation"<<endl;
 			auto oTimestart = chrono::high_resolution_clock::now();
@@ -173,26 +193,28 @@ int main() {
 			cout<<"Creating result folder: "<<rRun.msResultfolder<<endl;
 			std::string sPreprocessFolder = rRun.msResultfolder+"preprocess";
 			std::string sForegroundFolder = rRun.msResultfolder+"foreground";
-			std::string sStereoFolder = rRun.msResultfolder+"stereo";
+			std::string sDisparityFolder = rRun.msResultfolder+"disparity";
 			std::string sPostprocessFolder = rRun.msResultfolder+"postprocess";
 
 			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			mkdir(sPreprocessFolder.c_str(), ACCESSPERMS);
 			mkdir(sForegroundFolder.c_str(), ACCESSPERMS);
-			mkdir(sStereoFolder.c_str(), ACCESSPERMS);
+			mkdir(sDisparityFolder.c_str(), ACCESSPERMS);
 			mkdir(sPostprocessFolder.c_str(), ACCESSPERMS);
-
-			cout<<"Storing Results"<<endl;
-			oImageControl.StoreResults();
 		}
 
-	} catch(std::string& sEx) {
-		cout<<"Exception: "<<sEx<<endl;
+	} catch(std::exception& rEx) {
+		cout<<"Exception: "<<rEx.what()<<endl;
 	}
 
 	cout<<"Finished"<<endl;
 
 	return 0;
+}
+
+E_IMAGELOADER convertImageloader(const std::string& sImageloader) {
+	if(sImageloader=="base") 	return E_IMAGELOADER::LOADER_BASE;
+	throw std::invalid_argument("invalid imageloader conversion");
 }
 
 E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor) {
@@ -210,6 +232,16 @@ E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher) {
 	if(sStereomatcher=="basicsg") 		return E_STEREOMATCHER::BASIC_SG;
 	if(sStereomatcher=="basicbp") 		return E_STEREOMATCHER::BASIC_BP;
 	throw std::invalid_argument("invalid stereomatcher conversion");
+}
+
+ostream& operator << (ostream& os, E_IMAGELOADER eImageloader) {
+	switch(eImageloader) {
+		case E_IMAGELOADER::LOADER_BASE: {
+			os<<"base";
+			break;
+		}
+	}
+	return os;
 }
 
 ostream& operator << (ostream& os, E_PREPROCESSOR ePreprocess) {

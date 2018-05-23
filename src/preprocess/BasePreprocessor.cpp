@@ -13,9 +13,5 @@ BasePreprocessor::~BasePreprocessor() {
 }
 
 cv::Mat BasePreprocessor::Preprocess(const cv::Mat& rImage) {
-	cv::Mat oResult;
-
-	cvtColor(rImage, oResult, CV_BGR2GRAY);
-
-	return oResult;
+	return rImage;
 }
