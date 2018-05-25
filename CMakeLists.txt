@@ -33,6 +33,8 @@ include_directories(inc/)
 add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/imageloader/BaseImageloader.cpp
     src/preprocess/BasePreprocessor.cpp
+    src/bgsubtraction/CustomPixelBasedAdaptiveSegmenter.cpp
+    src/bgsubtraction/CustomFrameDifference.cpp
     src/stereomatch/BasicBlockmatcher.cpp
     src/postprocess/BasePostprocessor.cpp
     src/stereomatch/BasicSGMatcher.cpp
@@ -45,7 +47,7 @@ add_executable( run_evalbackground src/EvalBackground.cpp )
 add_executable( run_customblockmatcher src/CustomBlockmatcher.cpp )
 add_executable( run_testbaseimageloader src/TestBaseImageloader.cpp )
 
-target_link_libraries( run_stereomatcher ${OpenCV_LIBS})
+target_link_libraries( run_stereomatcher ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_bgs ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_dbscan ${OpenCV_LIBS} )
 target_link_libraries( run_evalbackground ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")

@@ -14,12 +14,19 @@
 
 #include "IImageLoader.h"
 #include "IPreprocessing.h"
+#include "IBackgroundSubtraction.h"
 #include "IPostprocessing.h"
 #include "IStereoMatch.h"
 
 #include "imageloader/BaseImageloader.h"
+
 #include "preprocess/BasePreprocessor.h"
+
+#include "bgsubtraction/CustomPixelBasedAdaptiveSegmenter.h"
+#include "bgsubtraction/CustomFrameDifference.h"
+
 #include "postprocess/BasePostprocessor.h"
+
 #include "stereomatch/BasicBlockmatcher.h"
 #include "stereomatch/BasicSGMatcher.h"
 #include "stereomatch/BasicBPMatcher.h"
@@ -34,6 +41,11 @@ enum E_IMAGELOADER {
 
 enum E_PREPROCESSOR {
 	PREPROC_BASE
+};
+
+enum E_BGSUBTRACTOR {
+	BG_PBAS,
+	BG_FD
 };
 
 enum E_POSTPROCESSOR {
@@ -52,17 +64,20 @@ struct Run {
 	std::string msResultfolder;
 	E_IMAGELOADER meImageloader;
 	E_PREPROCESSOR mePreprocessor;
+	E_BGSUBTRACTOR meBGSubtractor;
 	E_POSTPROCESSOR mePostProcessor;
 	E_STEREOMATCHER meStereomatcher;
 };
 
 E_IMAGELOADER convertImageloader(const std::string& sImageloader);
 E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor);
+E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor);
 E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor);
 E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher);
 
 ostream& operator << (ostream& os, E_IMAGELOADER eImageloader);
 ostream& operator << (ostream& os, E_PREPROCESSOR ePreprocess);
+ostream& operator << (ostream& os, E_BGSUBTRACTOR eBGSubtractor);
 ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess);
 ostream& operator << (ostream& os, E_STEREOMATCHER eStereomatch);
 
@@ -71,8 +86,14 @@ int main() {
 
 	vector<Run> aRuns;
 	BaseImageloader oBaseImageloader;
+
 	BasePreprocessor oBasePreprocessor;
+
+	CustomPixelBasedAdaptiveSegmenter oPBAS;
+	CustomFrameDifference oFD;
+
 	BasePostprocessor oBasePostprocessor;
+
 	BasicBlockmatcher oBasicBlockmatcher;
 	BasicSGMatcher oBasicSGMatcher;
 	BasicBPMatcher oBasicBPMatcher;
@@ -102,6 +123,7 @@ int main() {
 
 		oRun.meImageloader 		= convertImageloader(oJsonRun["image_loader"]);
 		oRun.mePreprocessor 	= convertPreprocessor(oJsonRun["preprocessor"]);
+		oRun.meBGSubtractor 	= convertBGSubtractor(oJsonRun["bgsubtraction"]);
 		oRun.mePostProcessor 	= convertPostprocessor(oJsonRun["postprocessor"]);
 		oRun.meStereomatcher 	= convertStereomatcher(oJsonRun["stereomatcher"]);
 
@@ -116,6 +138,7 @@ int main() {
 
 			IImageLoader* pImageloader;
 			IPreprocessing* pPreprocessor;
+			IBackgroundSubtraction* pBackgroundSubtraction;
 			IPostProcessing* pPostprocessor;
 			IStereoMatch* pStereomatch;
 
@@ -145,6 +168,21 @@ int main() {
 				}
 				default: {
 					throw std::invalid_argument("Invalid Preprocessor");
+				}
+			}
+
+			cout<<"Setting Background Subtraction: "<<rRun.meBGSubtractor<<endl;
+			switch(rRun.meBGSubtractor) {
+				case E_BGSUBTRACTOR::BG_PBAS: {
+					pBackgroundSubtraction = &oPBAS;
+					break;
+				}
+				case E_BGSUBTRACTOR::BG_FD: {
+					pBackgroundSubtraction = &oFD;
+					break;
+				}
+				default: {
+					throw std::invalid_argument("Invalid Background Subtraction");
 				}
 			}
 
@@ -178,7 +216,7 @@ int main() {
 				}
 			}
 
-			ImageControl oImageControl(*pImageloader, *pPreprocessor, *pPostprocessor, *pStereomatch);
+			ImageControl oImageControl(*pImageloader, *pPreprocessor, *pBackgroundSubtraction, *pPostprocessor, *pStereomatch);
 
 			cout<<"Starting stereo computation"<<endl;
 			auto oTimestart = chrono::high_resolution_clock::now();
@@ -222,6 +260,12 @@ E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor) {
 	throw std::invalid_argument("invalid preprocessor conversion");
 }
 
+E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor) {
+	if(sBGSubtractor=="pbas") 	return E_BGSUBTRACTOR::BG_PBAS;
+	if(sBGSubtractor=="fd") 	return E_BGSUBTRACTOR::BG_FD;
+	throw std::invalid_argument("invalid bgsubtractor conversion");
+}
+
 E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor) {
 	if(sPostprocessor=="base") 	return E_POSTPROCESSOR::POSTPROC_BASE;
 	throw std::invalid_argument("invalid postprocessor conversion");
@@ -240,6 +284,7 @@ ostream& operator << (ostream& os, E_IMAGELOADER eImageloader) {
 			os<<"base";
 			break;
 		}
+		default: throw std::invalid_argument("Unknown eImageloader");
 	}
 	return os;
 }
@@ -250,6 +295,22 @@ ostream& operator << (ostream& os, E_PREPROCESSOR ePreprocess) {
 			os<<"base";
 			break;
 		}
+		default: throw std::invalid_argument("Unknown ePreprocess");
+	}
+	return os;
+}
+
+ostream& operator << (ostream& os, E_BGSUBTRACTOR eBGSubtractor) {
+	switch(eBGSubtractor) {
+		case E_BGSUBTRACTOR::BG_PBAS: {
+			os<<"Pixel Based Adaptive Segmenter";
+			break;
+		}
+		case E_BGSUBTRACTOR::BG_FD: {
+			os<<"Frame Difference";
+			break;
+		}
+		default: throw std::invalid_argument("Unknown eBGSubtractor");
 	}
 	return os;
 }
@@ -260,6 +321,7 @@ ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess) {
 			os<<"base";
 			break;
 		}
+		default: throw std::invalid_argument("Unknown ePostProcess");
 	}
 	return os;
 }
@@ -278,6 +340,7 @@ ostream& operator << (ostream& os, E_STEREOMATCHER eStereomatch) {
 			os<<"basicbp";
 			break;
 		}
+		default: throw std::invalid_argument("Unknown eStereomatch");
 	}
 	return os;
 }

@@ -4,13 +4,14 @@
 
 #include "IImageLoader.h"
 #include "IPreprocessing.h"
+#include "IBackgroundSubtraction.h"
 #include "IPostprocessing.h"
 #include "IStereoMatch.h"
 #include "IStereoEvaluation.h"
 
 class ImageControl {
 public:
-	ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher);
+	ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IBackgroundSubtraction& rBackgroundSubtraction, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher);
 	virtual ~ImageControl();
 
 	void Run();
@@ -27,6 +28,7 @@ public:
 private:
 	IImageLoader& mrImageLoader;
 	IPreprocessing& mrPreprocessor;
+	IBackgroundSubtraction& mrBackgroundSubtraction;
 	IPostProcessing& mrPostprocessor;
 	IStereoMatch& mrStereomatcher;
 

@@ -31,9 +31,10 @@ string type2str(int type) {
   return r;
 }
 
-ImageControl::ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher) :
+ImageControl::ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IBackgroundSubtraction& rBackgroundSubtraction, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher) :
 	mrImageLoader(rImageLoader),
 	mrPreprocessor(rPreprocessor),
+	mrBackgroundSubtraction(rBackgroundSubtraction),
 	mrPostprocessor(rPostProcessor),
 	mrStereomatcher(rStereomatcher) {
 
@@ -53,7 +54,10 @@ void ImageControl::Run() {
 		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage);
 		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage);
 
-		cv::Mat oDisparity = mrStereomatcher.Match(oLeftPreprocessed, oRightPreprocessed);
+		cv::Mat oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
+		cv::Mat oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
+
+		cv::Mat oDisparity = mrStereomatcher.Match(oForegroundLeft, oForegroundRight);
 
 		/*cv::Mat oPostprocessed = mrPostprocessor.Postprocess(oDisparity);
 
@@ -75,8 +79,13 @@ void ImageControl::Run() {
 		hconcat(oLeftPreprocessed, oRightPreprocessed, oPreprocess);
 		resize(oPreprocess, oPreprocess, Size(1280, 320));
 
+		cv::Mat oForeground;
+		hconcat(oForegroundLeft, oForegroundRight, oForeground);
+		resize(oForeground, oForeground, Size(1280, 320));
+
 		cv::Mat oResult;
 		vconcat(oOriginal, oPreprocess, oResult);
+		vconcat(oResult, oForeground, oResult);
 
 		imshow("Result", oResult);
 
