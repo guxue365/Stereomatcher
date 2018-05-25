@@ -15,7 +15,7 @@ BaseImageloader::~BaseImageloader() {
 
 bool BaseImageloader::Init(const std::string& sFolder) {
 	moLeftImages.open(sFolder+"img_%05d_c0.pgm");
-	moRightImages.open(sFolder+"img_%05d_c0.pgm");
+	moRightImages.open(sFolder+"img_%05d_c1.pgm");
 
 	return (moLeftImages.isOpened() && moRightImages.isOpened());
 }

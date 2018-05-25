@@ -2,6 +2,7 @@
 
 #include <opencv2/imgproc.hpp>
 #include <opencv2/calib3d.hpp>
+#include <opencv2/highgui.hpp>
 
 using namespace std;
 using namespace cv;
@@ -15,13 +16,14 @@ BasicBlockmatcher::~BasicBlockmatcher() {
 }
 
 cv::Mat BasicBlockmatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
-	cv::Mat oResult(rLeft.rows, rLeft.cols, CV_32F);
+	cv::Mat oResult;
 
-	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(0, 21);
-	sbm->setMinDisparity(0);
+	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(0.0, 7);
 	sbm->compute(rLeft, rRight, oResult);
 
-	oResult/=16;
+
+	oResult.convertTo(oResult, CV_8U, 1.0/16.0);
+	normalize(oResult, oResult, 0.0, 255.0, CV_MINMAX);
 
 	return oResult;
 }

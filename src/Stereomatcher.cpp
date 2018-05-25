@@ -15,6 +15,7 @@
 #include "IImageLoader.h"
 #include "IPreprocessing.h"
 #include "IBackgroundSubtraction.h"
+#include "ISegmentation.h"
 #include "IPostprocessing.h"
 #include "IStereoMatch.h"
 
@@ -26,6 +27,8 @@
 #include "bgsubtraction/CustomFrameDifference.h"
 
 #include "postprocess/BasePostprocessor.h"
+
+#include "segmentation/RegionGrowing.h"
 
 #include "stereomatch/BasicBlockmatcher.h"
 #include "stereomatch/BasicSGMatcher.h"
@@ -48,14 +51,18 @@ enum E_BGSUBTRACTOR {
 	BG_FD
 };
 
-enum E_POSTPROCESSOR {
-	POSTPROC_BASE
-};
-
 enum E_STEREOMATCHER {
 	BASIC_BLOCK,  // opencv blockmatcher
 	BASIC_SG, // opencv semiglobal matching
 	BASIC_BP  // opencv belief propagation
+};
+
+enum E_POSTPROCESSOR {
+	POSTPROC_BASE
+};
+
+enum E_SEGMENTATION {
+	E_REGIONGROWING
 };
 
 struct Run {
@@ -65,21 +72,24 @@ struct Run {
 	E_IMAGELOADER meImageloader;
 	E_PREPROCESSOR mePreprocessor;
 	E_BGSUBTRACTOR meBGSubtractor;
-	E_POSTPROCESSOR mePostProcessor;
 	E_STEREOMATCHER meStereomatcher;
+	E_POSTPROCESSOR mePostProcessor;
+	E_SEGMENTATION meSegmentation;
 };
 
 E_IMAGELOADER convertImageloader(const std::string& sImageloader);
 E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor);
 E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor);
-E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor);
 E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher);
+E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor);
+E_SEGMENTATION convertSegmentation(const std::string& sSegmentation);
 
 ostream& operator << (ostream& os, E_IMAGELOADER eImageloader);
 ostream& operator << (ostream& os, E_PREPROCESSOR ePreprocess);
 ostream& operator << (ostream& os, E_BGSUBTRACTOR eBGSubtractor);
-ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess);
 ostream& operator << (ostream& os, E_STEREOMATCHER eStereomatch);
+ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess);
+ostream& operator << (ostream& os, E_SEGMENTATION eSegmentation);
 
 
 int main() {
@@ -92,11 +102,13 @@ int main() {
 	CustomPixelBasedAdaptiveSegmenter oPBAS;
 	CustomFrameDifference oFD;
 
-	BasePostprocessor oBasePostprocessor;
-
 	BasicBlockmatcher oBasicBlockmatcher;
 	BasicSGMatcher oBasicSGMatcher;
 	BasicBPMatcher oBasicBPMatcher;
+
+	BasePostprocessor oBasePostprocessor;
+
+	RegionGrowing oRegionGrowing;
 
 	ifstream oConfigFile("config.json", ios::in);
 	if(!oConfigFile.is_open()) {
@@ -124,8 +136,9 @@ int main() {
 		oRun.meImageloader 		= convertImageloader(oJsonRun["image_loader"]);
 		oRun.mePreprocessor 	= convertPreprocessor(oJsonRun["preprocessor"]);
 		oRun.meBGSubtractor 	= convertBGSubtractor(oJsonRun["bgsubtraction"]);
-		oRun.mePostProcessor 	= convertPostprocessor(oJsonRun["postprocessor"]);
 		oRun.meStereomatcher 	= convertStereomatcher(oJsonRun["stereomatcher"]);
+		oRun.mePostProcessor 	= convertPostprocessor(oJsonRun["postprocessor"]);
+		oRun.meSegmentation 	= convertSegmentation(oJsonRun["segmentation"]);
 
 		aRuns.push_back(oRun);
 	}
@@ -139,8 +152,9 @@ int main() {
 			IImageLoader* pImageloader;
 			IPreprocessing* pPreprocessor;
 			IBackgroundSubtraction* pBackgroundSubtraction;
-			IPostProcessing* pPostprocessor;
 			IStereoMatch* pStereomatch;
+			IPostProcessing* pPostprocessor;
+			ISegmentation* pSegmentation;
 
 			cout<<"Setting Imageloader: "<<rRun.meImageloader<<endl;
 			switch(rRun.meImageloader) {
@@ -186,17 +200,6 @@ int main() {
 				}
 			}
 
-			cout<<"Setting Postprocessor: "<<rRun.mePostProcessor<<endl;
-			switch(rRun.mePostProcessor) {
-				case E_POSTPROCESSOR::POSTPROC_BASE: {
-					pPostprocessor = &oBasePostprocessor;
-					break;
-				}
-				default: {
-					throw std::invalid_argument("Invalid Postprocessor");
-				}
-			}
-
 			cout<<"Setting Stereomatcher: "<<rRun.meStereomatcher<<endl;
 			switch(rRun.meStereomatcher) {
 				case E_STEREOMATCHER::BASIC_BLOCK: {
@@ -216,9 +219,29 @@ int main() {
 				}
 			}
 
-			ImageControl oImageControl(*pImageloader, *pPreprocessor, *pBackgroundSubtraction, *pPostprocessor, *pStereomatch);
+			cout<<"Setting Postprocessor: "<<rRun.mePostProcessor<<endl;
+			switch(rRun.mePostProcessor) {
+				case E_POSTPROCESSOR::POSTPROC_BASE: {
+					pPostprocessor = &oBasePostprocessor;
+					break;
+				}
+				default: {
+					throw std::invalid_argument("Invalid Postprocessor");
+				}
+			}
 
-			cout<<"Starting stereo computation"<<endl;
+			cout<<"Setting Segmentation: "<<rRun.meSegmentation<<endl;
+			switch(rRun.meSegmentation) {
+				case E_SEGMENTATION::E_REGIONGROWING: {
+					pSegmentation = &oRegionGrowing;
+					break;
+				}
+				default: throw std::invalid_argument("Invalid Segmentation");
+			}
+
+			ImageControl oImageControl(*pImageloader, *pPreprocessor, *pBackgroundSubtraction, *pStereomatch, *pPostprocessor, *pSegmentation);
+
+			cout<<"Starting Computation"<<endl;
 			auto oTimestart = chrono::high_resolution_clock::now();
 
 			oImageControl.Run();
@@ -266,13 +289,18 @@ E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor) {
 	throw std::invalid_argument("invalid bgsubtractor conversion");
 }
 
+E_SEGMENTATION convertSegmentation(const std::string& sSegmentation) {
+	if(sSegmentation=="regiongrowing") 	return E_SEGMENTATION::E_REGIONGROWING;
+	throw std::invalid_argument("invalid segmentation conversion");
+}
+
 E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor) {
 	if(sPostprocessor=="base") 	return E_POSTPROCESSOR::POSTPROC_BASE;
 	throw std::invalid_argument("invalid postprocessor conversion");
 }
 
 E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher) {
-	if(sStereomatcher=="basicblock") 	return E_STEREOMATCHER::BASIC_BLOCK;
+	if(sStereomatcher=="basicbm") 	return E_STEREOMATCHER::BASIC_BLOCK;
 	if(sStereomatcher=="basicsg") 		return E_STEREOMATCHER::BASIC_SG;
 	if(sStereomatcher=="basicbp") 		return E_STEREOMATCHER::BASIC_BP;
 	throw std::invalid_argument("invalid stereomatcher conversion");
@@ -315,6 +343,17 @@ ostream& operator << (ostream& os, E_BGSUBTRACTOR eBGSubtractor) {
 	return os;
 }
 
+ostream& operator << (ostream& os, E_SEGMENTATION eSegmentation) {
+	switch(eSegmentation) {
+		case E_SEGMENTATION::E_REGIONGROWING: {
+			os<<"Region Growing";
+			break;
+		}
+		default: throw std::invalid_argument("Unknown eSegmentatoin");
+	}
+	return os;
+}
+
 ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess) {
 	switch(ePostProcess) {
 		case E_POSTPROCESSOR::POSTPROC_BASE: {
@@ -329,15 +368,15 @@ ostream& operator << (ostream& os, E_POSTPROCESSOR ePostProcess) {
 ostream& operator << (ostream& os, E_STEREOMATCHER eStereomatch) {
 	switch(eStereomatch) {
 		case E_STEREOMATCHER::BASIC_BLOCK: {
-			os<<"basicblock";
+			os<<"Basic Block Match";
 			break;
 		}
 		case E_STEREOMATCHER::BASIC_SG: {
-			os<<"basicsg";
+			os<<"Basic Semi Global Match";
 			break;
 		}
 		case E_STEREOMATCHER::BASIC_BP: {
-			os<<"basicbp";
+			os<<"Basic Belief Propagation";
 			break;
 		}
 		default: throw std::invalid_argument("Unknown eStereomatch");

@@ -5,13 +5,14 @@
 #include "IImageLoader.h"
 #include "IPreprocessing.h"
 #include "IBackgroundSubtraction.h"
+#include "ISegmentation.h"
 #include "IPostprocessing.h"
 #include "IStereoMatch.h"
-#include "IStereoEvaluation.h"
 
 class ImageControl {
 public:
-	ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IBackgroundSubtraction& rBackgroundSubtraction, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher);
+	ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IBackgroundSubtraction& rBackgroundSubtraction,
+			IStereoMatch& rStereomatcher, IPostProcessing& rPostProcessor, ISegmentation& rSegmentation);
 	virtual ~ImageControl();
 
 	void Run();
@@ -25,12 +26,14 @@ public:
 	const std::vector<cv::Mat>& getForegroundRight() const;
 	const std::vector<cv::Mat>& getDisparity() const;
 	const std::vector<cv::Mat>& getPostprocessImages() const;
+	const std::vector<cv::Mat>& getSegmentation() const;
 private:
 	IImageLoader& mrImageLoader;
 	IPreprocessing& mrPreprocessor;
 	IBackgroundSubtraction& mrBackgroundSubtraction;
-	IPostProcessing& mrPostprocessor;
 	IStereoMatch& mrStereomatcher;
+	IPostProcessing& mrPostprocessor;
+	ISegmentation& mrSegmentation;
 
 	std::vector<cv::Mat> maLeftImages;
 	std::vector<cv::Mat> maRightImages;
@@ -41,4 +44,5 @@ private:
 	std::vector<cv::Mat> maForegroundRight;
 	std::vector<cv::Mat> maDisparity;
 	std::vector<cv::Mat> maPostprocessImages;
+	std::vector<cv::Mat> maSegmentation;
 };

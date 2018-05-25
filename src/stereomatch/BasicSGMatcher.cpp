@@ -17,10 +17,12 @@ BasicSGMatcher::~BasicSGMatcher() {
 cv::Mat BasicSGMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Mat oResult;
 
-	cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 16, 7);
+	cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 16, 15);
+	sgbm->setUniquenessRatio(20);
 	sgbm->compute(rLeft, rRight, oResult);
 
-	oResult/=16;
+	oResult.convertTo(oResult, CV_8U, 1.0);
+	//normalize(oResult, oResult, 0.0, 255.0, CV_MINMAX);
 
 	return oResult;
 }

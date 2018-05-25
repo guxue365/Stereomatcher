@@ -36,9 +36,10 @@ add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/bgsubtraction/CustomPixelBasedAdaptiveSegmenter.cpp
     src/bgsubtraction/CustomFrameDifference.cpp
     src/stereomatch/BasicBlockmatcher.cpp
-    src/postprocess/BasePostprocessor.cpp
     src/stereomatch/BasicSGMatcher.cpp
     src/stereomatch/BasicBPMatcher.cpp
+    src/segmentation/RegionGrowing.cpp
+    src/postprocess/BasePostprocessor.cpp
     src/ImageControl.cpp )
 
 add_executable( run_bgs src/BackgroundSubtraction.cpp)

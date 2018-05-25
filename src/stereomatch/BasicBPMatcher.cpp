@@ -22,10 +22,13 @@ cv::Mat BasicBPMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 
 	cuda::GpuMat _pLeft(rLeft);
 	cuda::GpuMat _pRight(rRight);
-	cv::Ptr<cv::cuda::StereoBeliefPropagation> bp = cv::cuda::createStereoBeliefPropagation(64, 5, 5);
+	cv::Ptr<cv::cuda::StereoBeliefPropagation> bp = cv::cuda::createStereoBeliefPropagation();
 	bp->compute(_pLeft, _pRight, _pResult);
 
 	_pResult.download(oResult);
+
+	oResult.convertTo(oResult, CV_8U, 1.0/16.0);
+	normalize(oResult, oResult, 0.0, 255.0, CV_MINMAX);
 
 	return oResult;
 }

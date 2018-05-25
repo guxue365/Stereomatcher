@@ -17,17 +17,21 @@ CustomFrameDifference::~CustomFrameDifference() {
 }
 
 cv::Mat CustomFrameDifference::SubtractLeft(const cv::Mat& rImage) {
-	cv::Mat oResult, oBGModel;
+	cv::Mat oMask, oBGModel, oResult;
 
-	mpBGSLeft->process(rImage, oResult, oBGModel);
+	mpBGSLeft->process(rImage, oMask, oBGModel);
+
+	rImage.copyTo(oResult, oMask);
 
 	return oResult;
 }
 
 cv::Mat CustomFrameDifference::SubtractRight(const cv::Mat& rImage) {
-	cv::Mat oResult, oBGModel;
+	cv::Mat oMask, oBGModel, oResult;
 
-	mpBGSRight->process(rImage, oResult, oBGModel);
+	mpBGSRight->process(rImage, oMask, oBGModel);
+
+	rImage.copyTo(oResult, oMask);
 
 	return oResult;
 }

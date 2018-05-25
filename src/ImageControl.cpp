@@ -31,12 +31,14 @@ string type2str(int type) {
   return r;
 }
 
-ImageControl::ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IBackgroundSubtraction& rBackgroundSubtraction, IPostProcessing& rPostProcessor, IStereoMatch& rStereomatcher) :
+ImageControl::ImageControl(IImageLoader& rImageLoader, IPreprocessing& rPreprocessor, IBackgroundSubtraction& rBackgroundSubtraction,
+		IStereoMatch& rStereomatcher, IPostProcessing& rPostProcessor, ISegmentation& rSegmentation) :
 	mrImageLoader(rImageLoader),
 	mrPreprocessor(rPreprocessor),
 	mrBackgroundSubtraction(rBackgroundSubtraction),
+	mrStereomatcher(rStereomatcher),
 	mrPostprocessor(rPostProcessor),
-	mrStereomatcher(rStereomatcher) {
+	mrSegmentation(rSegmentation) {
 
 }
 
@@ -49,6 +51,7 @@ void ImageControl::Run() {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
 
+
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
 		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage);
@@ -59,9 +62,11 @@ void ImageControl::Run() {
 
 		cv::Mat oDisparity = mrStereomatcher.Match(oForegroundLeft, oForegroundRight);
 
-		/*cv::Mat oPostprocessed = mrPostprocessor.Postprocess(oDisparity);
+		cv::Mat oPostprocess = mrPostprocessor.Postprocess(oDisparity);
 
+		cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
 
+		/*
 		maLeftImages.push_back(oLeftImage);
 		maRightImages.push_back(oRightImage);
 		maPreprocessLeft.push_back(oLeftPreprocessed);
@@ -71,21 +76,35 @@ void ImageControl::Run() {
 		maDisparity.push_back(oDisparity);
 		maPostprocessImages.push_back(oPostprocessed);*/
 
-		cv::Mat oOriginal;
-		hconcat(oLeftImage, oRightImage, oOriginal);
-		resize(oOriginal, oOriginal, Size(1280, 320));
 
-		cv::Mat oPreprocess;
-		hconcat(oLeftPreprocessed, oRightPreprocessed, oPreprocess);
-		resize(oPreprocess, oPreprocess, Size(1280, 320));
+		int iWidth = 960;
+		int iHeight = 240;
+
+		cvtColor(oLeftImage, oLeftImage, CV_GRAY2BGR);
+		cvtColor(oLeftPreprocessed, oLeftPreprocessed, CV_GRAY2BGR);
+		cvtColor(oForegroundLeft, oForegroundLeft, CV_GRAY2BGR);
+		cvtColor(oForegroundRight, oForegroundRight, CV_GRAY2BGR);
+		cvtColor(oPostprocess, oPostprocess, CV_GRAY2BGR);
+
+		applyColorMap(oDisparity, oDisparity, COLORMAP_JET);
+
+		imshow("disp", oDisparity);
+
+		cv::Mat oLeftPrep;
+		hconcat(oLeftImage, oLeftPreprocessed, oLeftPrep);
+		resize(oLeftPrep, oLeftPrep, Size(iWidth, iHeight));
 
 		cv::Mat oForeground;
 		hconcat(oForegroundLeft, oForegroundRight, oForeground);
-		resize(oForeground, oForeground, Size(1280, 320));
+		resize(oForeground, oForeground, Size(iWidth, iHeight));
+
+		cv::Mat oStereoPostp;
+		hconcat(oDisparity, oPostprocess, oStereoPostp);
+		resize(oStereoPostp, oStereoPostp, Size(iWidth, iHeight));
 
 		cv::Mat oResult;
-		vconcat(oOriginal, oPreprocess, oResult);
-		vconcat(oResult, oForeground, oResult);
+		vconcat(oLeftPrep, oForeground, oResult);
+		vconcat(oResult, oStereoPostp, oResult);
 
 		imshow("Result", oResult);
 
@@ -116,4 +135,8 @@ const std::vector<cv::Mat>& ImageControl::getDisparity() const  {
 
 const std::vector<cv::Mat>& ImageControl::getPostprocessImages() const  {
 	return maPostprocessImages;
+}
+
+const std::vector<cv::Mat>& ImageControl::getSegmentation() const {
+	return maSegmentation;
 }
