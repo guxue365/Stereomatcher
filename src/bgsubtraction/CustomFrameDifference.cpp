@@ -17,6 +17,8 @@ CustomFrameDifference::~CustomFrameDifference() {
 }
 
 cv::Mat CustomFrameDifference::SubtractLeft(const cv::Mat& rImage) {
+	assert(rImage.type()==CV_8U);
+
 	cv::Mat oMask, oBGModel, oResult;
 
 	mpBGSLeft->process(rImage, oMask, oBGModel);
@@ -27,6 +29,8 @@ cv::Mat CustomFrameDifference::SubtractLeft(const cv::Mat& rImage) {
 }
 
 cv::Mat CustomFrameDifference::SubtractRight(const cv::Mat& rImage) {
+	assert(rImage.type()==CV_8U);
+
 	cv::Mat oMask, oBGModel, oResult;
 
 	mpBGSRight->process(rImage, oMask, oBGModel);

@@ -1,6 +1,7 @@
 #include <imageloader/BaseImageloader.h>
 
 #include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 using namespace std;
 using namespace cv;
@@ -23,13 +24,15 @@ bool BaseImageloader::Init(const std::string& sFolder) {
 cv::Mat BaseImageloader::getNextLeftImage() {
 	cv::Mat oFrame;
 	moLeftImages>>oFrame;
-	oFrame.convertTo(oFrame, CV_8U, 255.0/4096.0);
+	demosaicing(oFrame, oFrame, COLOR_BayerGR2RGB);
+	oFrame.convertTo(oFrame, CV_8UC3, 1.0/256.0);
 	return oFrame;
 }
 
 cv::Mat BaseImageloader::getNextRightImage() {
 	cv::Mat oFrame;
 	moRightImages>>oFrame;
-	oFrame.convertTo(oFrame, CV_8U, 255.0/4096.0);
+	demosaicing(oFrame, oFrame, COLOR_BayerGR2RGB);
+	oFrame.convertTo(oFrame, CV_8UC3, 1.0/256.0);
 	return oFrame;
 }

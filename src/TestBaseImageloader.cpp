@@ -8,9 +8,34 @@
 using namespace std;
 using namespace cv;
 
+string type2str(int type) {
+  string r;
+
+  uchar depth = type & CV_MAT_DEPTH_MASK;
+  uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+  switch ( depth ) {
+    case CV_8U:  r = "8U"; break;
+    case CV_8S:  r = "8S"; break;
+    case CV_16U: r = "16U"; break;
+    case CV_16S: r = "16S"; break;
+    case CV_32S: r = "32S"; break;
+    case CV_32F: r = "32F"; break;
+    case CV_64F: r = "64F"; break;
+    default:     r = "User"; break;
+  }
+
+  r += "C";
+  r += (chans+'0');
+
+  return r;
+}
+
 int main() {
-	cv::VideoCapture oImageStreamLeft("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c0.pgm");
-	cv::VideoCapture oImageStreamRight("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c1.pgm");
+	//cv::VideoCapture oImageStreamLeft("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c0.pgm");
+	//cv::VideoCapture oImageStreamRight("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c1.pgm");
+	cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c0.pgm");
+	cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c1.pgm");
 
 	//cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
 	//cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
@@ -20,17 +45,24 @@ int main() {
 	Mat oFrameLeft;
 	Mat oFrameRight;
 	Mat oDisparity;
+	double min, max;
 	for(size_t i=0;; ++i) {
 		oImageStreamLeft>>oFrameLeft;
 		oImageStreamRight>>oFrameRight;
 
-		oFrameLeft.convertTo(oFrameLeft, CV_8U, 255.0 / 4096.0);
-		oFrameRight.convertTo(oFrameRight, CV_8U, 255.0 / 4096.0);
+		demosaicing(oFrameLeft, oFrameLeft, COLOR_BayerGR2RGB);
 
+		cout<<type2str(oFrameLeft.type())<<endl;
+		minMaxLoc(oFrameLeft, &min, &max);
+		cout<<min<<" | "<<max<<endl;
+
+		oFrameLeft.convertTo(oFrameLeft, CV_8UC3, 256.0/4096.0);
+
+		imshow("left", oFrameLeft);
 		//cvtColor(oFrameLeft, oFrameLeft, CV_BGR2GRAY);
 		//cvtColor(oFrameRight, oFrameRight, CV_BGR2GRAY);
 
-		sbm->compute(oFrameLeft, oFrameRight, oDisparity);
+		/*sbm->compute(oFrameLeft, oFrameRight, oDisparity);
 
 		oDisparity.convertTo(oDisparity, CV_8U, 1.0/16.0);
 		normalize(oDisparity, oDisparity, 0.0, 255.0, CV_MINMAX);
@@ -39,9 +71,9 @@ int main() {
 
 		imshow("frame left", oFrameLeft);
 		imshow("frame right", oFrameRight);
-		imshow("disparity", oDisparity);
+		imshow("disparity", oDisparity);*/
 
-		char c = (char)waitKey(5000);
+		char c = (char)waitKey();
 		if(c==27) 	break;
 	}
 

@@ -47,15 +47,18 @@ ImageControl::~ImageControl() {
 }
 
 void ImageControl::Run() {
-	for(;;) {
+
+	for(size_t i=0;;++i) {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
+
 
 
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
 		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage);
 		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage);
+
 
 		cv::Mat oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
 		cv::Mat oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
@@ -80,15 +83,14 @@ void ImageControl::Run() {
 		int iWidth = 960;
 		int iHeight = 240;
 
-		cvtColor(oLeftImage, oLeftImage, CV_GRAY2BGR);
+		//cvtColor(oLeftImage, oLeftImage, CV_GRAY2BGR);
 		cvtColor(oLeftPreprocessed, oLeftPreprocessed, CV_GRAY2BGR);
 		cvtColor(oForegroundLeft, oForegroundLeft, CV_GRAY2BGR);
 		cvtColor(oForegroundRight, oForegroundRight, CV_GRAY2BGR);
 		cvtColor(oPostprocess, oPostprocess, CV_GRAY2BGR);
 
 		applyColorMap(oDisparity, oDisparity, COLORMAP_JET);
-
-		imshow("disp", oDisparity);
+		applyColorMap(oSegmentation, oSegmentation, COLORMAP_JET);
 
 		cv::Mat oLeftPrep;
 		hconcat(oLeftImage, oLeftPreprocessed, oLeftPrep);
@@ -108,7 +110,8 @@ void ImageControl::Run() {
 
 		imshow("Result", oResult);
 
-		char c = (char)waitKey(50);
+
+		int c = (char)waitKey(25);
 		if(c==27) 	break;
 	}
 }
