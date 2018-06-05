@@ -53,7 +53,6 @@ void ImageControl::Run() {
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
 
 
-
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
 		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage);
@@ -67,9 +66,12 @@ void ImageControl::Run() {
 
 		cv::Mat oPostprocess = mrPostprocessor.Postprocess(oDisparity);
 
-		cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
+		//cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
+		cv::Mat oSegmentation = oPostprocess;
 
-		/*
+		normalize(oSegmentation, oSegmentation, 255.0, 0.0, CV_MINMAX);
+
+
 		maLeftImages.push_back(oLeftImage);
 		maRightImages.push_back(oRightImage);
 		maPreprocessLeft.push_back(oLeftPreprocessed);
@@ -77,7 +79,8 @@ void ImageControl::Run() {
 		maForegroundLeft.push_back(oLeftPreprocessed);
 		maForegroundRight.push_back(oRightPreprocessed);
 		maDisparity.push_back(oDisparity);
-		maPostprocessImages.push_back(oPostprocessed);*/
+		maPostprocessImages.push_back(oPostprocess);
+		maSegmentation.push_back(oSegmentation);
 
 
 		int iWidth = 960;
@@ -97,12 +100,13 @@ void ImageControl::Run() {
 		resize(oLeftPrep, oLeftPrep, Size(iWidth, iHeight));
 
 		cv::Mat oForeground;
-		hconcat(oForegroundLeft, oForegroundRight, oForeground);
+		hconcat(oForegroundLeft, oDisparity, oForeground);
 		resize(oForeground, oForeground, Size(iWidth, iHeight));
 
 		cv::Mat oStereoPostp;
-		hconcat(oDisparity, oPostprocess, oStereoPostp);
+		hconcat(oPostprocess, oSegmentation, oStereoPostp);
 		resize(oStereoPostp, oStereoPostp, Size(iWidth, iHeight));
+
 
 		cv::Mat oResult;
 		vconcat(oLeftPrep, oForeground, oResult);

@@ -252,16 +252,37 @@ int main() {
 			cout<<"Computation finished. Time taken: "<<oDuration.count()<<"s"<<endl;
 
 			cout<<"Creating result folder: "<<rRun.msResultfolder<<endl;
-			std::string sPreprocessFolder = rRun.msResultfolder+"preprocess";
-			std::string sForegroundFolder = rRun.msResultfolder+"foreground";
-			std::string sDisparityFolder = rRun.msResultfolder+"disparity";
-			std::string sPostprocessFolder = rRun.msResultfolder+"postprocess";
+
+			std::string sPreprocessFolder = rRun.msResultfolder+"preprocess/";
+			std::string sForegroundFolder = rRun.msResultfolder+"foreground/";
+			std::string sDisparityFolder = rRun.msResultfolder+"disparity/";
+			std::string sPostprocessFolder = rRun.msResultfolder+"postprocess/";
+			std::string sSegmentationFolder = rRun.msResultfolder+"segmentation/";
 
 			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			mkdir(sPreprocessFolder.c_str(), ACCESSPERMS);
 			mkdir(sForegroundFolder.c_str(), ACCESSPERMS);
 			mkdir(sDisparityFolder.c_str(), ACCESSPERMS);
 			mkdir(sPostprocessFolder.c_str(), ACCESSPERMS);
+			mkdir(sSegmentationFolder.c_str(), ACCESSPERMS);
+
+			for(size_t i=0; i<oImageControl.getPreprocessLeft().size(); ++i) {
+				std::string sFilename = "img_"+std::to_string(i)+".png";
+				std::string sNameLeft = "img_"+std::to_string(i)+"_c0.png";
+				std::string sNameRight = "img_"+std::to_string(i)+"_c1.png";
+
+				imwrite(sPreprocessFolder+sNameLeft, oImageControl.getPreprocessLeft()[i]);
+				imwrite(sPreprocessFolder+sNameRight, oImageControl.getPreprocessRight()[i]);
+
+				imwrite(sForegroundFolder+sNameLeft, oImageControl.getForegroundLeft()[i]);
+				imwrite(sForegroundFolder+sNameRight, oImageControl.getForegroundRight()[i]);
+
+				imwrite(sDisparityFolder+sFilename, oImageControl.getDisparity()[i]);
+
+				imwrite(sPostprocessFolder+sFilename, oImageControl.getPostprocessImages()[i]);
+
+				imwrite(sSegmentationFolder+sFilename, oImageControl.getSegmentation()[i]);
+			}
 		}
 
 	} catch(std::exception& rEx) {

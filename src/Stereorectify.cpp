@@ -66,25 +66,14 @@ void TryCalibration(const Mat& oFrameLeft, const Mat& oFrameRight, Mat& oOutLeft
 	double cx2 = 1.284997418662109e+03;
 	double cy2 = 5.092517594678745e+02;
 
-	double k11 = -0.358747279897952;
-	double k21 = -5.482777505594711;
-	double k31 = 21.789612196728840;
-	double p11 = -0.026661723125205;
-	double p21 = 0.030967281664763;
-
-	double k12 = -0.608013415673151;
-	double k22 = -1.374768603631144;
-	double k32 = 5.002510805942969;
-	double p12 = 0.014811903964771;
-	double p22 = 0.006712822591838;
 
 	Mat oCameraMatrix1 = (Mat_<double>(3, 3)<<fx1, 0.0, cx1, 0.0, fy1, cy1, 0.0, 0.0, 1.0);
 	Mat oCameraMatrix2 = (Mat_<double>(3, 3)<<fx2, 0.0, cx2, 0.0, fy2, cy2, 0.0, 0.0, 1.0);
 
-	Mat oDistortionVec1 = (Mat_<double>(5, 1)<<k11, k21, p11, p21, k31);
-	Mat oDistortionVec2 = (Mat_<double>(5, 1)<<k12, k22, p12, p22, k32);
+	Mat oDistortionVec1 = (Mat_<double>(5, 1)<<-0.358747279897952, -5.482777505594711, -0.026661723125205, 0.030967281664763, 21.789612196728840);
+	Mat oDistortionVec2 = (Mat_<double>(5, 1)<<-0.608013415673151, -1.374768603631144, 0.014811903964771, 0.006712822591838, 5.002510805942969);
 
-	Size oSize = Size(1024, 2048);
+	Size oSize = Size(2048, 1024);
 
 	Mat oRotationMatrix = (Mat_<double>(3, 3)<<0.998818097562346, -0.040321229984821, 0.027140493629374,
 												0.041806070439880, 0.997523047404669, -0.056568740227069,
@@ -118,7 +107,7 @@ void TryCalibration(const Mat& oFrameLeft, const Mat& oFrameRight, Mat& oOutLeft
 	Mat Q;
 
 	stereoRectify(oCameraMatrix1, oDistortionVec1, oCameraMatrix2, oDistortionVec2, oSize, oRotationMatrix, oTranslationVector,
-			R1, R2, P1, P2, Q);
+			R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, 0.0, oSize);
 
 	cout<<"R1: "<<endl<<R1<<endl;
 	cout<<"R2: "<<endl<<R2<<endl;
@@ -126,13 +115,12 @@ void TryCalibration(const Mat& oFrameLeft, const Mat& oFrameRight, Mat& oOutLeft
 	cout<<"P2: "<<endl<<P2<<endl;
 	cout<<"Q: "<<endl<<Q<<endl;
 
-	Mat map11, map21;
-	Mat map12, map22;
+	Mat rmap[2][2];
 
-	initUndistortRectifyMap(oCameraMatrix1, oDistortionVec1, R1, P1, oSize, CV_32FC1, map11, map21);
-	initUndistortRectifyMap(oCameraMatrix2, oDistortionVec2, R2, P2, oSize, CV_32FC1, map12, map22);
+	initUndistortRectifyMap(oCameraMatrix1, oDistortionVec1, R1, P1, oSize, CV_32FC1, rmap[0][0], rmap[0][1]);
+	initUndistortRectifyMap(oCameraMatrix2, oDistortionVec2, R2, P2, oSize, CV_32FC1, rmap[1][0], rmap[1][1]);
 
 
-	remap(oFrameLeft, oOutLeft, map11, map21, INTER_LINEAR, BORDER_CONSTANT);
-	remap(oFrameRight, oOutRight, map12, map22, INTER_LINEAR, BORDER_CONSTANT);
+	remap(oFrameLeft, oOutLeft, rmap[0][0], rmap[0][1], INTER_LINEAR);
+	remap(oFrameRight, oOutRight, rmap[1][0], rmap[1][1], INTER_LINEAR);
 }

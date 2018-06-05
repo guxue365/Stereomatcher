@@ -1,5 +1,6 @@
 #include "segmentation/RegionGrowing.h"
 
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -15,7 +16,6 @@ RegionGrowing::~RegionGrowing() {
 }
 
 cv::Mat RegionGrowing::Segment(const cv::Mat& rImage) {
-	return rImage;
 	cv::Mat oResult;
 	GrowRegion(rImage, oResult);
 	return oResult;
@@ -56,7 +56,6 @@ void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
 			}
 		}
 	}
-
 }
 
 std::vector<cv::Point2i> RegionGrowing::getNeighbors(const cv::Mat& rRegion, cv::Point2i iSeed) {
