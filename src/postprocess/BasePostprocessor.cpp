@@ -16,8 +16,7 @@ BasePostprocessor::~BasePostprocessor() {
 cv::Mat BasePostprocessor::Postprocess(const cv::Mat& rImage) {
 	cv::Mat oResult;
 
-	cv::blur(rImage, oResult, cv::Size(5, 5));
-	cv::threshold(oResult, oResult, 10.0, 255.0, THRESH_BINARY);
+	bilateralFilter(rImage, oResult, 15, 150.0, 150.0);
 
 	return oResult;
 }

@@ -126,6 +126,8 @@ int main() {
 	cout<<"Version: "<<oJsonConfig["version"]<<endl;
 	string sTitle = oJsonConfig["title"];
 	cout<<"Title: "<<sTitle<<endl;
+	bool bWriteResult = oJsonConfig["write_result"];
+	cout<<"Write Result: "<<(bWriteResult ? "true" : "false")<<endl;
 
 	for(auto& oJsonRun: oJsonConfig["runs"]) {
 		Run oRun;
@@ -259,29 +261,31 @@ int main() {
 			std::string sPostprocessFolder = rRun.msResultfolder+"postprocess/";
 			std::string sSegmentationFolder = rRun.msResultfolder+"segmentation/";
 
-			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
-			mkdir(sPreprocessFolder.c_str(), ACCESSPERMS);
-			mkdir(sForegroundFolder.c_str(), ACCESSPERMS);
-			mkdir(sDisparityFolder.c_str(), ACCESSPERMS);
-			mkdir(sPostprocessFolder.c_str(), ACCESSPERMS);
-			mkdir(sSegmentationFolder.c_str(), ACCESSPERMS);
+			if(bWriteResult) {
+				mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+				mkdir(sPreprocessFolder.c_str(), ACCESSPERMS);
+				mkdir(sForegroundFolder.c_str(), ACCESSPERMS);
+				mkdir(sDisparityFolder.c_str(), ACCESSPERMS);
+				mkdir(sPostprocessFolder.c_str(), ACCESSPERMS);
+				mkdir(sSegmentationFolder.c_str(), ACCESSPERMS);
 
-			for(size_t i=0; i<oImageControl.getPreprocessLeft().size(); ++i) {
-				std::string sFilename = "img_"+std::to_string(i)+".png";
-				std::string sNameLeft = "img_"+std::to_string(i)+"_c0.png";
-				std::string sNameRight = "img_"+std::to_string(i)+"_c1.png";
+				for(size_t i=0; i<oImageControl.getPreprocessLeft().size(); ++i) {
+					std::string sFilename = "img_"+std::to_string(i)+".png";
+					std::string sNameLeft = "img_"+std::to_string(i)+"_c0.png";
+					std::string sNameRight = "img_"+std::to_string(i)+"_c1.png";
 
-				imwrite(sPreprocessFolder+sNameLeft, oImageControl.getPreprocessLeft()[i]);
-				imwrite(sPreprocessFolder+sNameRight, oImageControl.getPreprocessRight()[i]);
+					imwrite(sPreprocessFolder+sNameLeft, oImageControl.getPreprocessLeft()[i]);
+					imwrite(sPreprocessFolder+sNameRight, oImageControl.getPreprocessRight()[i]);
 
-				imwrite(sForegroundFolder+sNameLeft, oImageControl.getForegroundLeft()[i]);
-				imwrite(sForegroundFolder+sNameRight, oImageControl.getForegroundRight()[i]);
+					imwrite(sForegroundFolder+sNameLeft, oImageControl.getForegroundLeft()[i]);
+					imwrite(sForegroundFolder+sNameRight, oImageControl.getForegroundRight()[i]);
 
-				imwrite(sDisparityFolder+sFilename, oImageControl.getDisparity()[i]);
+					imwrite(sDisparityFolder+sFilename, oImageControl.getDisparity()[i]);
 
-				imwrite(sPostprocessFolder+sFilename, oImageControl.getPostprocessImages()[i]);
+					imwrite(sPostprocessFolder+sFilename, oImageControl.getPostprocessImages()[i]);
 
-				imwrite(sSegmentationFolder+sFilename, oImageControl.getSegmentation()[i]);
+					imwrite(sSegmentationFolder+sFilename, oImageControl.getSegmentation()[i]);
+				}
 			}
 		}
 
