@@ -15,8 +15,8 @@ BaseImageloader::~BaseImageloader() {
 }
 
 bool BaseImageloader::Init(const std::string& sFolder) {
-	moLeftImages.open(sFolder+"img_%05d_c0.pgm");
-	moRightImages.open(sFolder+"img_%05d_c1.pgm");
+	moLeftImages.open(sFolder+"img_%05d_c0.png");
+	moRightImages.open(sFolder+"img_%05d_c1.png");
 
 	return (moLeftImages.isOpened() && moRightImages.isOpened());
 }
@@ -24,7 +24,7 @@ bool BaseImageloader::Init(const std::string& sFolder) {
 cv::Mat BaseImageloader::getNextLeftImage() {
 	cv::Mat oFrame;
 	moLeftImages>>oFrame;
-	demosaicing(oFrame, oFrame, COLOR_BayerGR2RGB);
+	//demosaicing(oFrame, oFrame, COLOR_BayerGR2RGB);
 	oFrame.convertTo(oFrame, CV_8UC3, 1.0/256.0);
 	return oFrame;
 }
@@ -32,7 +32,7 @@ cv::Mat BaseImageloader::getNextLeftImage() {
 cv::Mat BaseImageloader::getNextRightImage() {
 	cv::Mat oFrame;
 	moRightImages>>oFrame;
-	demosaicing(oFrame, oFrame, COLOR_BayerGR2RGB);
+	//demosaicing(oFrame, oFrame, COLOR_BayerGR2RGB);
 	oFrame.convertTo(oFrame, CV_8UC3, 1.0/256.0);
 	return oFrame;
 }

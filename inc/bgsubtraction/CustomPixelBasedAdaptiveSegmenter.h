@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "IBackgroundSubtraction.h"
 
 #include <bgslibrary.h>
@@ -14,4 +16,7 @@ public:
 private:
 	IBGS* mpBGSLeft;
 	IBGS* mpBGSRight;
+
+	std::vector<cv::Rect> FindRectangles(const cv::Mat& rInput, int iNumRectangles);
+	void FillMatrixWithRect(const cv::Mat& rOriginal, cv::Mat& rOutput, const std::vector<cv::Rect>& aROIs);
 };
