@@ -36,16 +36,44 @@ int main()
 		cvtColor(oFrameLeft, oFrameLeft, COLOR_BGR2GRAY);
 		cvtColor(oFrameRight, oFrameRight, COLOR_BGR2GRAY);
 
+		int iTargetRow = 200;
+		int iTargetCol = 401;
+
 		oDisparityOpenCV = ComputeOpenCVDisparity(oFrameLeft, oFrameRight);
+
+		cout << "Disparity by OpenCV BM: " << (int)oDisparityOpenCV.at<uchar>(iTargetRow, iTargetCol) << endl;
+
+		double dMin = std::numeric_limits<double>::max();
+		int iCustomDisp = -1;
+		for (int j = iTargetCol-128; j < iTargetCol; ++j) {
+			double dCost = ComputeMatchingCost(iTargetRow, iTargetCol, j, oFrameLeft, oFrameRight);
+			cout << "Computing cost for Disparity " << iTargetCol-j<<": "<<dCost << endl;
+
+			if (dCost < dMin) {
+				dMin = dCost;
+				iCustomDisp = iTargetCol - j;
+			}
+
+			/*Rect rLeft(iTargetCol - 1, iTargetRow - 1, 3, 3);
+			Rect rRight(j - 1, iTargetRow - 1, 3, 3);
+
+			cout << j-iTargetCol << endl;
+			cout << "Left: " << endl<<oFrameLeft(rLeft) << endl;
+			cout << "Right: " << endl << oFrameRight(rLeft) << endl;*/
+		}
+
+		cout << "Custom Disp: " << iCustomDisp << endl;
+
 		oDisparityCustom = ComputeCustomDisparity(oFrameLeft, oFrameRight);
 
 		applyColorMap(oDisparityOpenCV, oDisparityOpenCV, COLORMAP_JET);
-		imshow("Left Image", oFrameLeft);
-		imshow("Right Image", oFrameRight);
+		applyColorMap(oDisparityCustom, oDisparityCustom, COLORMAP_JET);
+		//imshow("Left Image", oFrameLeft);
+		//imshow("Right Image", oFrameRight);
 		imshow("Disparity OpenCV", oDisparityOpenCV);
 		imshow("Disparity Custom", oDisparityCustom);
 
-		char c = (char)waitKey(1000);
+		char c = (char)waitKey();
 		if (c == 27) 	break;
 	}
 
@@ -58,7 +86,7 @@ cv::Mat ComputeOpenCVDisparity(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Ptr<StereoBM> pStereoBM = StereoBM::create(0, 7);
 	pStereoBM->compute(rLeft, rRight, oResult);
 
-	oResult.convertTo(oResult, CV_8U);
+	oResult.convertTo(oResult, CV_8U, 1.0/16.0);
 
 	return oResult;
 }
@@ -71,26 +99,31 @@ cv::Mat ComputeCustomDisparity(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	size_t m = (size_t)rLeft.rows;
 	size_t n = (size_t)rLeft.cols;
 
-	cv::Mat oResult(m, n, CV_8U, Scalar(0));
+	cv::Mat oResult((int)m, (int)n, CV_8U, Scalar(0));
 
 	for (size_t i = 3; i < m-3; ++i) {
 		cout << "Row " << i << " from " << m << endl;
-		for (size_t j = 3; j < n-3; ++j) {
+		for (size_t j = 3; j < n-128; ++j) {
 			// match pixel rLeft(i, j) to any Pixel(i, *) on the right image
 			// -> iterate through row i on the right image and compute cost
+			
 			vector<double> aMatchingCost(n);
-			for (size_t k = 3; k < n-3; ++k) {
+			double dMin = std::numeric_limits<double>::max();
+			int iCustomDisp = -1;
+			for (int k = j-128; k < j; ++k) {
+				if (k < 4)		continue;
 				//compute cost for pixel (i, j) and (i, k)
-				aMatchingCost[k] = ComputeMatchingCost(i, j, k, rLeft, rRight);
+				double dCost = ComputeMatchingCost(i, j, k, rLeft, rRight);
+				if (dCost < dMin) {
+					dMin = dCost;
+					iCustomDisp = j - k;
+				}
 			}
-			// find k with minimum cost and assign to result at (i, j)
-			size_t iMatchingColRight = (min_element(aMatchingCost.begin(), aMatchingCost.end())-aMatchingCost.begin());
-
-			oResult.at<uchar>(i, j) = (uchar)(abs(j - iMatchingColRight));
+			oResult.at<uchar>((int)i, (int)j) = (uchar)(iCustomDisp);
 		}
 	}
 	return oResult;
-}
+} 
 
 double ComputeMatchingCost(size_t iRow, size_t iColLeft, size_t iColRight, const cv::Mat& rLeft, const cv::Mat& rRight) {
 	double dResult = 0.0;
@@ -102,8 +135,8 @@ double ComputeMatchingCost(size_t iRow, size_t iColLeft, size_t iColRight, const
 			size_t iCurrentColLeft = iColLeft + j - iBoxSize / 2;
 			size_t iCurrentColRight = iColRight + j - iBoxSize / 2;
 
-			double dLeft = (double)rLeft.at<uchar>(iCurrentRow, iCurrentColLeft);
-			double dRight = (double)rRight.at<uchar>(iCurrentRow, iCurrentColRight);
+			double dLeft = (double)rLeft.at<uchar>((int)iCurrentRow, (int)iCurrentColLeft);
+			double dRight = (double)rRight.at<uchar>((int)iCurrentRow, (int)iCurrentColRight);
 			dResult += sqrt((dLeft - dRight)*(dLeft - dRight));
 		}
 	}
