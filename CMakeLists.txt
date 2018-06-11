@@ -26,6 +26,10 @@ include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 set(BGSLIBRARY_INCLUDE_DIR /home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/package_bgs)
 include_directories(${BGSLIBRARY_INCLUDE_DIR})
 
+# OpenGL
+find_package(OpenGL REQUIRED)
+include_directories( ${OPENGL_INCLUDE_DIRS} )
+
 # Project
 include_directories(inc/)
 

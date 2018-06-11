@@ -4,9 +4,11 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/core/opengl.hpp>
 
 using namespace std;
 using namespace cv;
+
 
 int main() {
 
@@ -29,16 +31,12 @@ int main() {
 	Point2f v1[] = {p1, p2, p3, p4};
 	Point2f v2[] = {p5, p6, p7, p8};
 
-	Mat oTransform = getAffineTransform(v1, v2);
-	cout<<"Transform: "<<endl<<oTransform<<endl;
+	namedWindow("Original");
 
-	Mat oImageTransform;
 
-	warpAffine(oImage, oImageTransform, oTransform, Size(1000, 500));
 	for(;;) {
 
 		imshow("Original", oImage);
-		imshow("Transform", oImageTransform);
 
 		char c = (char)waitKey();
 		if(c==27) 	break;
