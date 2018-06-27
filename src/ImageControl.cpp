@@ -76,9 +76,9 @@ void ImageControl::Run() {
 		maRightImages.push_back(oRightImage);
 		maPreprocessLeft.push_back(oLeftPreprocessed);
 		maPreprocessRight.push_back(oRightPreprocessed);
-		maForegroundLeft.push_back(oLeftPreprocessed);
-		maForegroundRight.push_back(oRightPreprocessed);
-		maDisparity.push_back(oDisparity);
+		maForegroundLeft.push_back(oForegroundLeft);
+		maForegroundRight.push_back(oForegroundRight);
+		//maDisparity.push_back(oDisparity);
 		maPostprocessImages.push_back(oPostprocess);
 		maSegmentation.push_back(oSegmentation);
 
@@ -91,9 +91,12 @@ void ImageControl::Run() {
 		cvtColor(oForegroundLeft, oForegroundLeft, CV_GRAY2BGR);
 		cvtColor(oForegroundRight, oForegroundRight, CV_GRAY2BGR);
 		cvtColor(oPostprocess, oPostprocess, CV_GRAY2BGR);
+		cvtColor(oSegmentation, oSegmentation, CV_GRAY2BGR);
 
 		applyColorMap(oDisparity, oDisparity, COLORMAP_JET);
 		applyColorMap(oSegmentation, oSegmentation, COLORMAP_JET);
+
+		maDisparity.push_back(oDisparity);
 
 		cv::Mat oLeftPrep;
 		hconcat(oLeftImage, oLeftPreprocessed, oLeftPrep);

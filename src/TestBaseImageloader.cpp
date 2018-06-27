@@ -34,11 +34,19 @@ string type2str(int type) {
 int main() {
 	//cv::VideoCapture oImageStreamLeft("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c0.pgm");
 	//cv::VideoCapture oImageStreamRight("/home/herrmann/Datensatz/2018-05-16_07-35-15_ZA1/RenamedImages/img_%05d_c1.pgm");
-	cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c0.pgm");
-	cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c1.pgm");
-
+	//cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c0.pgm");
+	//cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c1.pgm");
+	cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedLeft/img_%1d.png");
+	cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedRight/img_%d.png");
 	//cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
 	//cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
+
+	if(!oImageStreamLeft.isOpened()) {
+		cout<<"Failed open left"<<endl;
+	}
+	if(!oImageStreamRight.isOpened()) {
+		cout<<"Failed open right"<<endl;
+	}
 
 	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create();
 

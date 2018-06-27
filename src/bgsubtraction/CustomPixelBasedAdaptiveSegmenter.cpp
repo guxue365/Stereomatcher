@@ -45,7 +45,7 @@ std::vector<cv::Rect> CustomPixelBasedAdaptiveSegmenter::FindRectangles(const cv
 	vector<Rect> aResult(iNumRectangles);
 
 	std::vector<int> aBounds(iNumRectangles);
-	int iRectSize = rInput.rows/iNumRectangles;
+	int iRectSize = rInput.rows/iNumRectangles+1;
 	for(int i=0; i<iNumRectangles; ++i) {
 		aBounds[i] = i*iRectSize;
 	}

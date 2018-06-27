@@ -20,6 +20,7 @@
 #include "IStereoMatch.h"
 
 #include "imageloader/BaseImageloader.h"
+#include "imageloader/CustomImageloader.h"
 
 #include "preprocess/BasePreprocessor.h"
 
@@ -29,6 +30,7 @@
 #include "postprocess/BasePostprocessor.h"
 
 #include "segmentation/RegionGrowing.h"
+#include "segmentation/DBSCAN.h"
 
 #include "stereomatch/BasicBlockmatcher.h"
 #include "stereomatch/BasicSGMatcher.h"
@@ -39,7 +41,8 @@ using namespace cv;
 using json = nlohmann::json;
 
 enum E_IMAGELOADER {
-	LOADER_BASE
+	LOADER_BASE,
+	LOADER_CUSTOM
 };
 
 enum E_PREPROCESSOR {
@@ -62,7 +65,8 @@ enum E_POSTPROCESSOR {
 };
 
 enum E_SEGMENTATION {
-	E_REGIONGROWING
+	E_REGIONGROWING,
+	E_DBSCAN
 };
 
 struct Run {
@@ -96,6 +100,7 @@ int main() {
 
 	vector<Run> aRuns;
 	BaseImageloader oBaseImageloader;
+	CustomImageloader oCustomImageloader;
 
 	BasePreprocessor oBasePreprocessor;
 
@@ -109,6 +114,7 @@ int main() {
 	BasePostprocessor oBasePostprocessor;
 
 	RegionGrowing oRegionGrowing;
+	DBSCAN oDBSCAN;
 
 	ifstream oConfigFile("config.json", ios::in);
 	if(!oConfigFile.is_open()) {
@@ -162,6 +168,10 @@ int main() {
 			switch(rRun.meImageloader) {
 				case E_IMAGELOADER::LOADER_BASE: {
 					pImageloader = &oBaseImageloader;
+					break;
+				}
+				case E_IMAGELOADER::LOADER_CUSTOM: {
+					pImageloader = &oCustomImageloader;
 					break;
 				}
 				default: {
@@ -238,6 +248,10 @@ int main() {
 					pSegmentation = &oRegionGrowing;
 					break;
 				}
+				case E_SEGMENTATION::E_DBSCAN: {
+					pSegmentation = &oDBSCAN;
+					break;
+				}
 				default: throw std::invalid_argument("Invalid Segmentation");
 			}
 
@@ -300,6 +314,7 @@ int main() {
 
 E_IMAGELOADER convertImageloader(const std::string& sImageloader) {
 	if(sImageloader=="base") 	return E_IMAGELOADER::LOADER_BASE;
+	if(sImageloader=="custom") 	return E_IMAGELOADER::LOADER_CUSTOM;
 	throw std::invalid_argument("invalid imageloader conversion");
 }
 
@@ -316,6 +331,7 @@ E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor) {
 
 E_SEGMENTATION convertSegmentation(const std::string& sSegmentation) {
 	if(sSegmentation=="regiongrowing") 	return E_SEGMENTATION::E_REGIONGROWING;
+	if(sSegmentation=="dbscan") 		return E_SEGMENTATION::E_DBSCAN;
 	throw std::invalid_argument("invalid segmentation conversion");
 }
 
@@ -335,6 +351,10 @@ ostream& operator << (ostream& os, E_IMAGELOADER eImageloader) {
 	switch(eImageloader) {
 		case E_IMAGELOADER::LOADER_BASE: {
 			os<<"base";
+			break;
+		}
+		case E_IMAGELOADER::LOADER_CUSTOM: {
+			os<<"custom";
 			break;
 		}
 		default: throw std::invalid_argument("Unknown eImageloader");
@@ -372,6 +392,10 @@ ostream& operator << (ostream& os, E_SEGMENTATION eSegmentation) {
 	switch(eSegmentation) {
 		case E_SEGMENTATION::E_REGIONGROWING: {
 			os<<"Region Growing";
+			break;
+		}
+		case E_SEGMENTATION::E_DBSCAN: {
+			os<<"DBSCAN";
 			break;
 		}
 		default: throw std::invalid_argument("Unknown eSegmentatoin");

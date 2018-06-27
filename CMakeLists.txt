@@ -36,6 +36,7 @@ include_directories(inc/)
 # Create targets
 add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/imageloader/BaseImageloader.cpp
+    src/imageloader/CustomImageloader.cpp
     src/preprocess/BasePreprocessor.cpp
     src/bgsubtraction/CustomPixelBasedAdaptiveSegmenter.cpp
     src/bgsubtraction/CustomFrameDifference.cpp
@@ -43,6 +44,7 @@ add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/stereomatch/BasicSGMatcher.cpp
     src/stereomatch/BasicBPMatcher.cpp
     src/segmentation/RegionGrowing.cpp
+    src/segmentation/DBSCAN.cpp
     src/postprocess/BasePostprocessor.cpp
     src/ImageControl.cpp )
 
@@ -53,7 +55,6 @@ add_executable( run_customblockmatcher src/CustomBlockmatcher.cpp )
 add_executable( run_testbaseimageloader src/TestBaseImageloader.cpp )
 add_executable( run_stereorectify src/Stereorectify.cpp )
 add_executable( run_stereocalibrate src/Stereocalibrate.cpp )
-add_executable( run_perspectivetransform src/PerspectiveTransform.cpp )
 
 target_link_libraries( run_stereomatcher ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_bgs ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
@@ -63,4 +64,3 @@ target_link_libraries( run_customblockmatcher ${OpenCV_LIBS} )
 target_link_libraries( run_testbaseimageloader ${OpenCV_LIBS} )
 target_link_libraries( run_stereorectify ${OpenCV_LIBS} )
 target_link_libraries( run_stereocalibrate ${OpenCV_LIBS} )
-target_link_libraries( run_perspectivetransform ${OpenCV_LIBS} )
