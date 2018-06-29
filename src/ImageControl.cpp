@@ -48,6 +48,8 @@ ImageControl::~ImageControl() {
 
 void ImageControl::Run() {
 
+	VideoWriter oVideoOut("outcpp.avi",CV_FOURCC('M','J','P','G'), 15.0, Size(1280, 720));
+
 	for(size_t i=0;;++i) {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
@@ -78,7 +80,7 @@ void ImageControl::Run() {
 		maPreprocessRight.push_back(oRightPreprocessed);
 		maForegroundLeft.push_back(oForegroundLeft);
 		maForegroundRight.push_back(oForegroundRight);
-		//maDisparity.push_back(oDisparity);
+		maDisparity.push_back(oDisparity);
 		maPostprocessImages.push_back(oPostprocess);
 		maSegmentation.push_back(oSegmentation);
 
@@ -95,8 +97,6 @@ void ImageControl::Run() {
 
 		applyColorMap(oDisparity, oDisparity, COLORMAP_JET);
 		applyColorMap(oSegmentation, oSegmentation, COLORMAP_JET);
-
-		maDisparity.push_back(oDisparity);
 
 		cv::Mat oLeftPrep;
 		hconcat(oLeftImage, oLeftPreprocessed, oLeftPrep);
@@ -117,10 +117,14 @@ void ImageControl::Run() {
 
 		imshow("Result", oResult);
 
+		resize(oResult, oResult, Size(1280, 720));
+		oVideoOut.write(oResult);
+
 
 		int c = (char)waitKey(25);
 		if(c==27) 	break;
 	}
+
 }
 
 const std::vector<cv::Mat>& ImageControl::getPreprocessLeft() const  {
