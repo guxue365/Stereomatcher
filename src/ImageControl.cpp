@@ -48,7 +48,7 @@ ImageControl::~ImageControl() {
 
 void ImageControl::Run() {
 
-	VideoWriter oVideoOut("outcpp.avi",CV_FOURCC('M','J','P','G'), 15.0, Size(1280, 720));
+	//VideoWriter oVideoOut("outcpp.avi",CV_FOURCC('M','J','P','G'), 15.0, Size(640, 480));
 
 	for(size_t i=0;;++i) {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
@@ -117,8 +117,8 @@ void ImageControl::Run() {
 
 		imshow("Result", oResult);
 
-		resize(oResult, oResult, Size(1280, 720));
-		oVideoOut.write(oResult);
+		/*resize(oResult, oResult, Size(640, 480));
+		oVideoOut.write(oResult);*/
 
 
 		int c = (char)waitKey(25);
