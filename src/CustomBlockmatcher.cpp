@@ -38,7 +38,7 @@ void onMouse(int event, int x, int y, int, void*) {
 	cout << "Mouse Event at: " << x << " | " << y << endl;
 }
 
-cv::Mat ComputeOpenCVDisparity(const cv::Mat& rLeft, const cv::Mat& rRight);
+cv::Mat ComputeOpenCVDisparity(const cv::Mat& rLeft, const cv::Mat& rRight, int iBoxSize = 7);
 cv::Mat ComputeCustomDisparityGray(const cv::Mat& rLeft, const cv::Mat& rRight);
 cv::Mat ComputeCustomDisparityColor(const cv::Mat& rLeft, const cv::Mat& rRight);
 
@@ -52,13 +52,13 @@ bool isValidMinimumVar(double dValMin, int iIndexMin, const std::vector<double>&
 
 int main()
 {
-	/*VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
+	VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("E:/dataset_kitti/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
+	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");
 
-	VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
+	/*VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");
+	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
 
 	if (!oFilestreamLeft.isOpened() || !oFilestreamRight.isOpened()) {
 		cout << "Error opening files" << endl;
@@ -70,9 +70,21 @@ int main()
 	Mat oFrameRightColor;
 	Mat oFrameRightGray;
 
+	Mat oFrameLeftDivX;
+	Mat oFrameRightDivX;
+	Mat oFrameLeftDivY;
+	Mat oFrameRightDivY;
+	Mat oFrameLeftDiv;
+	Mat oFrameRightDiv;
+
+	Mat oFrameLeftCanny;
+	Mat oFrameRightCanny;
+
 	Mat oDisparityOpenCV;
 	Mat oDisparityCustomGray;
 	Mat oDisparityCustomColor;
+	Mat oDisparityCustomDiv;
+	Mat oDisparityCanny;
 	Mat oDisparityGT;
 
 	for(int iFrame=0; ; ++iFrame) {
@@ -86,17 +98,32 @@ int main()
 		cvtColor(oFrameLeftColor, oFrameLeftGray, COLOR_BGR2GRAY);
 		cvtColor(oFrameRightColor, oFrameRightGray, COLOR_BGR2GRAY);
 
+		Sobel(oFrameLeftGray, oFrameLeftDivX, CV_8U, 1, 0);
+		Sobel(oFrameLeftGray, oFrameLeftDivY, CV_8U, 0, 1);
+
+		Sobel(oFrameRightGray, oFrameRightDivX, CV_8U, 1, 0);
+		Sobel(oFrameRightGray, oFrameRightDivY, CV_8U, 0, 1);
+
+		Sobel(oFrameLeftGray, oFrameLeftDiv, CV_8U, 1, 1);
+		Sobel(oFrameRightGray, oFrameRightDiv, CV_8U, 1, 1);
+
+		Canny(oFrameLeftGray, oFrameLeftCanny, 100.0, 200.0);
+		Canny(oFrameRightGray, oFrameRightCanny, 100.0, 200.0);
+
 		oDisparityOpenCV = ComputeOpenCVDisparity(oFrameLeftGray, oFrameRightGray);
 
 		oDisparityCustomGray = ComputeCustomDisparityGray(oFrameLeftGray, oFrameRightGray);
 		oDisparityCustomColor = ComputeCustomDisparityColor(oFrameLeftColor, oFrameRightColor);
-		//oDisparityCustom = Mat::zeros(oDisparityOpenCV.rows, oDisparityOpenCV.cols, CV_8U);
+		oDisparityCustomDiv = ComputeOpenCVDisparity(oFrameLeftDiv, oFrameRightDiv, 21);
+		oDisparityCanny = ComputeOpenCVDisparity(oFrameLeftCanny, oFrameRightCanny, 21);
 
 		
 
 		oDisparityOpenCV *= 3;
 		oDisparityCustomGray *= 3;
 		oDisparityCustomColor *= 3;
+		oDisparityCustomDiv *= 3;
+		oDisparityCanny *= 3;
 		oDisparityGT *= 3;
 
 		/*normalize(oDisparityOpenCV, oDisparityOpenCV, 0.0, 255.0, CV_MINMAX);
@@ -106,6 +133,8 @@ int main()
 		applyColorMap(oDisparityOpenCV, oDisparityOpenCV, COLORMAP_JET);
 		applyColorMap(oDisparityCustomGray, oDisparityCustomGray, COLORMAP_JET);
 		applyColorMap(oDisparityCustomColor, oDisparityCustomColor, COLORMAP_JET);
+		applyColorMap(oDisparityCustomDiv, oDisparityCustomDiv, COLORMAP_JET);
+		applyColorMap(oDisparityCanny, oDisparityCanny, COLORMAP_JET);
 		applyColorMap(oDisparityGT, oDisparityGT, COLORMAP_JET);
 
 		
@@ -113,13 +142,30 @@ int main()
 		imshow("Disparity OpenCV", oDisparityOpenCV);
 		imshow("Disparity Custom Gray", oDisparityCustomGray);
 		imshow("Disparity Custom Color", oDisparityCustomColor);
+		imshow("Disparity Custom Div", oDisparityCustomDiv);
+		imshow("Disparity Canny", oDisparityCanny);
 		imshow("Disparity Ground Truth", oDisparityGT);
+
+		imshow("Left Div X", oFrameLeftDivX);
+		imshow("Left Div Y", oFrameLeftDivY);
+		imshow("Left Div", oFrameLeftDiv);
+		imshow("Left Canny", oFrameLeftCanny);
 
 		setMouseCallback("Disparity OpenCV", onMouse);
 		setMouseCallback("Disparity Custom Gray", onMouse);
 		setMouseCallback("Disparity Custom Color", onMouse);
 
-		imwrite("out.png", oDisparityGT);
+		
+
+		imwrite("Color.png", oFrameLeftColor);
+		imwrite("Gray.png", oFrameLeftGray);
+		imwrite("Div.png", oFrameLeftDiv);
+		imwrite("Canny.png", oFrameLeftCanny);
+		imwrite("OpenCV.png", oDisparityOpenCV);
+		imwrite("Custom_Gray.png", oDisparityCustomGray);
+		imwrite("Custom_Color.png", oDisparityCustomColor);
+		imwrite("Custom_Div.png", oDisparityCustomDiv);
+		imwrite("Custom_Canny.png", oDisparityCanny);
 
 		char c = (char)waitKey();
 		if (c == 27) 	break;
@@ -128,10 +174,10 @@ int main()
     return 0;
 }
 
-cv::Mat ComputeOpenCVDisparity(const cv::Mat& rLeft, const cv::Mat& rRight) {
+cv::Mat ComputeOpenCVDisparity(const cv::Mat& rLeft, const cv::Mat& rRight, int iBoxSize) {
 	cv::Mat oResult;
 
-	cv::Ptr<StereoBM> pStereoBM = StereoBM::create(0, 7);
+	cv::Ptr<StereoBM> pStereoBM = StereoBM::create(0, iBoxSize);
 	pStereoBM->compute(rLeft, rRight, oResult);
 
 	oResult.convertTo(oResult, CV_8U, 1.0/16.0);
@@ -293,7 +339,7 @@ double ComputeMatchingCostColor(int iRow, int iColLeft, int iColRight, const cv:
 }
 
 bool isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues) {
-	double eps = 10.0;
+	double eps = 15.0;
 	for (size_t l = 0; l < aValues.size(); ++l) {
 		if (l == iIndexMin)		continue;
 		if (abs(aValues[l] - dValMin) < eps) {
