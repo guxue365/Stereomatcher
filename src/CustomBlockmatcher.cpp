@@ -60,7 +60,7 @@ int main()
 	VideoCapture oFilestreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
 	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
 
-	if (!oFilestreamLeft.isOpened() || !oFilestreamRight.isOpened()) {
+	if (!oFilestreamLeft.isOpened() || !oFilestreamRight.isOpened() || !oFilestreamGT.isOpened()) {
 		cout << "Error opening files" << endl;
 		return -1;
 	}
