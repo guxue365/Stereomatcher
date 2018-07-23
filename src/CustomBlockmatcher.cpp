@@ -52,13 +52,13 @@ bool isValidMinimumVar(double dValMin, int iIndexMin, const std::vector<double>&
 
 int main()
 {
-	VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
+	/*VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("E:/dataset_kitti/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");
+	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
 
-	/*VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
+	VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
+	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");
 
 	if (!oFilestreamLeft.isOpened() || !oFilestreamRight.isOpened() || !oFilestreamGT.isOpened()) {
 		cout << "Error opening files" << endl;
@@ -80,11 +80,15 @@ int main()
 	Mat oFrameLeftCanny;
 	Mat oFrameRightCanny;
 
+	Mat oFrameLeftHarris;
+	Mat oFrameRightHarris;
+
 	Mat oDisparityOpenCV;
 	Mat oDisparityCustomGray;
 	Mat oDisparityCustomColor;
 	Mat oDisparityCustomDiv;
 	Mat oDisparityCanny;
+	Mat oDisparityHarris;
 	Mat oDisparityGT;
 
 	for(int iFrame=0; ; ++iFrame) {
@@ -110,12 +114,27 @@ int main()
 		Canny(oFrameLeftGray, oFrameLeftCanny, 100.0, 200.0);
 		Canny(oFrameRightGray, oFrameRightCanny, 100.0, 200.0);
 
+		cornerHarris(oFrameLeftGray, oFrameLeftHarris, 2, 3, 0.04);
+		normalize( oFrameLeftHarris, oFrameLeftHarris, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
+		convertScaleAbs( oFrameLeftHarris, oFrameLeftHarris );
+		threshold(oFrameLeftHarris, oFrameLeftHarris, 0.0, 255.0, THRESH_TOZERO);
+
+
+		cornerHarris(oFrameRightGray, oFrameRightHarris, 2, 3, 0.04);
+		normalize( oFrameRightHarris, oFrameRightHarris, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
+		convertScaleAbs( oFrameRightHarris, oFrameRightHarris );
+
+		imshow("Harris", oFrameLeftHarris);
+		waitKey(0);
+		return 0;
+
 		oDisparityOpenCV = ComputeOpenCVDisparity(oFrameLeftGray, oFrameRightGray);
 
 		oDisparityCustomGray = ComputeCustomDisparityGray(oFrameLeftGray, oFrameRightGray);
 		oDisparityCustomColor = ComputeCustomDisparityColor(oFrameLeftColor, oFrameRightColor);
 		oDisparityCustomDiv = ComputeOpenCVDisparity(oFrameLeftDiv, oFrameRightDiv, 21);
 		oDisparityCanny = ComputeOpenCVDisparity(oFrameLeftCanny, oFrameRightCanny, 21);
+		oDisparityHarris = ComputeOpenCVDisparity(oFrameLeftHarris, oFrameRightHarris, 21);
 
 		
 
@@ -124,6 +143,7 @@ int main()
 		oDisparityCustomColor *= 3;
 		oDisparityCustomDiv *= 3;
 		oDisparityCanny *= 3;
+		oDisparityHarris *= 3;
 		oDisparityGT *= 3;
 
 		/*normalize(oDisparityOpenCV, oDisparityOpenCV, 0.0, 255.0, CV_MINMAX);
@@ -135,6 +155,7 @@ int main()
 		applyColorMap(oDisparityCustomColor, oDisparityCustomColor, COLORMAP_JET);
 		applyColorMap(oDisparityCustomDiv, oDisparityCustomDiv, COLORMAP_JET);
 		applyColorMap(oDisparityCanny, oDisparityCanny, COLORMAP_JET);
+		applyColorMap(oDisparityHarris, oDisparityHarris, COLORMAP_JET);
 		applyColorMap(oDisparityGT, oDisparityGT, COLORMAP_JET);
 
 		
@@ -144,12 +165,14 @@ int main()
 		imshow("Disparity Custom Color", oDisparityCustomColor);
 		imshow("Disparity Custom Div", oDisparityCustomDiv);
 		imshow("Disparity Canny", oDisparityCanny);
+		imshow("Disparity Harris", oDisparityHarris);
 		imshow("Disparity Ground Truth", oDisparityGT);
 
 		imshow("Left Div X", oFrameLeftDivX);
 		imshow("Left Div Y", oFrameLeftDivY);
 		imshow("Left Div", oFrameLeftDiv);
 		imshow("Left Canny", oFrameLeftCanny);
+		imshow("Left Harris", oFrameLeftHarris);
 
 		setMouseCallback("Disparity OpenCV", onMouse);
 		setMouseCallback("Disparity Custom Gray", onMouse);
@@ -226,7 +249,6 @@ cv::Mat ComputeCustomDisparityGray(const cv::Mat& rLeft, const cv::Mat& rRight) 
 			if (isValidMinimumStrict(dMinVal, iMin, aDisp)) {
 				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
 			}
-
 		}
 	}
 	return oResult;

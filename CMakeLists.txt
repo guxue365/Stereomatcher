@@ -30,8 +30,21 @@ include_directories(${BGSLIBRARY_INCLUDE_DIR})
 find_package(OpenGL REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS} )
 
+# PCL
+find_package(PCL 1.3 REQUIRED COMPONENTS common visualization)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+# VTK
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+
 # Project
 include_directories(inc/)
+
+# VTK bugfix
+list(REMOVE_ITEM PCL_VISUALIZATION_LIBRARIES "vtkproj4")
 
 # Create targets
 add_executable( run_stereomatcher src/Stereomatcher.cpp
@@ -69,4 +82,4 @@ target_link_libraries( run_stereorectify ${OpenCV_LIBS} )
 target_link_libraries( run_stereocalibrate ${OpenCV_LIBS} )
 target_link_libraries( run_perspectivetransform ${OpenCV_LIBS} )
 target_link_libraries( run_testviz ${OpenCV_LIBS} )
-target_link_libraries( run_testpcl ${OpenCV_LIBS} )
+target_link_libraries( run_testpcl ${OpenCV_LIBS} ${PCL_COMMON_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES} )
