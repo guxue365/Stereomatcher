@@ -2,10 +2,10 @@
 
 #include "IStereoMatch.h"
 
-class BasicBlockmatcher : public IStereoMatch {
+class BasicBlockMatcher : public IStereoMatch {
 public:
-	BasicBlockmatcher();
-	virtual ~BasicBlockmatcher();
+	BasicBlockMatcher();
+	virtual ~BasicBlockMatcher();
 
 	cv::Mat Match(const cv::Mat& rLeft, const cv::Mat& rRight);
 };

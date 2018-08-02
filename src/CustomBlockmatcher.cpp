@@ -52,13 +52,13 @@ bool isValidMinimumVar(double dValMin, int iIndexMin, const std::vector<double>&
 
 int main()
 {
-	/*VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
+	VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("E:/dataset_kitti/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
+	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");
 
-	VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
+	/*VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");
+	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
 
 	if (!oFilestreamLeft.isOpened() || !oFilestreamRight.isOpened() || !oFilestreamGT.isOpened()) {
 		cout << "Error opening files" << endl;
@@ -123,10 +123,6 @@ int main()
 		cornerHarris(oFrameRightGray, oFrameRightHarris, 2, 3, 0.04);
 		normalize( oFrameRightHarris, oFrameRightHarris, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
 		convertScaleAbs( oFrameRightHarris, oFrameRightHarris );
-
-		imshow("Harris", oFrameLeftHarris);
-		waitKey(0);
-		return 0;
 
 		oDisparityOpenCV = ComputeOpenCVDisparity(oFrameLeftGray, oFrameRightGray);
 
