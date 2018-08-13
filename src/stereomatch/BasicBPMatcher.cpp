@@ -7,12 +7,19 @@
 using namespace std;
 using namespace cv;
 
-BasicBPMatcher::BasicBPMatcher() {
+BasicBPMatcher::BasicBPMatcher() :
+	miNumDisparities(64) {
 
 }
 
 BasicBPMatcher::~BasicBPMatcher() {
 
+}
+
+void BasicBPMatcher::setNumDisparities(int iNumDisparities) {
+	assert(iNumDisparities > 0);
+
+	miNumDisparities = iNumDisparities;
 }
 
 cv::Mat BasicBPMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
@@ -21,7 +28,7 @@ cv::Mat BasicBPMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 
 	cuda::GpuMat _pLeft(rLeft);
 	cuda::GpuMat _pRight(rRight);
-	cv::Ptr<cv::cuda::StereoBeliefPropagation> bp = cv::cuda::createStereoConstantSpaceBP();
+	cv::Ptr<cv::cuda::StereoBeliefPropagation> bp = cv::cuda::createStereoConstantSpaceBP(miNumDisparities);
 	bp->compute(_pLeft, _pRight, _pResult);
 
 	_pResult.download(oResult);

@@ -7,7 +7,9 @@
 using namespace std;
 using namespace cv;
 
-CustomDiffMatcher::CustomDiffMatcher() {
+CustomDiffMatcher::CustomDiffMatcher() :
+	miBlockSize(9),
+	miNumDisparities(64) {
 
 }
 
@@ -15,10 +17,23 @@ CustomDiffMatcher::~CustomDiffMatcher() {
 
 }
 
+void CustomDiffMatcher::setBlockSize(int iBlockSize) {
+	assert(iBlockSize > 0);
+	assert(iBlockSize % 2 = 1);
+
+	miBlockSize = iBlockSize;
+}
+
+void CustomDiffMatcher::setNumDisparities(int iNumDisparities) {
+	assert(iNumDisparities > 0);
+
+	miNumDisparities = iNumDisparities;
+}
+
 cv::Mat CustomDiffMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Mat oResult;
 
-	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(0.0, 7);
+	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(0, 7);
 	sbm->compute(rLeft, rRight, oResult);
 
 

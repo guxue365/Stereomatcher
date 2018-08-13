@@ -10,7 +10,9 @@ double norm3(const cv::Point3d& p1, const cv::Point3d& p2) {
 	return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y)+(p1.z-p2.z)*(p1.z-p2.z));
 }
 
-DBSCAN::DBSCAN() {
+DBSCAN::DBSCAN() : 
+	mdEps(5.0),
+	miMinPoints(20) {
 
 }
 
@@ -18,16 +20,23 @@ DBSCAN::~DBSCAN() {
 
 }
 
+void DBSCAN::setEps(double dEps) {
+	mdEps = dEps;
+}
+
+void DBSCAN::setMinPts(unsigned int iMinPoints) {
+	miMinPoints = iMinPoints;
+}
+
 cv::Mat DBSCAN::Segment(const cv::Mat& rImage) {
 	cv::Mat oResult;
 
 	auto aPoints = ExtractPoints(rImage);
-	cout<<"DBSCAN: Extracted "<<aPoints.size()<<" Points"<<endl;
+
 	if(aPoints.size()>20000) 	return rImage;
-	auto aLabels = rundbscan(aPoints, norm3, 5.0, 20);
+
+	auto aLabels = rundbscan(aPoints, norm3, mdEps, miMinPoints);
 	oResult = CreateImageFromLabels(rImage, aPoints, aLabels);
-	cout<<"Source Size: "<<rImage.rows<<"x"<<oResult.cols<<endl;
-	cout<<"Result Size: "<<oResult.rows<<"x"<<oResult.cols<<endl;
 
 	return oResult;
 }

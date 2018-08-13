@@ -28,7 +28,7 @@ void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
 
 	// init result as unlabeled
 	rResult = cv::Mat::zeros(m, n, CV_8U);
-	uchar iLabel = 1;
+	uchar iLabel = 0;
 
 	// iterate all matrix entries
 	for (int i = 1; i < m-1; ++i) {
@@ -37,13 +37,14 @@ void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
 
 			if (rInput.at<uchar>(i, j) > 0 && rResult.at<uchar>(i, j)==0) {
 				++iLabel;
+				cout << "New Label: " << (int)iLabel << endl;
 
 				// expand region recursively by iterating through all neighbors
 				vector<cv::Point2i> aNeighbors = { cv::Point2i(j, i) };
 				for(size_t k=0; k<aNeighbors.size(); ++k) {
 					// ignore neighbor is already labeled
 					if (rResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) > 0)	continue;
-
+					
 					// assign current label
 					rResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) = iLabel;
 

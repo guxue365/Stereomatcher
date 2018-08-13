@@ -22,26 +22,29 @@ double EvaluateRMS::Evaluate(const cv::Mat& rGroundTruth, const cv::Mat& rDispar
 	assert(rDisparityImage.data!=NULL);
 	assert(rGroundTruth.rows==rDisparityImage.rows);
 	assert(rGroundTruth.cols==rDisparityImage.cols);
-	assert(rGroundTruth.depth()==CV_16U);
-	assert(rDisparityImage.depth()==CV_16U);
-	assert(rGroundTruth.channels()==1);
-	assert(rDisparityImage.channels()==1);
+	assert(rGroundTruth.type()==CV_8U);
+	assert(rDisparityImage.type()==CV_8U);
 
 	double dError = 0.0;
 
-	moErrorMap = cv::Mat(rGroundTruth.rows, rGroundTruth.cols, CV_32F);
+	moErrorMap = Mat::zeros(rGroundTruth.size(), CV_32F);
 
+	int iValidCount = 0;
 	for(int i=0; i<rGroundTruth.rows; ++i) {
 		for(int j=0; j<rGroundTruth.cols; ++j) {
-			double gt = (double)(rGroundTruth.at<ushort>(i, j));
-			double di = (double)(rDisparityImage.at<ushort>(i, j));
+			double gt = (double)(rGroundTruth.at<uchar>(i, j));
+			double di = (double)(rDisparityImage.at<uchar>(i, j));
+
+			if (gt <= 0.0)	continue;  // only validate valid gt-data
+
+			iValidCount++;
 			double err = (gt-di)*(gt-di);
 			moErrorMap.at<float>(i, j) = (float)(sqrt(err));
 			dError+=err;
 		}
 	}
 
-	dError/=((double)(rGroundTruth.rows)*(double)(rGroundTruth.cols));
+	dError/=((double)(iValidCount)*(double)(iValidCount));
 
 	return sqrt(dError);
 }

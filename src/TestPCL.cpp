@@ -8,23 +8,27 @@
 
 #include <pcl/visualization/cloud_viewer.h>
 
-std::vector<cv::Vec3d> Extract3DPoints(const cv::Mat& oDisparity);
+std::vector<pcl::PointXYZRGB> Extract3DPoints(const cv::Mat& rDisparity, const cv::Mat& rColorImage);
+
 
 using namespace std;
 using namespace cv;
 
 int main() {
 
-	Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_0.png", IMREAD_GRAYSCALE);
+	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_0.png", IMREAD_GRAYSCALE);
+	Mat oImage = imread("disparity.png");
+	Mat oColor = imread("color.png");
 
 	imshow("Image", oImage);
+	imshow("Color", oColor);
 
-	auto aPoints = Extract3DPoints(oImage);
+	auto aPoints = Extract3DPoints(oImage, oColor);
 
 	cout<<"Extracted "<<aPoints.size()<<" Points"<<endl;
 
 	//Punktwolke erstellen
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	/*cloud->push_back(pcl::PointXYZ(0.0, 0.0, 0.0));
 	cloud->push_back(pcl::PointXYZ(1.0, 2.0, 0.0));
 	cloud->push_back(pcl::PointXYZ(2.0, 2.0, 0.0));
@@ -32,7 +36,7 @@ int main() {
 	cloud->push_back(pcl::PointXYZ(0.0, 2.0, 0.0));*/
 
 	for(auto& rPoint: aPoints) {
-		cloud->push_back(pcl::PointXYZ(rPoint.val[0]/10000.0, rPoint.val[1]/10000.0, rPoint.val[2]/10000.0));
+		cloud->push_back(rPoint);
 		//cout<<"Inserting Point: "<<rPoint.val[0]<<" | "<<rPoint.val[1]<<" | "<<rPoint.val[2]<<endl;
 	}
 
@@ -50,8 +54,8 @@ int main() {
 	return 0;
 }
 
-std::vector<cv::Vec3d> Extract3DPoints(const cv::Mat& oDisparity) {
-	std::vector<cv::Vec3d> aResult((size_t)(oDisparity.rows*oDisparity.cols));
+std::vector<pcl::PointXYZRGB> Extract3DPoints(const cv::Mat& rDisparity, const cv::Mat& rColorImage) {
+	std::vector<pcl::PointXYZRGB> aResult((size_t)(rDisparity.rows*rDisparity.cols));
 	size_t iNumPoints = 0;
 
 
@@ -61,9 +65,9 @@ std::vector<cv::Vec3d> Extract3DPoints(const cv::Mat& oDisparity) {
 	double Tx = 483.2905;
 	double f = 2.500744557379985e+03;
 
-	for (size_t i = 0; i < (size_t)oDisparity.rows; ++i) {
-		for (size_t j = 0; j < (size_t)oDisparity.cols; ++j) {
-			uchar cDisparity = oDisparity.at<uchar>((int)i, (int)j);
+	for (size_t i = 0; i < (size_t)rDisparity.rows; ++i) {
+		for (size_t j = 0; j < (size_t)rDisparity.cols; ++j) {
+			uchar cDisparity = rDisparity.at<uchar>((int)i, (int)j);
 			if (cDisparity > 0) {
 				double x = (double)(j)-cx;
 				double y = 1.0-(double)(i)-cy;
@@ -72,7 +76,18 @@ std::vector<cv::Vec3d> Extract3DPoints(const cv::Mat& oDisparity) {
 				x/=w;
 				y/=w;
 				z/=w;
-				aResult[iNumPoints] = cv::Vec3d(y, x, z);
+
+				cv::Vec3b oColor = rColorImage.at<cv::Vec3b>(i, j);
+
+				pcl::PointXYZRGB oPoint;
+				oPoint.x = (float)x;
+				oPoint.y = (float)y;
+				oPoint.z = (float)z;
+				oPoint.r = oColor[2];
+				oPoint.g = oColor[1];
+				oPoint.b = oColor[0];
+
+				aResult[iNumPoints] = oPoint;
 				iNumPoints++;
 			}
 		}
