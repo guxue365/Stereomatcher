@@ -19,7 +19,7 @@ CustomBlockMatcher::~CustomBlockMatcher() {
 
 void CustomBlockMatcher::setBlockSize(int iBlockSize) {
 	assert(iBlockSize > 0);
-	assert(iBlockSize % 2 = 1);
+	assert(iBlockSize % 2 == 1);
 
 	miBlockSize = iBlockSize;
 }
@@ -56,6 +56,8 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityGray(const cv::Mat& rLeft, con
 		for (int j = miNumDisparities; j < n - miNumDisparities; ++j) {
 			// match pixel rLeft(i, j) to any Pixel(i, *) on the right image
 			// -> iterate through row i on the right image and compute cost
+
+			if(rLeft.at<uchar>(i, j)==0)	continue;
 
 			vector<double> aMatchingCost(n);
 			double dMin = std::numeric_limits<double>::max();

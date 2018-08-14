@@ -17,9 +17,13 @@ double ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::
 bool isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues);
 
 int main() {
-	VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
+	/*VideoCapture oFilestreamLeft("E:/dataset_kitti/data_scene_flow/training/image_2/%06d_10.png");
 	VideoCapture oFilestreamRight("E:/dataset_kitti/data_scene_flow/training/image_3/%06d_10.png");
-	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");
+	VideoCapture oFilestreamGT("E:/dataset_kitti/data_scene_flow/training/disp_noc_1/%06d_10.png");*/
+
+	VideoCapture oFilestreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitti/data_scene_flow/training/image_2/%06d_10.png");
+	VideoCapture oFilestreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitti/data_scene_flow/training/image_3/%06d_10.png");
+	VideoCapture oFilestreamGT("/home/jung/2018EntwicklungStereoalgorithmus/data/kitti/data_scene_flow/training/disp_custom/%06d_10.png");
 
 	if (!oFilestreamLeft.isOpened() || !oFilestreamRight.isOpened() || !oFilestreamGT.isOpened()) {
 		cout << "Error opening files" << endl;
@@ -48,7 +52,9 @@ int main() {
 		oFilestreamLeft >> oFrameLeftColor;
 		oFilestreamRight >> oFrameRightColor;
 		oFilestreamGT >> oDisparityGT;
-		oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0 / 255.0);
+		//oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0 / 255.0);
+		cvtColor(oDisparityGT, oDisparityGT, CV_BGR2GRAY);
+		oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0);
 
 		if (oFrameLeftColor.empty() || oFrameRightColor.empty() || oDisparityGT.empty())	break;
 
@@ -68,43 +74,6 @@ int main() {
 
 		oDisparityReducedBP *= 8;
 		oDisparityReducedBM *= 8;
-
-		int iRow = 250;
-		int iColLeft = 270;
-		int iMaxDisparity = 128;
-
-		int iScaleSize = 6;
-		int iPrecomputedDisp = (int)oDisparityReducedBP.at<uchar>(iRow, iColLeft);
-
-		cout << "Computing disparity for " << iRow << " | " << iColLeft << endl;
-		cout << "OpenCV Block Disparity is: " << (int)oDisparityOpenCVBM.at<uchar>(iRow, iColLeft) << endl;
-		cout << "Estimated Disparity is: " << (int)oDisparityReducedBP.at<uchar>(iRow, iColLeft) << endl;
-
-		double dMin = std::numeric_limits<double>::max();
-		int iCustomDisp = 0;
-		vector<double> aDisp(iScaleSize*2);
-		for (int k = iColLeft - iPrecomputedDisp-iScaleSize + 1; k < iColLeft -iPrecomputedDisp+iScaleSize+ 1; ++k) {
-			//compute cost for pixel (i, j) and (i, k)
-			double dCost = ComputeMatchingCostGray(iRow, iColLeft, k, oFrameLeftGray, oFrameRightGray);
-			aDisp[iColLeft - k-iPrecomputedDisp+iScaleSize] = dCost;
-			cout << k <<" | "<<(int)(iColLeft - k-iPrecomputedDisp+iScaleSize) << ": "<<dCost<< endl;
-			if (dCost < dMin) {
-				dMin = dCost;
-				iCustomDisp = iColLeft - k;
-			}
-		}
-
-		auto itMin = std::min_element(aDisp.begin(), aDisp.end());
-		int iMin = (int)std::distance(aDisp.begin(), itMin);
-		double dMinVal = *itMin;
-
-		if (isValidMinimumStrict(dMinVal, iMin, aDisp)) {
-			cout << "Found Valid Minimum at: " << iCustomDisp << endl;
-		}
-		else {
-			cout << "No valid minimum found" << endl;
-		}
-
 
 		oDisparityPyramid = ComputeDisparityPyramid(oDisparityReducedBP, 8, oFrameLeftGray, oFrameRightGray);
 		//oDisparityPyramid = Mat::zeros(oDisparityReducedBP.size(), CV_8U);
@@ -126,7 +95,6 @@ int main() {
 		imshow("Left", oLeftReduced);
 		imshow("Right", oRightReduced);
 		imshow("Disp Blockmatching", oDisparityOpenCVBM);
-		imshow("Disp Blockmatching Reduced", oDisparityReducedBM);
 		imshow("Disp Belief Propagation Reduced", oDisparityReducedBP);
 		imshow("Disp Pyramid", oDisparityPyramid);
 		imshow("Disparity GT", oDisparityGT);

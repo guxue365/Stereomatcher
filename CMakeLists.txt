@@ -53,17 +53,35 @@ add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/preprocess/BasePreprocessor.cpp
     src/bgsubtraction/CustomPixelBasedAdaptiveSegmenter.cpp
     src/bgsubtraction/CustomFrameDifference.cpp
-    src/stereomatch/BasicBlockmatcher.cpp
+    src/stereomatch/BasicBlockMatcher.cpp
     src/stereomatch/BasicSGMatcher.cpp
+    src/stereomatch/BasicBPMatcher.cpp
+    src/stereomatch/CustomBlockMatcher.cpp
+    src/stereomatch/CustomCannyMatcher.cpp
+    src/stereomatch/CustomDiffMatcher.cpp
+    src/stereomatch/CustomPyramidMatcher.cpp
     src/stereomatch/BasicBPMatcher.cpp
     src/segmentation/RegionGrowing.cpp
     src/segmentation/DBSCAN.cpp
     src/postprocess/BasePostprocessor.cpp
+    src/postprocess/PostInterpolation.cpp
     src/ImageControl.cpp )
 
 add_executable( run_bgs src/BackgroundSubtraction.cpp)
 add_executable( run_dbscan src/dbscan.cpp )
 add_executable( run_evalbackground src/EvalBackground.cpp )
+add_executable( run_evaldisparity src/EvalDisparity.cpp
+    src/stereomatch/BasicBlockMatcher.cpp
+    src/stereomatch/BasicSGMatcher.cpp
+    src/stereomatch/BasicBPMatcher.cpp
+    src/stereomatch/CustomBlockMatcher.cpp
+    src/stereomatch/CustomCannyMatcher.cpp
+    src/stereomatch/CustomDiffMatcher.cpp
+    src/stereomatch/CustomPyramidMatcher.cpp
+    src/postprocess/BasePostprocessor.cpp
+    src/postprocess/PostInterpolation.cpp
+    src/evaluation/EvaluateBPP.cpp
+    src/evaluation/EvaluateRMS.cpp )
 add_executable( run_customblockmatcher src/CustomBlockmatcher.cpp )
 add_executable( run_testbaseimageloader src/TestBaseImageloader.cpp )
 add_executable( run_stereorectify src/Stereorectify.cpp )
@@ -71,11 +89,17 @@ add_executable( run_stereocalibrate src/Stereocalibrate.cpp )
 add_executable( run_perspectivetransform src/PerspectiveTransform.cpp )
 add_executable( run_testviz src/Testviz.cpp )
 add_executable( run_testpcl src/TestPCL.cpp )
+add_executable( run_kittiimprove src/KittiImprovement.cpp )
+add_executable( run_pyramidmatcher src/PyramidBlockMatcher.cpp )
+add_executable( run_twostepsegmentation src/TwoStepSegmentation.cpp
+    src/segmentation/RegionGrowing.cpp
+    src/segmentation/DBSCAN.cpp )
 
 target_link_libraries( run_stereomatcher ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_bgs ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_dbscan ${OpenCV_LIBS} )
 target_link_libraries( run_evalbackground ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
+target_link_libraries( run_evaldisparity ${OpenCV_LIBS} )
 target_link_libraries( run_customblockmatcher ${OpenCV_LIBS} )
 target_link_libraries( run_testbaseimageloader ${OpenCV_LIBS} )
 target_link_libraries( run_stereorectify ${OpenCV_LIBS} )
@@ -83,3 +107,6 @@ target_link_libraries( run_stereocalibrate ${OpenCV_LIBS} )
 target_link_libraries( run_perspectivetransform ${OpenCV_LIBS} )
 target_link_libraries( run_testviz ${OpenCV_LIBS} )
 target_link_libraries( run_testpcl ${OpenCV_LIBS} ${PCL_COMMON_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES} )
+target_link_libraries( run_kittiimprove ${OpenCV_LIBS} )
+target_link_libraries( run_pyramidmatcher ${OpenCV_LIBS} )
+target_link_libraries( run_twostepsegmentation ${OpenCV_LIBS} )

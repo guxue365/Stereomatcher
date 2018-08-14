@@ -28,7 +28,7 @@ cv::Mat BasicBPMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 
 	cuda::GpuMat _pLeft(rLeft);
 	cuda::GpuMat _pRight(rRight);
-	cv::Ptr<cv::cuda::StereoBeliefPropagation> bp = cv::cuda::createStereoConstantSpaceBP(miNumDisparities);
+	cv::Ptr<cv::cuda::StereoBeliefPropagation> bp = cv::cuda::createStereoConstantSpaceBP();
 	bp->compute(_pLeft, _pRight, _pResult);
 
 	_pResult.download(oResult);

@@ -16,18 +16,16 @@ RegionGrowing::~RegionGrowing() {
 }
 
 cv::Mat RegionGrowing::Segment(const cv::Mat& rImage) {
-	cv::Mat oResult;
-	GrowRegion(rImage, oResult);
-	return oResult;
+	return GrowRegion(rImage);
 }
 
-void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
+cv::Mat RegionGrowing::GrowRegion(const cv::Mat& rInput) {
 	assert(rInput.type() == CV_8U);
 	int m = rInput.rows;
 	int n = rInput.cols;
 
 	// init result as unlabeled
-	rResult = cv::Mat::zeros(m, n, CV_8U);
+	Mat oResult = cv::Mat::zeros(m, n, CV_8U);
 	uchar iLabel = 0;
 
 	// iterate all matrix entries
@@ -35,7 +33,7 @@ void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
 		for (int j = 1; j < n-1; ++j) {
 			// if a active pixel is detected and not labeled yet ...
 
-			if (rInput.at<uchar>(i, j) > 0 && rResult.at<uchar>(i, j)==0) {
+			if (rInput.at<uchar>(i, j) > 0 && oResult.at<uchar>(i, j)==0) {
 				++iLabel;
 				cout << "New Label: " << (int)iLabel << endl;
 
@@ -43,10 +41,10 @@ void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
 				vector<cv::Point2i> aNeighbors = { cv::Point2i(j, i) };
 				for(size_t k=0; k<aNeighbors.size(); ++k) {
 					// ignore neighbor is already labeled
-					if (rResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) > 0)	continue;
+					if (oResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) > 0)	continue;
 					
 					// assign current label
-					rResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) = iLabel;
+					oResult.at<uchar>(aNeighbors[k].y, aNeighbors[k].x) = iLabel;
 
 					// find new neighbors
 					vector<cv::Point2i> aCurrentNeighbors = getNeighbors(rInput, aNeighbors[k]);
@@ -57,6 +55,7 @@ void RegionGrowing::GrowRegion(const cv::Mat& rInput, cv::Mat& rResult) {
 			}
 		}
 	}
+	return oResult;
 }
 
 std::vector<cv::Point2i> RegionGrowing::getNeighbors(const cv::Mat& rRegion, cv::Point2i iSeed) {

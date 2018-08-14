@@ -10,28 +10,6 @@
 using namespace std;
 using namespace cv;
 
-string type2str(int type) {
-	string r;
-
-	uchar depth = type & CV_MAT_DEPTH_MASK;
-	uchar chans = 1 + (type >> CV_CN_SHIFT);
-
-	switch (depth) {
-	case CV_8U:  r = "8U"; break;
-	case CV_8S:  r = "8S"; break;
-	case CV_16U: r = "16U"; break;
-	case CV_16S: r = "16S"; break;
-	case CV_32S: r = "32S"; break;
-	case CV_32F: r = "32F"; break;
-	case CV_64F: r = "64F"; break;
-	default:     r = "User"; break;
-	}
-
-	r += "C";
-	r += (chans + '0');
-
-	return r;
-}
 
 std::vector<cv::Rect2i> ExtractRegions(const cv::Mat& rCoarseRegions, int iNumRegions);
 std::vector<cv::Rect2i> MergeRegions(const std::vector<cv::Rect2i>& aRegions);
@@ -43,7 +21,7 @@ int main() {
 	oDBScan.setEps(1.0);
 	oDBScan.setMinPts(5);
 
-	Mat oImage = imread("regions.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/data/region_example2.png", CV_LOAD_IMAGE_GRAYSCALE);
 
 	cout << "Image Size: " << oImage.size() << endl;
 
@@ -74,6 +52,7 @@ int main() {
 	vector<Mat> aMatRegions(aRegions.size());
 	vector<Mat> aDBScan(aRegions.size());
 	for (size_t i = 0; i < aRegions.size(); ++i) {
+		//aRegions.at(i).x = (int)((double)(aRegions.at(i).x-1) / (dScaling));
 		aRegions[i].x = (int)((double)(aRegions[i].x-1) / (dScaling));
 		aRegions[i].y = (int)((double)(aRegions[i].y-1) / (dScaling));
 		aRegions[i].width = (int)((double)(aRegions[i].width+2) / (dScaling));
@@ -84,8 +63,8 @@ int main() {
 		if (aRegions[i].height + aRegions[i].y > oImage.rows)	aRegions[i].height = oImage.rows - aRegions[i].y - 1;
 
 		aMatRegions[i] = oImage(aRegions[i]);
-		//aDBScan[i] = oDBScan.Segment(aMatRegions[i]);
-		aDBScan[i] = oSegment.Segment(aMatRegions[i]);
+		aDBScan[i] = oDBScan.Segment(aMatRegions[i]);
+		//aDBScan[i] = oSegment.Segment(aMatRegions[i]);
 		aDBScan[i] *= (double)(3 * (i+1));
 		//oImageTwoStep(aRegions[i]) = aDBScan[i];
 		aDBScan[i].copyTo(oImageTwoStep(aRegions[i]));

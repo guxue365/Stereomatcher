@@ -19,7 +19,7 @@ BasicBlockMatcher::~BasicBlockMatcher() {
 
 void BasicBlockMatcher::setBlockSize(int iBlockSize) {
 	assert(iBlockSize > 0);
-	assert(iBlockSize % 2 = 1);
+	assert(iBlockSize % 2 == 1);
 
 	miBlockSize = iBlockSize;
 }

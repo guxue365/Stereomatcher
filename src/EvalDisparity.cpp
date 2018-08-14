@@ -1,5 +1,6 @@
 #include <iostream>
-#include <Windows.h>
+#include <vector>
+//#include <Windows.h>
 #include <sys/stat.h>
 
 #include <opencv2/core.hpp>
@@ -35,7 +36,7 @@ int main() {
 
 	vector<RunEvalDisparity> aRuns;
 
-	ifstream oConfigFile("config.json", ios::in);
+	ifstream oConfigFile("config_eval_disp.json", ios::in);
 	if (!oConfigFile.is_open()) {
 		cout << "Error: Cannot open config file" << endl;
 		return -1;
@@ -194,7 +195,8 @@ int main() {
 			Mat oEvalDispBPP;
 			Mat oEvalDispRMS;
 
-			CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			//CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;
@@ -203,7 +205,9 @@ int main() {
 				oFilestreamLeft >> oFrameLeftColor;
 				oFilestreamRight >> oFrameRightColor;
 				oFilestreamGT >> oDisparityGT;
-				oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0 / 256.0);
+				//oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0 / 256.0);
+				cvtColor(oDisparityGT, oDisparityGT, CV_BGR2GRAY);
+				oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0);
 
 				if (oFrameLeftColor.empty() || oFrameRightColor.empty() || oDisparityGT.empty())	break;
 
@@ -241,7 +245,7 @@ int main() {
 				applyColorMap(oDisparityGT, oDisparityGT, COLORMAP_JET);
 				applyColorMap(oEvalDispRMS, oEvalDispRMS, COLORMAP_JET);
 
-				hconcat(oFrameLeftColor, oDisparityGT, oRow1);
+				hconcat(oDisparityGT, oFrameLeftColor, oRow1);
 				hconcat(oCustomDisparity, oEvalDispRMS, oRow2);
 				vconcat(oRow1, oRow2, oOverview);
 
@@ -267,11 +271,11 @@ int main() {
 	}
 	catch (std::exception& e) {
 		cout << "Exception occurred: " << e.what() << endl;
-		system("pause");
+		//system("pause");
 		return -1;
 	}
 
-	system("pause");
+	//system("pause");
 
 	return 0;
 }

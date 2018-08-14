@@ -9,6 +9,6 @@ public:
 
 	cv::Mat Segment(const cv::Mat& rImage);
 private:
-	void GrowRegion(const cv::Mat& rInput, cv::Mat& rResult);
+	cv::Mat GrowRegion(const cv::Mat& rInput);
 	std::vector<cv::Point2i> getNeighbors(const cv::Mat& rRegion, cv::Point2i iSeed);
 };
