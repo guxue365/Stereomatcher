@@ -14,7 +14,7 @@ BasePreprocessor::~BasePreprocessor() {
 
 }
 
-cv::Mat BasePreprocessor::Preprocess(const cv::Mat& rImage) {
+cv::Mat BasePreprocessor::Preprocess(const cv::Mat& rImage, int iSide) {
 	assert(rImage.type()==CV_8UC3);
 
 	Mat oResult(rImage);

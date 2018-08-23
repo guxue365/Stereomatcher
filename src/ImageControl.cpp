@@ -57,19 +57,21 @@ void ImageControl::Run() {
 
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
-		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage);
-		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage);
+		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage, -1);
+		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage, 1);
 
 
 		cv::Mat oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
 		cv::Mat oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
 
+		if(i<5) 	continue;
+
 		cv::Mat oDisparity = mrStereomatcher.Match(oForegroundLeft, oForegroundRight);
 
 		cv::Mat oPostprocess = mrPostprocessor.Postprocess(oDisparity);
 
-		//cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
-		cv::Mat oSegmentation = oPostprocess;
+		cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
+		//cv::Mat oSegmentation = oPostprocess;
 
 		normalize(oSegmentation, oSegmentation, 255.0, 0.0, CV_MINMAX);
 

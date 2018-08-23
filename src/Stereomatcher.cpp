@@ -26,6 +26,7 @@
 #include "imageloader/CustomImageloader.h"
 
 #include "preprocess/BasePreprocessor.h"
+#include "preprocess/PreprocessMask.h"
 
 #include "bgsubtraction/CustomPixelBasedAdaptiveSegmenter.h"
 #include "bgsubtraction/CustomFrameDifference.h"
@@ -56,6 +57,7 @@ int main() {
 	CustomImageloader oCustomImageloader;
 
 	BasePreprocessor oBasePreprocessor;
+	PreprocessMask oPreprocessMask;
 
 	CustomPixelBasedAdaptiveSegmenter oPBAS;
 	CustomFrameDifference oFD;
@@ -148,6 +150,10 @@ int main() {
 			switch(rRun.mePreprocessor) {
 				case E_PREPROCESSOR::PREPROC_BASE: {
 					pPreprocessor = &oBasePreprocessor;
+					break;
+				}
+				case E_PREPROCESSOR::PREPROC_MASK: {
+					pPreprocessor = &oPreprocessMask;
 					break;
 				}
 				default: {

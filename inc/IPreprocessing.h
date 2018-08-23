@@ -6,5 +6,5 @@ class IPreprocessing {
 public:
 	virtual ~IPreprocessing() {};
 
-	virtual cv::Mat Preprocess(const cv::Mat&) = 0;
+	virtual cv::Mat Preprocess(const cv::Mat&, int) = 0;
 };

@@ -37,7 +37,7 @@ int main() {
 	//cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c0.pgm");
 	//cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/2018-05-16_07-35-15_ZA1/RectifiedImages/img_%05d_c1.pgm");
 	cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedLeft/img_%1d.png");
-	cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedRight/img_%d.png");
+	cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedRight/img_%1d.png");
 	//cv::VideoCapture oImageStreamLeft("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_2/%06d_10.png");
 	//cv::VideoCapture oImageStreamRight("/home/jung/2018EntwicklungStereoalgorithmus/data/kitty/data_scene_flow/training/image_3/%06d_10.png");
 
@@ -52,34 +52,27 @@ int main() {
 
 	Mat oFrameLeft;
 	Mat oFrameRight;
-	Mat oDisparity;
+
+	Mat oMaskLeft = imread("/home/jung/2018EntwicklungStereoalgorithmus/data/mask_left.png", IMREAD_GRAYSCALE);
+	Mat oMaskRight = imread("/home/jung/2018EntwicklungStereoalgorithmus/data/mask_right.png", IMREAD_GRAYSCALE);
+
+
 	double min, max;
 	for(size_t i=0;; ++i) {
 		oImageStreamLeft>>oFrameLeft;
 		oImageStreamRight>>oFrameRight;
 
-		demosaicing(oFrameLeft, oFrameLeft, COLOR_BayerGR2RGB);
+		Mat oFrameWithMask;
 
-		cout<<type2str(oFrameLeft.type())<<endl;
-		minMaxLoc(oFrameLeft, &min, &max);
-		cout<<min<<" | "<<max<<endl;
-
-		oFrameLeft.convertTo(oFrameLeft, CV_8UC3, 256.0/4096.0);
+		cvtColor(oFrameLeft, oFrameLeft, COLOR_RGB2GRAY, 1);
+		cvtColor(oFrameRight, oFrameRight, COLOR_RGB2GRAY, 1);
 
 		imshow("left", oFrameLeft);
-		//cvtColor(oFrameLeft, oFrameLeft, CV_BGR2GRAY);
-		//cvtColor(oFrameRight, oFrameRight, CV_BGR2GRAY);
+		imshow("right", oFrameRight);
 
-		/*sbm->compute(oFrameLeft, oFrameRight, oDisparity);
+		oFrameLeft.copyTo(oFrameWithMask, oMaskLeft);
 
-		oDisparity.convertTo(oDisparity, CV_8U, 1.0/16.0);
-		normalize(oDisparity, oDisparity, 0.0, 255.0, CV_MINMAX);
-
-		//applyColorMap(oDisparity, oDisparity, COLORMAP_JET);
-
-		imshow("frame left", oFrameLeft);
-		imshow("frame right", oFrameRight);
-		imshow("disparity", oDisparity);*/
+		imshow("with mask", oFrameWithMask);
 
 		char c = (char)waitKey();
 		if(c==27) 	break;

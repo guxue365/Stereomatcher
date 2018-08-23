@@ -23,9 +23,10 @@ cv::Mat CustomPixelBasedAdaptiveSegmenter::SubtractLeft(const cv::Mat& rImage) {
 	cv::Mat oMask, oBGModel, oResult;
 
 	mpBGSLeft->process(rImage, oMask, oBGModel);
+	rImage.copyTo(oResult, oMask);
 
-	auto aROIs = FindRectangles(oMask, 4);
-	FillMatrixWithRect(rImage, oResult, aROIs);
+	//auto aROIs = FindRectangles(oMask, 4);
+	//FillMatrixWithRect(rImage, oResult, aROIs);
 
 	return oResult;
 }
@@ -34,9 +35,10 @@ cv::Mat CustomPixelBasedAdaptiveSegmenter::SubtractRight(const cv::Mat& rImage) 
 	cv::Mat oMask, oBGModel, oResult;
 
 	mpBGSRight->process(rImage, oMask, oBGModel);
+	rImage.copyTo(oResult, oMask);
 
-	auto aROIs = FindRectangles(oMask, 4);
-	FillMatrixWithRect(rImage, oResult, aROIs);
+	//auto aROIs = FindRectangles(oMask, 4);
+	//FillMatrixWithRect(rImage, oResult, aROIs);
 
 	return oResult;
 }

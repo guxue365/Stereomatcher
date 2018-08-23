@@ -10,7 +10,8 @@ enum E_IMAGELOADER {
 };
 
 enum E_PREPROCESSOR {
-	PREPROC_BASE
+	PREPROC_BASE,
+	PREPROC_MASK
 };
 
 enum E_BGSUBTRACTOR {
@@ -72,6 +73,7 @@ E_IMAGELOADER convertImageloader(const std::string& sImageloader) {
 
 E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor) {
 	if (sPreprocessor == "base") 	return E_PREPROCESSOR::PREPROC_BASE;
+	if( sPreprocessor == "mask") 	return E_PREPROCESSOR::PREPROC_MASK;
 	throw std::invalid_argument("invalid preprocessor conversion");
 }
 
@@ -123,6 +125,10 @@ std::ostream& operator << (std::ostream& os, E_PREPROCESSOR ePreprocess) {
 	switch (ePreprocess) {
 	case E_PREPROCESSOR::PREPROC_BASE: {
 		os << "base";
+		break;
+	}
+	case E_PREPROCESSOR::PREPROC_MASK: {
+		os<<"mask";
 		break;
 	}
 	default: throw std::invalid_argument("Unknown ePreprocess");

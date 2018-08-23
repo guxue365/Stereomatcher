@@ -2,10 +2,10 @@
 
 #include "IPreprocessing.h"
 
-class BasePreprocessor : public IPreprocessing {
+class PreprocessMask : public IPreprocessing {
 public:
-	BasePreprocessor();
-	virtual ~BasePreprocessor();
+	PreprocessMask();
+	virtual ~PreprocessMask();
 
 	cv::Mat Preprocess(const cv::Mat& rImage, int iSide);
 };
