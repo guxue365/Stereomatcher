@@ -1,0 +1,61 @@
+%Datei für eigene Kommandos, z.B.
+
+
+%Typographie: (benötigen Package xspace)
+%\newcommand{\dasheisst}{\mbox{d.\,h.}\xspace}
+%\newcommand{\unteranderem}{\mbox{u.\,a.}\xspace}
+%\newcommand{\zumbeispiel}{\mbox{z.\,B.}\xspace}
+
+%Befehl für deutsche Anführungszeichen: (benötigt babel mit (n)german)
+%\shorthandon{"} %bei Einbindung der Command-Datei vor \begin{document} nötig
+%\newcommand{\gq}[1]{"`#1"'} %doppelte Anführungszeichen, Verwendung \gq{in Anführungszeichen}
+%\newcommand{\sgq}[1]{\glq #1\grq{}} %einfache Anführungszeichen, Verwendung \sgq{in Anführungszeichen}
+%\shorthandoff{"} %bei Einbindung der Command-Datei vor \begin{document} nötig
+
+
+%Mathematisches
+%%%%%%%%%%%%%%%
+%
+%Befehl \vm zur Notation von Vektoren und Matrizen in Fettschrift
+%\newcommand{\vm}[1]{\protect\ensuremath\boldsymbol{#1}} %benötigt Paket amsbsy
+%Befehl \vm zur Notation von Vektoren und Matrizen mit Unterstrich:
+%\newcommand{\vm}[1]{\protect\ensuremath\underline{#1}}
+
+%Befehl \trans für korrekt gesetztes "T" im Mathemodus für "Transponiert
+%\newcommand{\trans}{^\text{\rm \textup{T}}} %Verwendung: \vm A\trans
+%Ähnliche Befehle:
+%\newcommand{\inv}{^{-1}} %Inverse
+%\newcommand{\pinv}{^{\dag}} %Pseudoinverse
+%\newcommand{\opt}{\ensuremath ^\star} %Optimale Lösung
+
+%angepasste Versionen für optisch besseren Satz bei einigen Buchstaben (z.B. Y,A):
+%\newcommand{\transnah}{^{\!\text{\rm \textup{T}}}}
+%\newcommand{\invnah}{^{\!-1}}
+%\newcommand{\pinvnah}{^{\!\dag}}
+%\newcommand{\optnah}{\ensuremath ^{\!\star}}
+
+
+%aufrechtes "e" für die e-Funktion, als Argument die Potenz:
+%\newcommand{\efkt}[1]{\ensuremath {{\rm e}}^{#1}}
+
+%Formeln im Text ohne Zeilenumbruch:
+%\newcommand{\teq}[1]{\mbox{$#1$}}
+
+%Befehl für PT_n-Glied:
+%\newcommand{\PT}[1]{\teq{\text{PT}_{#1}}}
+
+%Einheitsmatrix:
+%\newcommand{\eye}[1]{\vm{I}}
+%mit Dimension:
+%%\newcommand{\eye}[1]{\vm{I}_{\!#1}}
+
+%weitere mathematische Funktionen:
+%\DeclareMathOperator{\trace}{spur}
+%\DeclareMathOperator{\sign}{sign}
+%\DeclareMathOperator{\diag}{diag}
+
+
+%Normen:
+%\newcommand{\frobnorm}[1]{\ensuremath \left\| #1 \right\|_\text{F}}
+%\newcommand{\zweinorm}[1]{\ensuremath \left\| #1 \right\|_2}
+%\newcommand{\vmnorm}[1]{\ensuremath \left\| #1 \right\|}

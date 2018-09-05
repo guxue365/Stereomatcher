@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
-//#include <Windows.h>
+#include <Windows.h>
 #include <sys/stat.h>
+#include <chrono>
+#include <ctime>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -195,28 +197,35 @@ int main() {
 			Mat oEvalDispBPP;
 			Mat oEvalDispRMS;
 
-			//CreateDirectory(rRun.msResultfolder.c_str(), NULL);
-			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+			CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			//mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;
+			LONG64 iDuration = 0.0;
 
 			for (int iFrame = 0; ; ++iFrame) {
 				oFilestreamLeft >> oFrameLeftColor;
 				oFilestreamRight >> oFrameRightColor;
 				oFilestreamGT >> oDisparityGT;
-				//oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0 / 256.0);
-				cvtColor(oDisparityGT, oDisparityGT, CV_BGR2GRAY);
-				oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0);
+				oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0 / 256.0);
+				//cvtColor(oDisparityGT, oDisparityGT, CV_BGR2GRAY);
+				//oDisparityGT.convertTo(oDisparityGT, CV_8U, 1.0);
 
 				if (oFrameLeftColor.empty() || oFrameRightColor.empty() || oDisparityGT.empty())	break;
 
 				cvtColor(oFrameLeftColor, oFrameLeftGray, COLOR_BGR2GRAY);
 				cvtColor(oFrameRightColor, oFrameRightGray, COLOR_BGR2GRAY);
 
+				auto tStart = std::chrono::high_resolution_clock::now();
+
 				oCustomDisparity = pStereomatch->Match(oFrameLeftGray, oFrameRightGray);
 
 				oCustomDisparity = pPostprocessor->Postprocess(oCustomDisparity);
+
+				auto tEnd = std::chrono::high_resolution_clock::now();
+				LONG64 iElapsedMicro = std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart).count();
+				iDuration += iElapsedMicro;
 
 				double dEvalBPP = oEvalBPP.Evaluate(oDisparityGT, oCustomDisparity);
 				oEvalDispBPP = oEvalBPP.getVisualRepresentation();
@@ -249,6 +258,9 @@ int main() {
 				hconcat(oCustomDisparity, oEvalDispRMS, oRow2);
 				vconcat(oRow1, oRow2, oOverview);
 
+				//imshow("Overview", oOverview);
+				//waitKey(1);
+
 				imwrite(sFilenameBPP, oEvalDispBPP);
 				imwrite(sFilenameRMS, oEvalDispRMS);
 				imwrite(sFilenameOV, oOverview);
@@ -263,7 +275,7 @@ int main() {
 
 			cout << "BPP: " << endl << " - Mean: " << dMeanBPP << endl << " - Var: " << dVarBPP << endl;
 			cout << "RMS: " << endl << " - Mean: " << dMeanRMS << endl << " - Var: " << dVarRMS << endl;
-
+			cout << "Duration: " << (double)(iDuration) / 1e6 <<"s"<< endl;
 		}
 
 		
@@ -271,11 +283,11 @@ int main() {
 	}
 	catch (std::exception& e) {
 		cout << "Exception occurred: " << e.what() << endl;
-		//system("pause");
+		system("pause");
 		return -1;
 	}
 
-	//system("pause");
+	system("pause");
 
 	return 0;
 }

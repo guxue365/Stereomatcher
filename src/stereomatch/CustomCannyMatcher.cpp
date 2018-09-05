@@ -32,9 +32,13 @@ void CustomCannyMatcher::setNumDisparities(int iNumDisparities) {
 
 cv::Mat CustomCannyMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Mat oResult;
+	cv::Mat oLeftCanny, oRightCanny;
 
-	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(0, 7);
-	sbm->compute(rLeft, rRight, oResult);
+	Canny(rLeft, oLeftCanny, 100.0, 200.0);
+	Canny(rRight, oRightCanny, 100.0, 200.0);
+
+	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(miNumDisparities, miBlockSize);
+	sbm->compute(oLeftCanny, oRightCanny, oResult);
 
 
 	oResult.convertTo(oResult, CV_8U, 1.0 / 16.0);
