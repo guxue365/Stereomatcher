@@ -77,6 +77,12 @@ int main() {
 				if (!oJsonOptions["disparityrange"].empty()) {
 					oRun.moStereoOptions.miDisparityRange = oJsonOptions["disparityrange"];
 				}
+				if (!oJsonOptions["cannythreshold1"].empty()) {
+					oRun.moStereoOptions.mdCannyThreshold1 = oJsonOptions["cannythreshold1"];
+				}
+				if (!oJsonOptions["cannythreshold2"].empty()) {
+					oRun.moStereoOptions.mdCannyThreshold2 = oJsonOptions["cannythreshold2"];
+				}
 			}
 
 			aRuns.push_back(oRun);
@@ -162,6 +168,16 @@ int main() {
 
 				cout << "- Disparity Range: " << rRun.moStereoOptions.miDisparityRange << endl;
 			}
+			if (rRun.moStereoOptions.mdCannyThreshold1 != 0.0) {
+				oCustomCannyMatcher.setThreshold1(rRun.moStereoOptions.mdCannyThreshold1);
+
+				cout << "- Canny Threshold1: " << rRun.moStereoOptions.mdCannyThreshold1 << endl;
+			}
+			if (rRun.moStereoOptions.mdCannyThreshold2 != 0.0) {
+				oCustomCannyMatcher.setThreshold2(rRun.moStereoOptions.mdCannyThreshold2);
+
+				cout << "- Canny Threshold2: " << rRun.moStereoOptions.mdCannyThreshold2 << endl;
+			}
 
 			cout << "Setting Postprocessor: " << rRun.mePostProcessor << endl;
 			switch (rRun.mePostProcessor) {
@@ -202,7 +218,7 @@ int main() {
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;
-			LONG64 iDuration = 0.0;
+			LONG64 iDuration = 0;
 
 			for (int iFrame = 0; ; ++iFrame) {
 				oFilestreamLeft >> oFrameLeftColor;

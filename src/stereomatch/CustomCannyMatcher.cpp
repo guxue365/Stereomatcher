@@ -9,7 +9,9 @@ using namespace cv;
 
 CustomCannyMatcher::CustomCannyMatcher() :
 	miBlockSize(9),
-	miNumDisparities(64) {
+	miNumDisparities(64),
+	mdThreshold1(100.0),
+	mdThreshold2(200.0) {
 
 }
 
@@ -30,12 +32,20 @@ void CustomCannyMatcher::setNumDisparities(int iNumDisparities) {
 	miNumDisparities = iNumDisparities;
 }
 
+void CustomCannyMatcher::setThreshold1(double dThreshold1) {
+	mdThreshold1 = dThreshold1;
+}
+
+void CustomCannyMatcher::setThreshold2(double dThreshold2) {
+	mdThreshold2 = dThreshold2;
+}
+
 cv::Mat CustomCannyMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
 	cv::Mat oResult;
 	cv::Mat oLeftCanny, oRightCanny;
 
-	Canny(rLeft, oLeftCanny, 100.0, 200.0);
-	Canny(rRight, oRightCanny, 100.0, 200.0);
+	Canny(rLeft, oLeftCanny, mdThreshold1, mdThreshold2);
+	Canny(rRight, oRightCanny, mdThreshold1, mdThreshold2);
 
 	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(miNumDisparities, miBlockSize);
 	sbm->compute(oLeftCanny, oRightCanny, oResult);
