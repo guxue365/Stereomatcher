@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <Windows.h>
+//#include <Windows.h>
 #include <sys/stat.h>
 #include <chrono>
 #include <ctime>
@@ -74,14 +74,38 @@ int main() {
 				if (!oJsonOptions["blocksize"].empty()) {
 					oRun.moStereoOptions.miBlocksize = oJsonOptions["blocksize"];
 				}
+				if (!oJsonOptions["blockwidth"].empty()) {
+					oRun.moStereoOptions.miBlockWidth = oJsonOptions["blockwidth"];
+				}
+				if (!oJsonOptions["blockheight"].empty()) {
+					oRun.moStereoOptions.miBlockHeight = oJsonOptions["blockheight"];
+				}
 				if (!oJsonOptions["disparityrange"].empty()) {
 					oRun.moStereoOptions.miDisparityRange = oJsonOptions["disparityrange"];
+				}
+				if (!oJsonOptions["validtolerance"].empty()) {
+					oRun.moStereoOptions.mdValidTolerance = oJsonOptions["validtolerance"];
+				}
+				if (!oJsonOptions["difforderx"].empty()) {
+					oRun.moStereoOptions.miDiffOrderX = oJsonOptions["difforderx"];
+				}
+				if (!oJsonOptions["diffordery"].empty()) {
+					oRun.moStereoOptions.miDiffOrderY = oJsonOptions["diffordery"];
+				}
+				if (!oJsonOptions["sobelkernelsize"].empty()) {
+					oRun.moStereoOptions.miSobelKernelSize = oJsonOptions["sobelkernelsize"];
 				}
 				if (!oJsonOptions["cannythreshold1"].empty()) {
 					oRun.moStereoOptions.mdCannyThreshold1 = oJsonOptions["cannythreshold1"];
 				}
 				if (!oJsonOptions["cannythreshold2"].empty()) {
 					oRun.moStereoOptions.mdCannyThreshold2 = oJsonOptions["cannythreshold2"];
+				}
+				if (!oJsonOptions["scalingwidth"].empty()) {
+					oRun.moStereoOptions.mdScalingWidth = oJsonOptions["scalingwidth"];
+				}
+				if (!oJsonOptions["scalingheight"].empty()) {
+					oRun.moStereoOptions.mdScalingHeight = oJsonOptions["scalingheight"];
 				}
 			}
 
@@ -150,12 +174,36 @@ int main() {
 			if (rRun.moStereoOptions.miBlocksize != 0) {
 				oBasicBlockMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
 				oBasicSGMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
-				oCustomBlockMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
-				oCustomDiffMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
-				oCustomCannyMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
-				oCustomPyramidMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
+
+				oCustomBlockMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomBlockMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomDiffMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomDiffMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
 
 				cout << "- Blocksize: " << rRun.moStereoOptions.miBlocksize << endl;
+			}
+			if(rRun.moStereoOptions.miBlockWidth!=0) {
+				oCustomBlockMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomDiffMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+
+				cout<<"- Block Width: "<<rRun.moStereoOptions.miBlockWidth;
+			}
+			if(rRun.moStereoOptions.miBlockHeight!=0) {
+				oCustomBlockMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomDiffMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+
+				cout<<"- Block Height: "<<rRun.moStereoOptions.miBlockHeight;
 			}
 			if (rRun.moStereoOptions.miDisparityRange != 0) {
 				oBasicBlockMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
@@ -168,6 +216,29 @@ int main() {
 
 				cout << "- Disparity Range: " << rRun.moStereoOptions.miDisparityRange << endl;
 			}
+			if(rRun.moStereoOptions.mdValidTolerance!=0.0) {
+				oCustomBlockMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomDiffMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomCannyMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomPyramidMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+
+				cout<<"- Valid Tolerance: "<<rRun.moStereoOptions.mdValidTolerance<<endl;
+			}
+			if(rRun.moStereoOptions.miDiffOrderX!=0) {
+				oCustomDiffMatcher.setDiffOrderX(rRun.moStereoOptions.miDiffOrderX);
+
+				cout<<"- Diff Order X: "<<rRun.moStereoOptions.miDiffOrderX;
+			}
+			if(rRun.moStereoOptions.miDiffOrderY!=0) {
+				oCustomDiffMatcher.setDiffOrderY(rRun.moStereoOptions.miDiffOrderY);
+
+				cout<<"- Diff Order Y: "<<rRun.moStereoOptions.miDiffOrderY;
+			}
+			if(rRun.moStereoOptions.miSobelKernelSize!=0) {
+				oCustomDiffMatcher.setSobelKernelSize(rRun.moStereoOptions.miSobelKernelSize);
+
+				cout<<"- Sobel Kernel Size: "<<rRun.moStereoOptions.miSobelKernelSize;
+			}
 			if (rRun.moStereoOptions.mdCannyThreshold1 != 0.0) {
 				oCustomCannyMatcher.setThreshold1(rRun.moStereoOptions.mdCannyThreshold1);
 
@@ -177,6 +248,16 @@ int main() {
 				oCustomCannyMatcher.setThreshold2(rRun.moStereoOptions.mdCannyThreshold2);
 
 				cout << "- Canny Threshold2: " << rRun.moStereoOptions.mdCannyThreshold2 << endl;
+			}
+			if (rRun.moStereoOptions.mdScalingWidth != 0.0) {
+				oCustomPyramidMatcher.setScalingWidth(rRun.moStereoOptions.mdScalingWidth);
+
+				cout << "- Scaling Width: " << rRun.moStereoOptions.mdScalingWidth << endl;
+			}
+			if (rRun.moStereoOptions.mdScalingHeight != 0.0) {
+				oCustomPyramidMatcher.setScalingHeight(rRun.moStereoOptions.mdScalingHeight);
+
+				cout << "- Scaling Height: " << rRun.moStereoOptions.mdScalingHeight << endl;
 			}
 
 			cout << "Setting Postprocessor: " << rRun.mePostProcessor << endl;
@@ -213,12 +294,12 @@ int main() {
 			Mat oEvalDispBPP;
 			Mat oEvalDispRMS;
 
-			CreateDirectory(rRun.msResultfolder.c_str(), NULL);
-			//mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+			//CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;
-			LONG64 iDuration = 0;
+			long long iDuration = 0;
 
 			for (int iFrame = 0; ; ++iFrame) {
 				oFilestreamLeft >> oFrameLeftColor;
@@ -240,7 +321,7 @@ int main() {
 				oCustomDisparity = pPostprocessor->Postprocess(oCustomDisparity);
 
 				auto tEnd = std::chrono::high_resolution_clock::now();
-				LONG64 iElapsedMicro = std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart).count();
+				long long iElapsedMicro = std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart).count();
 				iDuration += iElapsedMicro;
 
 				double dEvalBPP = oEvalBPP.Evaluate(oDisparityGT, oCustomDisparity);

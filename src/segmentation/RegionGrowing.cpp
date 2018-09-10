@@ -35,7 +35,6 @@ cv::Mat RegionGrowing::GrowRegion(const cv::Mat& rInput) {
 
 			if (rInput.at<uchar>(i, j) > 0 && oResult.at<uchar>(i, j)==0) {
 				++iLabel;
-				cout << "New Label: " << (int)iLabel << endl;
 
 				// expand region recursively by iterating through all neighbors
 				vector<cv::Point2i> aNeighbors = { cv::Point2i(j, i) };

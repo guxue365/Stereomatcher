@@ -7,18 +7,27 @@ public:
 	CustomPyramidMatcher(IStereoMatch* pCoarseGridMatcher);
 	virtual ~CustomPyramidMatcher();
 
-	void setBlockSize(int iBlockSize);
+	void setBlockWidth(int iWidth);
+	void setBlockHeight(int iHeight);
 	void setNumDisparities(int iNumDisparities);
+	void setValidTolerance(double dTolerance);
+
+	void setScalingWidth(double dScalingWidth);
+	void setScalingHeight(double dScalingHeight);
 
 	cv::Mat Match(const cv::Mat& rLeft, const cv::Mat& rRight);
 
 private:
 	int miNumDisparities;
-	int miBlockSize;
+	int miBlockWidth;
+	int miBlockHeight;
+	double mdTolerance;
+	double mdScalingWidth;
+	double mdScalingHeight;
 
 	IStereoMatch* mpCoarseGridMatcher;
 
 	cv::Mat ComputeDisparityPyramid(const cv::Mat& rPrecomputed, int iScaleSize, const cv::Mat& rLeft, const cv::Mat& rRight);
-	double ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockSize);
-	bool isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues);
+	double ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockWidth, int iBlockHeight);
+	bool isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance);
 };

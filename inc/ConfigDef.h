@@ -41,9 +41,17 @@ enum E_SEGMENTATION {
 
 struct StereoOptions {
 	int miBlocksize = 0;
+	int miBlockWidth = 0;
+	int miBlockHeight = 0;
 	int miDisparityRange = 0;
+	double mdValidTolerance = 0.0;
+	int miDiffOrderX = 0;
+	int miDiffOrderY = 0;
+	int miSobelKernelSize = 0;
 	double mdCannyThreshold1 = 0.0;
 	double mdCannyThreshold2 = 0.0;
+	double mdScalingWidth = 0.0;
+	double mdScalingHeight = 0.0;
 };
 
 struct Run {

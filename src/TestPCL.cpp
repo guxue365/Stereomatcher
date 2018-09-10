@@ -17,44 +17,93 @@ using namespace cv;
 int main() {
 
 	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_0.png", IMREAD_GRAYSCALE);
-	Mat oImage = imread("disparity.png");
-	Mat oColor = imread("color.png");
+	VideoCapture oStreamDisparity("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_%1d.png");
+	VideoCapture oStreamColor("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedLeft/img_%1d.png");
 
-	imshow("Image", oImage);
-	imshow("Color", oColor);
+	pcl::visualization::PCLVisualizer oViewer ("Simple Cloud Viewer");
 
-	auto aPoints = Extract3DPoints(oImage, oColor);
+	for(int iFrame=0; ; ++iFrame) {
+		Mat oFrameDisparity;
+		Mat oFrameColor;
+
+		oStreamDisparity>>oFrameDisparity;
+		oStreamColor>>oFrameColor;
+
+		if(oFrameDisparity.empty() || oFrameColor.empty()) 	break;
+
+		cvtColor(oFrameDisparity, oFrameDisparity, CV_BGR2GRAY);
+
+		imshow("disp", oFrameDisparity);
+		imshow("color", oFrameColor);
+
+		auto aPoints = Extract3DPoints(oFrameDisparity, oFrameColor);
+
+		pcl::PointCloud<pcl::PointXYZRGB>::Ptr pCloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+		for(auto& rPoint: aPoints) {
+			pCloud->push_back(rPoint);
+		}
+
+		if(iFrame==0) {
+			oViewer.addPointCloud(pCloud);
+		} else {
+			oViewer.updatePointCloud(pCloud);
+		}
+
+		oViewer.spinOnce(100, true);
+
+
+		int c = (char)waitKey(10);
+		if(c==27) 	break;
+	}
+
+	/*auto aPoints = Extract3DPoints(oImage, oColor);
 
 	cout<<"Extracted "<<aPoints.size()<<" Points"<<endl;
 
 	//Punktwolke erstellen
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
-	/*cloud->push_back(pcl::PointXYZ(0.0, 0.0, 0.0));
+	/*pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
+	cloud->push_back(pcl::PointXYZ(0.0, 0.0, 0.0));
 	cloud->push_back(pcl::PointXYZ(1.0, 2.0, 0.0));
 	cloud->push_back(pcl::PointXYZ(2.0, 2.0, 0.0));
 	cloud->push_back(pcl::PointXYZ(0.0, 1.0, 0.0));
 	cloud->push_back(pcl::PointXYZ(0.0, 2.0, 0.0));*/
 
-	for(auto& rPoint: aPoints) {
+	/*for(auto& rPoint: aPoints) {
 		cloud->push_back(rPoint);
 		//cout<<"Inserting Point: "<<rPoint.val[0]<<" | "<<rPoint.val[1]<<" | "<<rPoint.val[2]<<endl;
 	}
 
 	//Punktwolke laden (siehe oben) oder neue erstellen
 	//CloudViewer zur Visualisierung erstellen
-	pcl::visualization::PCLVisualizer viewer("Simple Cloud Viewer");
+	pcl::visualization::PCLVisualizer viewer ("Simple Cloud Viewer");
+	/*viewer.initCameraParameters();
+	int v1(0);
+	viewer.createViewPort(0.0, 0.0, 0.5, 1.0, v1);
+
+	pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(cloud);
+	viewer.addPointCloud<pcl::PointXYZRGB> (cloud, rgb, "sample cloud1", v1);
+
+	viewer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample cloud1");
+	viewer.addCoordinateSystem (1.0);*/
+
+	/*viewer.addPointCloud(cloud);
+
 
 	//Aufruf zur Darstellung der Punktwolke
-	viewer.addPointCloud(cloud);
+	//viewer.showCloud(cloud);
 	while (!viewer.wasStopped()) {
 		//m�gliche Prozessierungsanweisungen m�glich in einem extra Thread
-
-		waitKey(0);
-	}
+		viewer.spinOnce(100, true);
+		waitKey(1);
+	}*/
 	return 0;
 }
 
 std::vector<pcl::PointXYZRGB> Extract3DPoints(const cv::Mat& rDisparity, const cv::Mat& rColorImage) {
+	assert(rDisparity.type()==CV_8UC1);
+	assert(rColorImage.type()==CV_8UC3);
+
 	std::vector<pcl::PointXYZRGB> aResult((size_t)(rDisparity.rows*rDisparity.cols));
 	size_t iNumPoints = 0;
 
@@ -69,8 +118,8 @@ std::vector<pcl::PointXYZRGB> Extract3DPoints(const cv::Mat& rDisparity, const c
 		for (size_t j = 0; j < (size_t)rDisparity.cols; ++j) {
 			uchar cDisparity = rDisparity.at<uchar>((int)i, (int)j);
 			if (cDisparity > 0) {
-				double x = (double)(j)-cx;
-				double y = 1.0-(double)(i)-cy;
+				double x = -((double)(j)-cx);
+				double y = (double)(i)-cy;
 				double z = f;
 				double w = -(double)(cDisparity)/Tx+(cx-cx2)/Tx;
 				x/=w;

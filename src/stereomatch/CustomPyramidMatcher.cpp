@@ -8,8 +8,12 @@ using namespace std;
 using namespace cv;
 
 CustomPyramidMatcher::CustomPyramidMatcher(IStereoMatch* pCoarseGridMatcher) : 
-	miBlockSize(9),
 	miNumDisparities(64),
+	miBlockWidth(9),
+	miBlockHeight(9),
+	mdTolerance(15.0),
+	mdScalingWidth(8.0),
+	mdScalingHeight(8.0),
 	mpCoarseGridMatcher(pCoarseGridMatcher) {
 
 }
@@ -18,17 +22,42 @@ CustomPyramidMatcher::~CustomPyramidMatcher() {
 
 }
 
-void CustomPyramidMatcher::setBlockSize(int iBlockSize) {
-	assert(iBlockSize > 0);
-	assert(iBlockSize % 2 == 1);
+void CustomPyramidMatcher::setBlockWidth(int iBlockWidth) {
+	assert(iBlockWidth>0);
+	assert(iBlockWidth%2==1);
 
-	miBlockSize = iBlockSize;
+	miBlockWidth = iBlockWidth;
+}
+
+void CustomPyramidMatcher::setBlockHeight(int iBlockHeight) {
+	assert(iBlockHeight>0);
+	assert(iBlockHeight%2==1);
+
+	miBlockHeight = iBlockHeight;
 }
 
 void CustomPyramidMatcher::setNumDisparities(int iNumDisparities) {
 	assert(iNumDisparities > 0);
 
 	miNumDisparities = iNumDisparities;
+}
+
+void CustomPyramidMatcher::setValidTolerance(double dTolerance) {
+	assert(dTolerance>0.0);
+
+	mdTolerance = dTolerance;
+}
+
+void CustomPyramidMatcher::setScalingWidth(double dScalingWidth) {
+	assert(dScalingWidth>1.0);
+
+	mdScalingWidth = dScalingWidth;
+}
+
+void CustomPyramidMatcher::setScalingHeight(double dScalingHeight) {
+	assert(dScalingHeight>1.0);
+
+	mdScalingHeight = dScalingHeight;
 }
 
 cv::Mat CustomPyramidMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
@@ -38,16 +67,16 @@ cv::Mat CustomPyramidMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight)
 	Mat oRightReduced;
 	Mat oDisparityReduced;
 
-	resize(rLeft, oLeftReduced, cv::Size(), 1.0 / 8.0, 1.0 / 8.0, INTER_LINEAR);
-	resize(rRight, oRightReduced, cv::Size(), 1.0 / 8.0, 1.0 / 8.0, INTER_LINEAR);
+	resize(rLeft, oLeftReduced, cv::Size(), 1.0 / mdScalingWidth, 1.0 / mdScalingHeight, INTER_LINEAR);
+	resize(rRight, oRightReduced, cv::Size(), 1.0 / mdScalingWidth, 1.0 / mdScalingHeight, INTER_LINEAR);
 
 	oDisparityReduced = mpCoarseGridMatcher->Match(oLeftReduced, oRightReduced);
 
 	resize(oDisparityReduced, oDisparityReduced, rLeft.size(), 0.0, 0.0, INTER_LINEAR);
 
-	oDisparityReduced *= 8;
+	oDisparityReduced *= (int)mdScalingWidth;
 
-	oResult = ComputeDisparityPyramid(oDisparityReduced, 8, rLeft, rRight);
+	oResult = ComputeDisparityPyramid(oDisparityReduced, mdScalingWidth, rLeft, rRight);
 
 	return oResult;
 }
@@ -76,7 +105,7 @@ cv::Mat CustomPyramidMatcher::ComputeDisparityPyramid(const cv::Mat& rPrecompute
 			if (iPrecomputedDisp == 0)		continue;
 			for (int k = j - iPrecomputedDisp - iScaleSize + 1; k < j - iPrecomputedDisp + iScaleSize + 1; ++k) {
 				//compute cost for pixel (i, j) and (i, k)
-				double dCost = ComputeMatchingCostGray(i, j, k, rLeft, rRight, miBlockSize);
+				double dCost = ComputeMatchingCostGray(i, j, k, rLeft, rRight, miBlockWidth, miBlockHeight);
 
 				aDisp[j - k - iPrecomputedDisp + iScaleSize] = dCost;
 
@@ -90,7 +119,7 @@ cv::Mat CustomPyramidMatcher::ComputeDisparityPyramid(const cv::Mat& rPrecompute
 			int iMin = (int)std::distance(aDisp.begin(), itMin);
 			double dMinVal = *itMin;
 
-			if (isValidMinimumStrict(dMinVal, iMin, aDisp)) {
+			if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
 				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
 			}
 		}
@@ -98,19 +127,19 @@ cv::Mat CustomPyramidMatcher::ComputeDisparityPyramid(const cv::Mat& rPrecompute
 	return oResult;
 }
 
-double CustomPyramidMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockSize) {
+double CustomPyramidMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockWidth, int iBlockHeight) {
 	assert(rLeft.type() == CV_8U);
 	assert(rRight.type() == CV_8U);
 
 	double dResult = 0.0;
 
-	for (int i = 0; i < iBlockSize; ++i) {
-		int iCurrentRow = iRow + i - iBlockSize / 2;
+	for (int i = 0; i < iBlockHeight; ++i) {
+		int iCurrentRow = iRow + i - iBlockHeight / 2;
 		if (iCurrentRow < 0 || iCurrentRow >= rLeft.rows)	continue;
 
-		for (int j = 0; j < iBlockSize; ++j) {
-			int iCurrentColLeft = iColLeft + j - iBlockSize / 2;
-			int iCurrentColRight = iColRight + j - iBlockSize / 2;
+		for (int j = 0; j < iBlockWidth; ++j) {
+			int iCurrentColLeft = iColLeft + j - iBlockWidth / 2;
+			int iCurrentColRight = iColRight + j - iBlockWidth / 2;
 			if (iCurrentColLeft < 0 || iCurrentColRight<0 || iCurrentColLeft >= rLeft.cols || iCurrentColRight>rLeft.cols)	continue;
 
 			double dLeft = (double)rLeft.at<uchar>((int)iCurrentRow, (int)iCurrentColLeft);
@@ -122,11 +151,10 @@ double CustomPyramidMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int
 	return dResult;
 }
 
-bool CustomPyramidMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues) {
-	double eps = 15.0;
+bool CustomPyramidMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance) {
 	for (size_t l = 0; l < aValues.size(); ++l) {
 		if (l == iIndexMin)		continue;
-		if (abs(aValues[l] - dValMin) < eps) {
+		if (abs(aValues[l] - dValMin) < dTolerance) {
 			return false;
 		}
 	}

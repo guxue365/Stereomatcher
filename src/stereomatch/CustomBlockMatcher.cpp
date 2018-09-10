@@ -8,8 +8,10 @@ using namespace std;
 using namespace cv;
 
 CustomBlockMatcher::CustomBlockMatcher() :
-	miBlockSize(9),
-	miNumDisparities(64) {
+	miNumDisparities(64),
+	miBlockWidth(9),
+	miBlockHeight(9),
+	mdTolerance(15.0) {
 
 }
 
@@ -17,17 +19,31 @@ CustomBlockMatcher::~CustomBlockMatcher() {
 
 }
 
-void CustomBlockMatcher::setBlockSize(int iBlockSize) {
-	assert(iBlockSize > 0);
-	assert(iBlockSize % 2 == 1);
 
-	miBlockSize = iBlockSize;
+void CustomBlockMatcher::setBlockWidth(int iBlockWidth) {
+	assert(iBlockWidth>0);
+	assert(iBlockWidth%2==1);
+
+	miBlockWidth = iBlockWidth;
+}
+
+void CustomBlockMatcher::setBlockHeight(int iBlockHeight) {
+	assert(iBlockHeight>0);
+	assert(iBlockHeight%2==1);
+
+	miBlockHeight = iBlockHeight;
 }
 
 void CustomBlockMatcher::setNumDisparities(int iNumDisparities) {
 	assert(iNumDisparities > 0);
 
 	miNumDisparities = iNumDisparities;
+}
+
+void CustomBlockMatcher::setValidTolerance(double dTolerance) {
+	assert(dTolerance>0.0);
+
+	mdTolerance = dTolerance;
 }
 
 cv::Mat CustomBlockMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
@@ -65,7 +81,7 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityGray(const cv::Mat& rLeft, con
 			vector<double> aDisp(miNumDisparities);
 			for (int k = j - miNumDisparities + 1; k < j + 1; ++k) {
 				//compute cost for pixel (i, j) and (i, k)
-				double dCost = ComputeMatchingCostGray(i, j, k, rLeft, rRight, miBlockSize);
+				double dCost = ComputeMatchingCostGray(i, j, k, rLeft, rRight, miBlockWidth, miBlockHeight);
 				aDisp[j - k] = dCost;
 				
 				if (dCost < dMin) {
@@ -78,7 +94,7 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityGray(const cv::Mat& rLeft, con
 			int iMin = (int)std::distance(aDisp.begin(), itMin);
 			double dMinVal = *itMin;
 
-			if (isValidMinimumStrict(dMinVal, iMin, aDisp)) {
+			if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
 				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
 			}
 		}
@@ -109,7 +125,7 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityColor(const cv::Mat& rLeft, co
 			vector<double> aDisp(miNumDisparities);
 			for (int k = j - miNumDisparities + 1; k < j + 1; ++k) {
 				//compute cost for pixel (i, j) and (i, k)
-				double dCost = ComputeMatchingCostColor(i, j, k, rLeft, rRight, miBlockSize);
+				double dCost = ComputeMatchingCostColor(i, j, k, rLeft, rRight, miBlockWidth, miBlockHeight);
 				aDisp[j - k] = dCost;
 				
 				if (dCost < dMin) {
@@ -122,7 +138,7 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityColor(const cv::Mat& rLeft, co
 			int iMin = (int)std::distance(aDisp.begin(), itMin);
 			double dMinVal = *itMin;
 
-			if (isValidMinimumStrict(dMinVal, iMin, aDisp)) {
+			if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
 				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
 			}
 
@@ -131,19 +147,19 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityColor(const cv::Mat& rLeft, co
 	return oResult;
 }
 
-double CustomBlockMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockSize) {
+double CustomBlockMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockWidth, int iBlockHeight) {
 	assert(rLeft.type() == CV_8U);
 	assert(rRight.type() == CV_8U);
 
 	double dResult = 0.0;
 
-	for (int i = 0; i < iBlockSize; ++i) {
-		int iCurrentRow = iRow + i - iBlockSize / 2;
+	for (int i = 0; i < iBlockHeight; ++i) {
+		int iCurrentRow = iRow + i - iBlockHeight / 2;
 		if (iCurrentRow < 0 || iCurrentRow >= rLeft.rows)	continue;
 
-		for (int j = 0; j < iBlockSize; ++j) {
-			int iCurrentColLeft = iColLeft + j - iBlockSize / 2;
-			int iCurrentColRight = iColRight + j - iBlockSize / 2;
+		for (int j = 0; j < iBlockWidth; ++j) {
+			int iCurrentColLeft = iColLeft + j - iBlockWidth / 2;
+			int iCurrentColRight = iColRight + j - iBlockWidth / 2;
 			if (iCurrentColLeft < 0 || iCurrentColRight<0 || iCurrentColLeft >= rLeft.cols || iCurrentColRight>rLeft.cols)	continue;
 
 			double dLeft = (double)rLeft.at<uchar>((int)iCurrentRow, (int)iCurrentColLeft);
@@ -155,19 +171,19 @@ double CustomBlockMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int i
 	return dResult;
 }
 
-double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockSize) {
+double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockWidth, int iBlockHeight) {
 	assert(rLeft.type() == CV_8UC3);
 	assert(rRight.type() == CV_8UC3);
 
 	double dResult = 0.0;
 
-	for (int i = 0; i < iBlockSize; ++i) {
-		int iCurrentRow = iRow + i - iBlockSize / 2;
+	for (int i = 0; i < iBlockHeight; ++i) {
+		int iCurrentRow = iRow + i - iBlockHeight / 2;
 		if (iCurrentRow < 0 || iCurrentRow >= rLeft.rows)	continue;
 
-		for (int j = 0; j < iBlockSize; ++j) {
-			int iCurrentColLeft = iColLeft + j - iBlockSize / 2;
-			int iCurrentColRight = iColRight + j - iBlockSize / 2;
+		for (int j = 0; j < iBlockWidth; ++j) {
+			int iCurrentColLeft = iColLeft + j - iBlockWidth / 2;
+			int iCurrentColRight = iColRight + j - iBlockWidth / 2;
 			if (iCurrentColLeft < 0 || iCurrentColRight<0 || iCurrentColLeft >= rLeft.cols || iCurrentColRight>rLeft.cols)	continue;
 
 			Vec3b dLeft = (Vec3b)rLeft.at<Vec3b>((int)iCurrentRow, (int)iCurrentColLeft);
@@ -187,11 +203,10 @@ double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int 
 	return dResult;
 }
 
-bool CustomBlockMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues) {
-	double eps = 15.0;
+bool CustomBlockMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance) {
 	for (size_t l = 0; l < aValues.size(); ++l) {
 		if (l == iIndexMin)		continue;
-		if (abs(aValues[l] - dValMin) < eps) {
+		if (abs(aValues[l] - dValMin) < dTolerance) {
 			return false;
 		}
 	}

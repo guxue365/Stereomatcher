@@ -7,11 +7,21 @@ public:
 	CustomDiffMatcher();
 	virtual ~CustomDiffMatcher();
 
-	void setBlockSize(int iBlockSize);
 	void setNumDisparities(int iNumDisparities);
+	void setBlockWidth(int iBlockWidth);
+	void setBlockHeight(int iBlockHeight);
+	void setValidTolerance(double dTolerance);
+	void setDiffOrderX(int iDiffOrderX);
+	void setDiffOrderY(int iDiffOrderY);
+	void setSobelKernelSize(int iSobelKernelSize);
 
 	cv::Mat Match(const cv::Mat& rLeft, const cv::Mat& rRight);
 private:
 	int miNumDisparities;
-	int miBlockSize;
+	int miBlockWidth;
+	int miBlockHeight;
+	double mdTolerance;
+	int miDiffOrderX;
+	int miDiffOrderY;
+	int miSobelKernelSize; //it must be 1, 3, 5, or 7.
 };
