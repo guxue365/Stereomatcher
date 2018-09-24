@@ -1,4 +1,20 @@
 \chapter{Stereoberechnung}
-\section{Globale Verfahren}
 \section{Lokale Verfahren}
+Minimierung der Energiefunktion
+\begin{eqnarray}
+ E(d) &=& \sum_{(x, y)} M(x, y, d(x, y))
+\end{eqnarray}
+
+\section{Globale Verfahren}
+Graph Cuts, Belief Propagation, Dynamic Programming
+Minimierung einer globalen Energiefunktion:
+\begin{eqnarray}
+ E(d) &=& E_{data}(d)+ \lambda E_{smooth}(d) \\
+ E_{data}(d) &=& \sum_{(x, y)} M(x, y, d(x, y)) \\
+ E_{smooth} &=& \sum_{(x, y)} p(d(x, y)-d(x+1, y))+p(d(x, y)-d(x, y+1))
+\end{eqnarray}\cite{stereo_globallocal}
+
+Boxmatching
 \section{Kombinierte Verfahren}
+\subsection{Semi-Global-Matching}
+\subsection{Pyramidenverfahren}

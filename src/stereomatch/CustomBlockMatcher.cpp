@@ -114,7 +114,6 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityColor(const cv::Mat& rLeft, co
 	cv::Mat oResult(m, n, CV_8U, Scalar(0));
 
 	for (int i = 3; i < m - 3; ++i) {
-		cout << "Row " << i << " from " << m << endl;
 		for (int j = miNumDisparities; j < n - miNumDisparities; ++j) {
 			// match pixel rLeft(i, j) to any Pixel(i, *) on the right image
 			// -> iterate through row i on the right image and compute cost
@@ -137,7 +136,7 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityColor(const cv::Mat& rLeft, co
 			auto itMin = std::min_element(aDisp.begin(), aDisp.end());
 			int iMin = (int)std::distance(aDisp.begin(), itMin);
 			double dMinVal = *itMin;
-
+			
 			if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
 				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
 			}
@@ -196,17 +195,17 @@ double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int 
 			double d22 = (double)dRight[1];
 			double d23 = (double)dRight[2];
 
-			dResult += abs(d11 - d21) + abs(d12 - d22) + abs(d13 - d23);
+			dResult += (d11 - d21)*(d11 - d21) + (d12 - d22)*(d12 - d22) + (d13 - d23)*(d13 - d23);
 		}
 	}
 
-	return dResult;
+	return sqrt(dResult);
 }
 
 bool CustomBlockMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance) {
 	for (size_t l = 0; l < aValues.size(); ++l) {
 		if (l == iIndexMin)		continue;
-		if (abs(aValues[l] - dValMin) < dTolerance) {
+		if (abs(aValues[l] - dValMin) < dTolerance || abs(aValues[l] - dValMin)/(abs(dValMin))<0.05) {
 			return false;
 		}
 	}

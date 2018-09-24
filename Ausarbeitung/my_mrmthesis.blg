@@ -1,9 +1,17 @@
 [0] Config.pm:302> INFO - This is Biber 2.11
 [0] Config.pm:305> INFO - Logfile is 'my_mrmthesis.blg'
-[38] biber-MSWIN64:313> INFO - === 
-[71] Biber.pm:371> INFO - Reading 'my_mrmthesis.bcf'
-[169] Biber.pm:857> INFO - Found 0 citekeys in bib section 0
-[178] Utils.pm:193> WARN - The file 'my_mrmthesis.bcf' does not contain any citations!
-[185] bbl.pm:617> INFO - Writing 'my_mrmthesis.bbl' with encoding 'latin1'
-[186] bbl.pm:720> INFO - Output to my_mrmthesis.bbl
-[187] Biber.pm:110> INFO - WARNINGS: 1
+[40] biber-MSWIN64:313> INFO - === 
+[75] Biber.pm:371> INFO - Reading 'my_mrmthesis.bcf'
+[178] Biber.pm:857> INFO - Found 1 citekeys in bib section 0
+[197] Biber.pm:3976> INFO - Processing section 0
+[214] Biber.pm:4136> INFO - Looking for bibtex format file 'my_mrmthesis.bib' for section 0
+[218] bibtex.pm:1500> INFO - LaTeX decoding ...
+[227] bibtex.pm:1316> INFO - Found BibTeX data source 'my_mrmthesis.bib'
+[237] Utils.pm:193> WARN - BibTeX subsystem: C:\Users\danie\AppData\Local\Temp\KN1De11e03\my_mrmthesis.bib_13388.utf8, line 15, warning: 63 characters of junk seen at toplevel
+[254] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[254] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'variable = shifted' with 'variable = non-ignorable'
+[254] Biber.pm:3804> INFO - Sorting list 'anyvt/global//global/global' of type 'entry' with template 'anyvt' and locale 'de-DE'
+[254] Biber.pm:3810> INFO - No sort tailoring available for locale 'de-DE'
+[262] bbl.pm:617> INFO - Writing 'my_mrmthesis.bbl' with encoding 'UTF-8'
+[263] bbl.pm:720> INFO - Output to my_mrmthesis.bbl
+[265] Biber.pm:110> INFO - WARNINGS: 1

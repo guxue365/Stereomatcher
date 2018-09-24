@@ -108,7 +108,7 @@
 \ifthenelse{\boolean{en}}{%
   \RequirePackage[ngerman,english]{babel}}{%
   \RequirePackage[english,ngerman]{babel}}
-\RequirePackage[latin1]{inputenc} \RequirePackage[T1]{fontenc} \RequirePackage{lmodern}
+\RequirePackage[utf8]{inputenc} \RequirePackage[T1]{fontenc} \RequirePackage{lmodern}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %further required packages

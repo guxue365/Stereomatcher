@@ -16,5 +16,42 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{anyvt/global//global/global}
+    \entry{opencv}{online}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=130dc0ed0466637ba68365942ab3233b}{%
+           family={team},
+           familyi={t\bibinitperiod},
+           given={OpenCV},
+           giveni={O\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{130dc0ed0466637ba68365942ab3233b}
+      \strng{fullhash}{130dc0ed0466637ba68365942ab3233b}
+      \strng{bibnamehash}{130dc0ed0466637ba68365942ab3233b}
+      \strng{authorbibnamehash}{130dc0ed0466637ba68365942ab3233b}
+      \strng{authornamehash}{130dc0ed0466637ba68365942ab3233b}
+      \strng{authorfullhash}{130dc0ed0466637ba68365942ab3233b}
+      \field{labelalpha}{tea18}
+      \field{sortinit}{t}
+      \field{sortinithash}{6f7aff9db9dcfeb7f95fd5bbd2f78df9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{5}
+      \field{month}{9}
+      \field{title}{OpenCV - About}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://opencv.org/about.html
+      \endverb
+      \verb{url}
+      \verb https://opencv.org/about.html
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 

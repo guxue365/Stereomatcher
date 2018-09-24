@@ -40,7 +40,7 @@ For the stereo 2015, flow 2015 and scene flow 2015 benchmarks, please cite:
   url    = {https://de.wikipedia.org/wiki/OpenCV},
 }
 
-@Conference{stereo_globallocal,
+@Article{stereo_globallocal,
   author = {Daniel Scharstein and Richard Szeliski and Ramin Zabih},
   title  = {A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algrithms},
   year   = {2001},

@@ -1,1 +1,34 @@
 \chapter{Bildverarbeitung}
+\section{Boxfilter}
+Boxfilter
+Faltung
+$$ \widetilde{I}(i, j)=I \ast f =  \sum_{\alpha=-m}^m \sum_{\beta=-n}^n I(i-\alpha, j-\beta) \cdot f(\alpha, \beta)$$
+Relevant: 
+$$ \sum_{\alpha=-m}^m \sum_{\beta=-n}^n f(\alpha, \beta) \stackrel{!}{=} 1 $$
+Boxfilter - Mittelwertfilter
+$$ f=\frac{1}{9} \begin{bmatrix} 1&1&1 \\ 1&1&1 \\ 1&1&1 \end{bmatrix}$$
+$$ \widetilde{I}(i, j)=\frac{1}{9} \sum_{\alpha=-1}^1 \sum_{\beta=-1}^1 I(i-\alpha, j-\beta) $$
+Veranschaulicht wird dieses Vorgehen in \ref{fig:boxfilter}. Im linken Abschnitt ist das Originalbild mit einem gr\"o\ss{}eren Objekt und einigen St\"orpixeln zu sehen. Im rechten Abschnitt ist die gefilterte Version zu sehen: Die einzelnen St\"orpixel im oberen Abschnitt des Bildes sind deutlich abgeschw\"acht. Die Grenzen des Objektes in der rechten, unteren Ecke sind jedoch ebenso verschwommen. Bei mehrfacher Anwendung eines Mittelwertfilters konvergieren alle Pixelwerte gegen den Mittelwert der Pixel des gesamten Bildes. Der Mittelwertfilter ist somit ein Tiefpassfilter und sorgt anschaulich daf\"ur, dass Bilder verschwimmen.
+\begin{figure}
+ \centering
+ \includegraphics[width=1\textwidth]{media/filter/boxfilter_combined.png}
+ \caption{Beispiel für 3x3 Boxfilter}
+ \label{fig:boxfilter}
+\end{figure}
+
+
+Sobelfilter zur Kantendetektion:
+\begin{multicols}{2}
+\begin{align*}
+ S_x &= \frac{1}{8} \begin{bmatrix}[r] -1&0&1 \\ -2&0&2 \\ -1&0&1 \end{bmatrix} \\
+ S_u &= \frac{1}{8} \begin{bmatrix}[r] 0&-1&-2 \\ 1&0&-1 \\ 2&1&0 \end{bmatrix}
+\end{align*}
+
+\columnbreak
+
+\begin{align*}
+ S_y &= \frac{1}{8} \begin{bmatrix}[r] -1&-2&-1 \\ 0&0&0 \\ 1&2&1 \end{bmatrix} \\
+ S_v &= \frac{1}{8} \begin{bmatrix}[r] -2&-1&0 \\ -1&0&1 \\ 0&1&2 \end{bmatrix}
+\end{align*}
+
+\end{multicols}

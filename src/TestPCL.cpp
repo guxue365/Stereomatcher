@@ -17,8 +17,10 @@ using namespace cv;
 int main() {
 
 	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_0.png", IMREAD_GRAYSCALE);
-	VideoCapture oStreamDisparity("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_%1d.png");
-	VideoCapture oStreamColor("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedLeft/img_%1d.png");
+	//VideoCapture oStreamDisparity("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/disparity/img_%1d.png");
+	//VideoCapture oStreamColor("/home/jung/2018EntwicklungStereoalgorithmus/data/Datensatz/Rec01_ZA1/RectifiedLeft/img_%1d.png");
+	VideoCapture oStreamDisparity("E:/sample_images/img_%1d.png");
+	VideoCapture oStreamColor("E:/sample_images/img_%1d.png");
 
 	pcl::visualization::PCLVisualizer oViewer ("Simple Cloud Viewer");
 
@@ -28,10 +30,17 @@ int main() {
 
 		oStreamDisparity>>oFrameDisparity;
 		oStreamColor>>oFrameColor;
+		
 
 		if(oFrameDisparity.empty() || oFrameColor.empty()) 	break;
 
-		cvtColor(oFrameDisparity, oFrameDisparity, CV_BGR2GRAY);
+
+
+		//cvtColor(oFrameDisparity, oFrameDisparity, CV_BGR2GRAY);
+		//cvtColor(oFrameColor, oFrameColor, CV_BGR2GRAY);
+
+		oFrameColor *= 3;
+		applyColorMap(oFrameColor, oFrameColor, COLORMAP_JET);
 
 		imshow("disp", oFrameDisparity);
 		imshow("color", oFrameColor);

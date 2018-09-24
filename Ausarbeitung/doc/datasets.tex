@@ -1,0 +1,70 @@
+\chapter{Tools und Datensatze}
+
+\section{Background Subtraction Datasets}
+\subsection*{ChangeDetection.NET}
+Der changedetection Datensatz ist eine im Jahr 2012 Ö entstandene Sammlung von Videos, welche unterschiedliche Szenarien und Kameraeigenschaften darstellen. Die Motivation der Urheber ist, dass kein universeller Algorithmus existiert, welcher alle Szenarien angemessen gut auswerten kann. Im Datensatz vorhandene Szenarien sind:
+\begin{multicols}{2}
+Datensatz 2012:
+\begin{itemize}
+ \item Dynamischer Hintergrund
+ \item Wackelnde Kamera
+ \item Unregelm\"aßge Objektbewegungen
+ \item Schatten
+ \item W\"armebildkameras
+\end{itemize}
+
+\columnbreak
+
+Datensatz 2014:
+\begin{itemize}
+ \item Wettereinfluss
+ \item Niedrige Bildrate
+ \item Nachtaufnahmen
+ \item \"Uberwachungskameras
+ \item Luftturbulenzen durch thermische St\"orungen
+\end{itemize}
+\end{multicols}
+
+Ebenso mitgeliefert werden zu den Videos geh\"orige Ground-Truth-Daten, welche die tats\"achliche Bewegung in den einzelnen Bildern beschreiben. Diese Daten wurden mitunter manuell erstellt. Als Vordergrund gelten unter anderem Regionen, welche nicht Teil des statischen Hintergrunds sind und bei denen es sich insbesondere um Objekte wie Personen oder Fahrzeuge handelt. Auch Objekte, die eine kurze Standzeit im Bild haben, sollen nicht als Hintergrund klassifiziert werden. Dagegen werden St\"orungen wie Lichtreflexion, Schatten oder Turbulenzen in der Luft nicht als Vordergrnud detektiert. 
+
+
+\subsection*{Background Model Challenge}
+
+Der Datensatz der Background Model Challenge (BMC) enth\"alt eine Sammlung an Videos, welche ebenfalls zur Evaluation von Background-Detection-Algorithmen benutzt werden k\"onnen. Hierzu ist eine Reihe von unterschiedlichen Videosqeuenzen vorhanden, welche verschiedene Szenen abbilden. Der Unterschied zum oben beschriebenen changedetection-Datensatz ist, dass auch synthetische Videos zur Verf\"ugung stehen. Dies sind Videos, welche durch das Rendern einer aufgebauten 3D-Szene am Computer erstellt wurden. Der Vorteil dieses Vorgehens ist, dass die zugeh\"origen Ground-Truth-Daten direkt mit erzeugt werden k\"onnen und keine aufw\"andige Nachbearbeitung n\"otig ist. Daf\"ur werden jedoch in der Praxis auftretende Effekte vernachl\"assigt, wie beispielsweise eine sich bewegende Kamera oder Turbulenzen. Die synthetischen Videos sind daher nur bedingt nutzbar.
+
+\section{Stereo Datens\"atze}
+\subsection*{Kitti Datensatz}
+
+
+Der Kitti Datensatz ist eine mfangreiche Sammlung von Dates\"atzen, welche im Zusammenhang mit autonomem Fahren verwendet werden. So sind unter anderem Datens\"atze vorhanden f\"ur Stereovision, Szenenfluss oder Objekt-Tracking vorhanden. Die Videodaten sowie zugeh\"orige Ground-Truth-Daten wurden mit Hilfe eines Sensorfahrzeugs erzeugt, welches mit Lidar und GPS ausger\"ustet ist. Die Sequenzen wurden sowohl innerhalb wie au\ss{}erhalb von St\"adten aufgenommen und enthalten eine ausreichende Anzahl an Fahrzeugen und Fu\ss{}g\"angern. Zus\"atzlich zu den Ground-Truth-Daten sind auch Benchmarks und Evaluationsalgorithmen vorhanden um angewendete Algorithmen vergleichbar zu machen. Die Seite bietet auch die M\"oglichkeit der Einreichung von Algorithmen und listet diese geordnet nach ihrer Effektivit\"at auf.
+
+Der Kitti Datensatz hat besondere Relevanz f\"ur diese Arbeit, da sich die Szenerie ausschlie\ss{}lich auf den Stra\ss{}enverkehr konzentriert. Nachteilig ist, dass pro Szene nur zwei Bilder vorhanden sind und somit keine kontinuierliche Verkehrsszene abgebildet wird. 
+\subsection*{Stereo Ego-Motion Dataset}
+
+Der Stereo Ego-Motion Datensatz enth\"alt 494 hochaufl\"osende Videos von vier Objekten: Eine Auto, eine Katze, ein Stuhl und ein Hund. Im Video werden diese Objekte  mit der Kamera umkreist um ein Rundumbild zu erzeugen. Dazu sind ebenfalls Ground-Truth-Daten vorhanden. Mit diesem Vorgehen k\"onnen komplette 3D-Meshes anhand der Stereodaten erzeugt werden. F\"ur das einfache Benchmarking von Stereodaten ist der Datensatz auch zu verwenden, wobei die Eigenkamerabewegung nur bedingt zum Thema der Arbeit passt. 
+
+\subsection*{Middlebury Stereo Dataset}
+
+Der Middlebury Datensatz enth\"alt f\"und verschiedene Datens\"atze mit insgesamt 71 unterschiedlichem Motiven. Enthalten sind Ground-Truth-Daten sowie ein Softwaretool zur Evaluation. Auch das Einreichen erzielter Ergebnisse ist m\"oglich. Besonders interessant an diesem Datensatz ist, dass die Objekte unter variablen Lichtverh\"altnissen aufgenommen wurden. So stehen zu jedem Objekt Bilder mit vier unterschiedlichen Beleuchtungen. Dies stellt den Stereoalgorithmus zus\"atzlich vor Herausforderungen, da auch in der Realit\"at und vorallem im Stra\ss{}enverkehr Licht eine bedeutende Rolle spielt.
+
+
+\newpage
+\section{Tools}
+\subsection*{OpenCV}
+OpenCV ist eine offene Softwarebibliothek f\"ur die Sprache C++, die auf den Bereich der maschinellen Bildverarbeitung spezialisiert ist. In OpenCV sind mehr als 2500 Algorithmen vorhanden. Am Projekt beteiligen sich laut eigenen Angaben mehr als 47000 Entwickler und die gesch\"atze Downloadzahl liegt bei ca. 14 Millionen \cite{opencv}. Einen \"Uberblick \"uber die Kernfunktionalit\"at der Bibliothek gibt folgende Liste \cite{opencv_nvidia, opencv_wikipedia}:
+
+\begin{itemize}
+ \item Bild- und Videoverarbeitung und Darstellung
+ \item Objekterkennung und Extraktion von Objektmerkmalen
+ \item Kamerakalibrierung und Stereovision
+ \item Maschinelles Lernen und Clusteringverfahren
+ \item Eigenbewegungssch\"atzung
+ \item Gesichts- und Gestenerkennung
+\end{itemize}
+ OpenCV ist sehr effizient und wird produktiv in der Industrie eingesetzt. So setzen sowohl offene Softwareprojekte oder Startups auf OpenCV, aber auch gr\"o\ss{}ere Firmen wie Google, Microsoft oder Yahoo sind vertreten. Die Einsatzgebiete reichen dabei von der Verkehrs\"uberwachung \"uber Roboternavigation bis hin zur Gesichtserkennung in Japan. 
+ 
+ OpenCV kann dabei nicht nur in C++ zum Einsatz kommen: Es sind auch Schnittstellen zu Python, Java und Matlab verf\"ugbar, wobei alle g\"angigen Betriebssysteme unterst\"utzt werden.
+\subsection*{CUDA}
+
+\subsection*{Point Cloud Library}
+\subsection*{Javascript Object Notation}
