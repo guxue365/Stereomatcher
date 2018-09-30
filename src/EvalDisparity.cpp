@@ -123,7 +123,7 @@ int main() {
 			CustomBlockMatcher oCustomBlockMatcher;
 			CustomDiffMatcher oCustomDiffMatcher;
 			CustomCannyMatcher oCustomCannyMatcher;
-			CustomPyramidMatcher oCustomPyramidMatcher(&oBasicBPMatcher);
+			CustomPyramidMatcher oCustomPyramidMatcher(&oCustomBlockMatcher);
 
 			BasePostprocessor oBasePostprocessor;
 			PostInterpolation oPostInterpolation;
@@ -315,7 +315,7 @@ int main() {
 
 				auto tStart = std::chrono::high_resolution_clock::now();
 
-				oCustomDisparity = pStereomatch->Match(oFrameLeftColor, oFrameRightColor);
+				oCustomDisparity = pStereomatch->Match(oFrameLeftGray, oFrameRightGray);
 
 				oCustomDisparity = pPostprocessor->Postprocess(oCustomDisparity);
 

@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=my_mrmthesis.bib
+lastDocument=doc/imageprocessing.tex
 
 [document-settings,item:doc/backgroundsubtraction.tex]
 Bookmarks=
@@ -133,7 +133,7 @@ open=false
 order=2
 
 [item:doc/datasets.tex]
-open=true
+open=false
 order=1
 
 [item:doc/evaluation_background.tex]
@@ -145,7 +145,7 @@ open=false
 order=8
 
 [item:doc/imageprocessing.tex]
-open=false
+open=true
 order=1
 
 [item:doc/segmentation.tex]
@@ -153,11 +153,11 @@ open=false
 order=5
 
 [item:doc/stereocomputation.tex]
-open=true
+open=false
 order=3
 
 [item:my_mrmthesis.bib]
-open=true
+open=false
 order=2
 
 [item:my_mrmthesis.tex]
@@ -214,11 +214,11 @@ TextFolding=[]
 ViMarks=.,0,36,[,0,26,],0,36
 
 [view-settings,view=0,item:doc/imageprocessing.tex]
-CursorColumn=30
-CursorLine=9
+CursorColumn=20
+CursorLine=44
 JumpList=
 TextFolding=[]
-ViMarks=.,9,17,[,9,17,],9,29
+ViMarks=.,42,13,[,42,13,],42,13
 
 [view-settings,view=0,item:doc/segmentation.tex]
 CursorColumn=35
@@ -228,22 +228,22 @@ TextFolding=[]
 ViMarks=.,3,34,[,3,13,],3,34
 
 [view-settings,view=0,item:doc/stereocomputation.tex]
-CursorColumn=14
-CursorLine=8
+CursorColumn=33
+CursorLine=18
 JumpList=
 TextFolding=[]
-ViMarks=.,8,14,[,8,14,],8,14
+ViMarks=.,4,2,[,4,2,],4,2
 
 [view-settings,view=0,item:my_mrmthesis.bib]
-CursorColumn=1
-CursorLine=40
+CursorColumn=30
+CursorLine=42
 JumpList=
 TextFolding=[]
 ViMarks=.,0,0,[,0,0,],0,0
 
 [view-settings,view=0,item:my_mrmthesis.tex]
-CursorColumn=27
-CursorLine=36
+CursorColumn=0
+CursorLine=47
 JumpList=
 TextFolding=[]
-ViMarks=.,36,15,[,36,12,],36,15
+ViMarks=.,46,12,[,42,0,],-1,-1

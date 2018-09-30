@@ -102,7 +102,7 @@ cv::Mat CustomPyramidMatcher::ComputeDisparityPyramid(const cv::Mat& rPrecompute
 			int iCustomDisp = -1;
 			vector<double> aDisp(2 * iScaleSize);
 			int iPrecomputedDisp = (int)rPrecomputed.at<uchar>(i, j);
-			if (iPrecomputedDisp == 0)		continue;
+			if (iPrecomputedDisp == 0)		iPrecomputedDisp = miNumDisparities;
 			for (int k = j - iPrecomputedDisp - iScaleSize + 1; k < j - iPrecomputedDisp + iScaleSize + 1; ++k) {
 				//compute cost for pixel (i, j) and (i, k)
 				double dCost = ComputeMatchingCostGray(i, j, k, rLeft, rRight, miBlockWidth, miBlockHeight);

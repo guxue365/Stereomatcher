@@ -16,8 +16,32 @@ Veranschaulicht wird dieses Vorgehen in \ref{fig:boxfilter}. Im linken Abschnitt
  \label{fig:boxfilter}
 \end{figure}
 
+Gau\ss{}filter:
+\begin{equation}
+ N(x, y) = \frac{1}{2\pi\sigma^2} e^{-\frac{x^2+y^2}{2\sigma^2}}
+\end{equation}
+Die Variable \( \sigma \) ergibt sich aus der Standardnormalverteilung mit \( \mu=0 \). Damit ergeben sich Filterkerne wie
+\begin{multicols}{2}
+
+\begin{equation*}
+ G_{3x3}=\frac{1}{16} \begin{bmatrix} 1&2&1 \\ 2&4&2 \\ 1&2&1 \end{bmatrix}
+\end{equation*}
+ 
+ \columnbreak
+ \begin{equation*}
+ G_{5x5}=\frac{1}{256} \begin{bmatrix} 1&4&6&4&1 \\ 4&16&24&16&4 \\ 6&24&36&24&6 \\ 4&16&24&16&4 \\ 1&4&6&4&1 \end{bmatrix}
+\end{equation*}
+ 
+\end{multicols}
+
+
 
 Sobelfilter zur Kantendetektion:
+Analogie zentrale Differenz:
+\begin{equation*}
+ f^\prime (x)=\frac{f(x+\delta x)-f(x-\delta x)}{2\delta x}
+\end{equation*}
+
 \begin{multicols}{2}
 \begin{align*}
  S_x &= \frac{1}{8} \begin{bmatrix}[r] -1&0&1 \\ -2&0&2 \\ -1&0&1 \end{bmatrix} \\
@@ -30,5 +54,4 @@ Sobelfilter zur Kantendetektion:
  S_y &= \frac{1}{8} \begin{bmatrix}[r] -1&-2&-1 \\ 0&0&0 \\ 1&2&1 \end{bmatrix} \\
  S_v &= \frac{1}{8} \begin{bmatrix}[r] -2&-1&0 \\ -1&0&1 \\ 0&1&2 \end{bmatrix}
 \end{align*}
-
 \end{multicols}
