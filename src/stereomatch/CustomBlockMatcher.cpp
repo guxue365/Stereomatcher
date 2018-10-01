@@ -163,7 +163,7 @@ double CustomBlockMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int i
 
 			double dLeft = (double)rLeft.at<uchar>((int)iCurrentRow, (int)iCurrentColLeft);
 			double dRight = (double)rRight.at<uchar>((int)iCurrentRow, (int)iCurrentColRight);
-			dResult += abs(dLeft - dRight);
+			dResult += (dLeft - dRight)*(dLeft - dRight);
 		}
 	}
 

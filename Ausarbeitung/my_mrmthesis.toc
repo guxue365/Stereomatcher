@@ -17,11 +17,15 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {4}Stereoberechnung}{7}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.1}Globale Verfahren}{7}{section.4.1}
+\contentsline {section}{\numberline {4.1}Lokale Verfahren}{7}{section.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.2}Lokale Verfahren}{7}{section.4.2}
+\contentsline {section}{\numberline {4.2}Globale Verfahren}{7}{section.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.3}Kombinierte Verfahren}{7}{section.4.3}
+\contentsline {section}{\numberline {4.3}Kombinierte Verfahren}{8}{section.4.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3.1}Semi-Global-Matching}{8}{subsection.4.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3.2}Pyramidenverfahren}{8}{subsection.4.3.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {5}Segmentierung}{9}{chapter.5}
 \defcounter {refsection}{0}\relax 
@@ -45,12 +49,12 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {7.2}Stereo Datens\"atze}{14}{section.7.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.3}Tools}{15}{section.7.3}
+\contentsline {section}{\numberline {7.3}Tools}{16}{section.7.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {8}Evaluation Background Subtraction}{17}{chapter.8}
+\contentsline {chapter}{\numberline {8}Evaluation Background Subtraction}{19}{chapter.8}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {9}Evaluation Stereoberechnung}{19}{chapter.9}
+\contentsline {chapter}{\numberline {9}Evaluation Stereoberechnung}{21}{chapter.9}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {10}Fahrzeugdetektion}{21}{chapter.10}
+\contentsline {chapter}{\numberline {10}Fahrzeugdetektion}{23}{chapter.10}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Literaturverzeichnis}{23}{appendix*.12}
+\contentsline {chapter}{\nonumberline Literaturverzeichnis}{25}{appendix*.12}

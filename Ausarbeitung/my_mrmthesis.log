@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2018.9.9)  20 SEP 2018 10:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2018.9.9)  1 OCT 2018 16:13
 entering extended mode
 **./my_mrmthesis.tex
 (my_mrmthesis.tex
@@ -1210,6 +1210,39 @@ Package: multicol 2018/04/20 v1.8s multicolumn formatting (FMi)
 \colbreak@box=\box70
 \mc@col@check@num=\count408
 )
+(C:\Users\danie\AppData\Roaming\MiKTeX\2.9\tex\latex\mathtools\mathtools.sty
+Package: mathtools 2018/01/08 v1.21 mathematical typesetting tools
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\calc.sty"
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count409
+\calc@Bcount=\count410
+\calc@Adimen=\dimen168
+\calc@Bdimen=\dimen169
+\calc@Askip=\skip93
+\calc@Bskip=\skip94
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count411
+\calc@Cskip=\skip95
+)
+(C:\Users\danie\AppData\Roaming\MiKTeX\2.9\tex\latex\mathtools\mhsetup.sty
+Package: mhsetup 2017/03/31 v1.3 programming setup (MH)
+)
+LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
+\g_MT_multlinerow_int=\count412
+\l_MT_multwidth_dim=\dimen170
+\origjot=\skip96
+\l_MT_shortvdotswithinadjustabove_dim=\dimen171
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen172
+\l_MT_above_intertext_sep=\dimen173
+\l_MT_below_intertext_sep=\dimen174
+\l_MT_above_shortintertext_sep=\dimen175
+\l_MT_below_shortintertext_sep=\dimen176
+)
 
 Package biblatex Warning: 'babel' option is deprecated.
 (biblatex)                Please use 'autolang' instead.
@@ -1245,21 +1278,21 @@ Package csquotes Info: Enabling multilingual quotes.
 (my_mrmthesis.aux)
 \openout1 = `my_mrmthesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 162.
-LaTeX Font Info:    ... okay on input line 162.
-LaTeX Info: Redefining \microtypecontext on input line 162.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Info: Redefining \microtypecontext on input line 168.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1276,16 +1309,16 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 )
 (C:\Users\danie\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count409
-\scratchdimen=\dimen168
+\scratchcounter=\count413
+\scratchdimen=\dimen177
 \scratchbox=\box71
-\nofMPsegments=\count410
-\nofMParguments=\count411
+\nofMPsegments=\count414
+\nofMParguments=\count415
 \everyMPshowfont=\toks24
-\MPscratchCnt=\count412
-\MPscratchDim=\dimen169
-\MPnumerator=\count413
-\makeMPintoPDFobject=\count414
+\MPscratchCnt=\count416
+\MPscratchDim=\dimen178
+\MPnumerator=\count417
+\makeMPintoPDFobject=\count418
 \everyMPtoPDFconversion=\toks25
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -1304,7 +1337,7 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box72
-Package hyperref Info: Link coloring ON on input line 162.
+Package hyperref Info: Link coloring ON on input line 168.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -1312,11 +1345,11 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count415
+\c@section@level=\count419
 )
-LaTeX Info: Redefining \ref on input line 162.
-LaTeX Info: Redefining \pageref on input line 162.
-LaTeX Info: Redefining \nameref on input line 162.
+LaTeX Info: Redefining \ref on input line 168.
+LaTeX Info: Redefining \pageref on input line 168.
+LaTeX Info: Redefining \nameref on input line 168.
 
 (my_mrmthesis.out) (my_mrmthesis.out)
 \@outlinefile=\write5
@@ -1329,40 +1362,46 @@ Package biblatex Info: Automatic encoding selection.
 
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'my_mrmthesis.bbl' found.
- (my_mrmthesis.bbl)
-Package biblatex Info: Reference section=0 on input line 162.
-Package biblatex Info: Reference segment=0 on input line 162.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 165.
+ (my_mrmthesis.bbl
 
+Package biblatex Warning: Biber reported the following issues
+(biblatex)                with 'stereo_globallocal':
+(biblatex)                - Overwriting field 'year' with year value from field
+ 'date' for entry 'stereo_globallocal'.
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ot1lmr.fd"
+)
+Package biblatex Info: Reference section=0 on input line 168.
+Package biblatex Info: Reference segment=0 on input line 168.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 171.
+
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ot1lmr.fd"
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 165.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 171.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 165
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 171
 .
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 165
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 171
 .
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 165.
+(Font)              <12> on input line 171.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 165.
+(Font)              <8> on input line 171.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 165.
-LaTeX Font Info:    Try loading font information for U+msa on input line 165.
+(Font)              <6> on input line 171.
+LaTeX Font Info:    Try loading font information for U+msa on input line 171.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -1370,7 +1409,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (C:\Users\danie\AppData\Roaming\MiKTeX\2.9\tex\latex\microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 165.
+LaTeX Font Info:    Try loading font information for U+msb on input line 171.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1378,17 +1417,17 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 (C:\Users\danie\AppData\Roaming\MiKTeX\2.9\tex\latex\microtype\mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-<img/unilogo_bild.pdf, id=107, 111.41624pt x 111.41624pt>
+<img/unilogo_bild.pdf, id=119, 111.41624pt x 111.41624pt>
 File: img/unilogo_bild.pdf Graphic file (type pdf)
 <use img/unilogo_bild.pdf>
-Package pdftex.def Info: img/unilogo_bild.pdf  used on input line 165.
+Package pdftex.def Info: img/unilogo_bild.pdf  used on input line 171.
 (pdftex.def)             Requested size: 44.5657pt x 44.5657pt.
-<img/unilogo_wort.pdf, id=108, 423.5825pt x 111.41624pt>
+<img/unilogo_wort.pdf, id=120, 423.5825pt x 111.41624pt>
 File: img/unilogo_wort.pdf Graphic file (type pdf)
 <use img/unilogo_wort.pdf>
-Package pdftex.def Info: img/unilogo_wort.pdf  used on input line 165.
+Package pdftex.def Info: img/unilogo_wort.pdf  used on input line 171.
 (pdftex.def)             Requested size: 169.43pt x 44.5657pt.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 165.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 171.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmss.fd"
@@ -1399,13 +1438,13 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
  [1
 
 
@@ -1415,68 +1454,68 @@ Package babel Info: Redefining ngerman shorthand "~
 {C:/Users/danie/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./img/unilo
 go_bild.pdf> <./img/unilogo_wort.pdf>]
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 165.
+(babel)             in language  on input line 171.
  [2
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 167--167
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
 
  []
 
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 [3]
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 167.
+(babel)             in language  on input line 173.
  [4
 
 
 ]
 Package tocbasic Info: character protrusion at toc deactivated on input line 17
-2.
- (my_mrmthesis.toc)
+8.
+ (my_mrmthesis.toc
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 58.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 58.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 58.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 58.
+ [5
+
+
+])
 \tf@toc=\write6
 \openout6 = `my_mrmthesis.toc'.
 
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 179.
+(babel)             in language  on input line 185.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 179.
+(babel)             in language  on input line 185.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 179.
+(babel)             in language  on input line 185.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 179.
- [5
-
-
-]
-Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 179.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 179.
-Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 179.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 179.
+(babel)             in language  on input line 185.
  [6] (doc/imageprocessing.tex
 chapter 1.
 Package babel Info: Redefining ngerman shorthand "|
@@ -1487,27 +1526,26 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 2.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 2.
-<media/filter/boxfilter_combined.png, id=188, 1317.42188pt x 579.66562pt>
+<media/filter/boxfilter_combined.png, id=203, 1317.42188pt x 579.66562pt>
 File: media/filter/boxfilter_combined.png Graphic file (type png)
 <use media/filter/boxfilter_combined.png>
 Package pdftex.def Info: media/filter/boxfilter_combined.png  used on input lin
-e 13.
+e 14.
 (pdftex.def)             Requested size: 432.12631pt x 190.13155pt.
-) (doc/calibration.tex
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
+(babel)             in language  on input line 25.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
+(babel)             in language  on input line 25.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
+(babel)             in language  on input line 25.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
- [1
+(babel)             in language  on input line 25.
+[1
 
 
 
 
-]
+]) (doc/calibration.tex
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
@@ -1596,24 +1634,41 @@ Package babel Info: Redefining ngerman shorthand "|
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 2.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 3.
+(babel)             in language  on input line 8.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 3.
+(babel)             in language  on input line 8.
+
+Overfull \hbox (46.96506pt too wide) in paragraph at lines 18--33
+[][]
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 4.
+(babel)             in language  on input line 35.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 4.
-) (doc/segmentation.tex
+(babel)             in language  on input line 35.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
+(babel)             in language  on input line 35.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
-Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
+(babel)             in language  on input line 35.
  [7]
 Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 36.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 36.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 37.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 37.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 38.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 38.
+)
+(doc/segmentation.tex
+Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
@@ -1621,10 +1676,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
- [8
-
-
-]
+ [8]
 chapter 5.
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
@@ -1651,7 +1703,10 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
- [9]
+ [9
+
+
+]
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
@@ -1744,11 +1799,20 @@ Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 45.
  [14]
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 50.
+(babel)             in language  on input line 51.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 50.
-)
-(doc/evaluation_background.tex
+(babel)             in language  on input line 51.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 51.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 51.
+
+[15]
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 52.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 52.
+) (doc/evaluation_background.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Package babel Info: Redefining ngerman shorthand "|
@@ -1759,7 +1823,7 @@ Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
- [15]
+ [16]
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
@@ -1769,25 +1833,7 @@ Package babel Info: Redefining ngerman shorthand "|
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
 
-[16]
-chapter 8.
-Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
-) (doc/evaluation_stereo.tex
-Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
-Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 1.
-Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 1.
- [17
-
-
-]
+[17]
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
@@ -1800,12 +1846,12 @@ Package babel Info: Redefining ngerman shorthand "~
 
 
 ]
-chapter 9.
+chapter 8.
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
-) (doc/car_detection.tex
+) (doc/evaluation_stereo.tex
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining ngerman shorthand "~
@@ -1827,6 +1873,33 @@ Package babel Info: Redefining ngerman shorthand "~
 
 
 ]
+chapter 9.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 1.
+) (doc/car_detection.tex
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 1.
+ [21]
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "|
+(babel)             in language  on input line 1.
+Package babel Info: Redefining ngerman shorthand "~
+(babel)             in language  on input line 1.
+ [22
+
+
+]
 chapter 10.
 Package babel Info: Redefining ngerman shorthand "|
 (babel)             in language  on input line 1.
@@ -1834,31 +1907,31 @@ Package babel Info: Redefining ngerman shorthand "~
 (babel)             in language  on input line 1.
 )
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 194.
+(babel)             in language  on input line 200.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 194.
+(babel)             in language  on input line 200.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 194.
+(babel)             in language  on input line 200.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 194.
- [21]
+(babel)             in language  on input line 200.
+ [23]
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 194.
+(babel)             in language  on input line 200.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 194.
+(babel)             in language  on input line 200.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 194.
+(babel)             in language  on input line 200.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 194.
- [22
+(babel)             in language  on input line 200.
+ [24
 
 
 ]
 chapter without number
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 202.
+(babel)             in language  on input line 208.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 202.
+(babel)             in language  on input line 208.
 
 Package biblatex Warning: '\iffirstinits' is deprecated.
 (biblatex)                Please use '\ifgiveninits'.
@@ -1881,7 +1954,7 @@ Package biblatex Warning: '\mkbibnamefirst' is deprecated.
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/12'.
 (microtype)             Ignoring protrusion settings for this character.
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 202.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 208.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1890,65 +1963,175 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 204.
+
+
+Package biblatex Warning: '\iffirstinits' is deprecated.
+(biblatex)                Please use '\ifgiveninits'.
+
+
+Package biblatex Warning: '\mkbibnamelast' is deprecated.
+(biblatex)                Please use '\mkbibnamefamily'.
+(biblatex)                Using '\mkbibnamefamily'.
+
+
+Package biblatex Warning: '\mkbibnameaffix' is deprecated.
+(biblatex)                Please use '\mkbibnamesuffix'.
+(biblatex)                Using \mkbibnamesuffix.
+
+
+Package biblatex Warning: '\mkbibnamefirst' is deprecated.
+(biblatex)                Please use '\mkbibnamegiven'.
+(biblatex)                Using '\mkbibnamegiven'.
+
+
+Package biblatex Warning: '\iffirstinits' is deprecated.
+(biblatex)                Please use '\ifgiveninits'.
+
+
+Package biblatex Warning: '\mkbibnamelast' is deprecated.
+(biblatex)                Please use '\mkbibnamefamily'.
+(biblatex)                Using '\mkbibnamefamily'.
+
+
+Package biblatex Warning: '\mkbibnameaffix' is deprecated.
+(biblatex)                Please use '\mkbibnamesuffix'.
+(biblatex)                Using \mkbibnamesuffix.
+
+
+Package biblatex Warning: '\mkbibnamefirst' is deprecated.
+(biblatex)                Please use '\mkbibnamegiven'.
+(biblatex)                Using '\mkbibnamegiven'.
+
+
+Package biblatex Warning: '\iffirstinits' is deprecated.
+(biblatex)                Please use '\ifgiveninits'.
+
+
+Package biblatex Warning: '\mkbibnamelast' is deprecated.
+(biblatex)                Please use '\mkbibnamefamily'.
+(biblatex)                Using '\mkbibnamefamily'.
+
+
+Package biblatex Warning: '\mkbibnameaffix' is deprecated.
+(biblatex)                Please use '\mkbibnamesuffix'.
+(biblatex)                Using \mkbibnamesuffix.
+
+
+Package biblatex Warning: '\mkbibnamefirst' is deprecated.
+(biblatex)                Please use '\mkbibnamegiven'.
+(biblatex)                Using '\mkbibnamegiven'.
+
+
+Package biblatex Warning: '\iffirstinits' is deprecated.
+(biblatex)                Please use '\ifgiveninits'.
+
+
+Package biblatex Warning: '\mkbibnamelast' is deprecated.
+(biblatex)                Please use '\mkbibnamefamily'.
+(biblatex)                Using '\mkbibnamefamily'.
+
+
+Package biblatex Warning: '\mkbibnameaffix' is deprecated.
+(biblatex)                Please use '\mkbibnamesuffix'.
+(biblatex)                Using \mkbibnamesuffix.
+
+
+Package biblatex Warning: '\mkbibnamefirst' is deprecated.
+(biblatex)                Please use '\mkbibnamegiven'.
+(biblatex)                Using '\mkbibnamegiven'.
+
+
+Package biblatex Warning: '\iffirstinits' is deprecated.
+(biblatex)                Please use '\ifgiveninits'.
+
+
+Package biblatex Warning: '\mkbibnamelast' is deprecated.
+(biblatex)                Please use '\mkbibnamefamily'.
+(biblatex)                Using '\mkbibnamefamily'.
+
+
+Package biblatex Warning: '\mkbibnameaffix' is deprecated.
+(biblatex)                Please use '\mkbibnamesuffix'.
+(biblatex)                Using \mkbibnamesuffix.
+
+
+Package biblatex Warning: '\mkbibnamefirst' is deprecated.
+(biblatex)                Please use '\mkbibnamegiven'.
+(biblatex)                Using '\mkbibnamegiven'.
+
+
+Package biblatex Warning: '\iffirstinits' is deprecated.
+(biblatex)                Please use '\ifgiveninits'.
+
+
+Package biblatex Warning: '\mkbibnamelast' is deprecated.
+(biblatex)                Please use '\mkbibnamefamily'.
+(biblatex)                Using '\mkbibnamefamily'.
+
+
+Package biblatex Warning: '\mkbibnameaffix' is deprecated.
+(biblatex)                Please use '\mkbibnamesuffix'.
+(biblatex)                Using \mkbibnamesuffix.
+
+
+Package biblatex Warning: '\mkbibnamefirst' is deprecated.
+(biblatex)                Please use '\mkbibnamegiven'.
+(biblatex)                Using '\mkbibnamegiven'.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 210.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 204.
+(babel)             in language  on input line 210.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 204.
+(babel)             in language  on input line 210.
 Package babel Info: Redefining ngerman shorthand "|
-(babel)             in language  on input line 204.
+(babel)             in language  on input line 210.
 Package babel Info: Redefining ngerman shorthand "~
-(babel)             in language  on input line 204.
- [23
+(babel)             in language  on input line 210.
+[25
 
 
 
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 204.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 210.
  (my_mrmthesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 204.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 204.
-
-
-Package rerunfilecheck Warning: File `my_mrmthesis.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `my_mrmthesis.out':
-(rerunfilecheck)             Before: E05C929F48591E4EC8DB74D3CA8943BD;1636
-(rerunfilecheck)             After:  050DD4167C9C4C08539E8593A894EC80;1696.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 210.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 210.
+Package rerunfilecheck Info: File `my_mrmthesis.out' has not changed.
+(rerunfilecheck)             Checksum: 96D1CD9F1B760F4F595E393CCDCA56EE;1844.
 Package logreq Info: Writing requests to 'my_mrmthesis.run.xml'.
 \openout1 = `my_mrmthesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 29270 strings out of 492972
- 526526 string characters out of 3135884
- 1127224 words of memory out of 3000000
- 32633 multiletter control sequences out of 15000+200000
- 600978 words of font info for 103 fonts, out of 3000000 for 9000
+ 29854 strings out of 492972
+ 537100 string characters out of 3135884
+ 1148842 words of memory out of 3000000
+ 33184 multiletter control sequences out of 15000+200000
+ 601600 words of font info for 109 fonts, out of 3000000 for 9000
  1143 hyphenation exceptions out of 8191
- 59i,11n,68p,9167b,2193s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 59i,14n,68p,9167b,2193s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files/M
-iKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files/MiKTeX 2.9/fonts/e
-nc/dvips/lm/lm-mathit.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm
+iKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/d
+vips/lm/lm-mathit.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy
 .enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathex.enc}<C:/Program 
 Files/MiKTeX 2.9/fonts/type1/public/lm/lmbx12.pfb><C:/Program Files/MiKTeX 2.9/
 fonts/type1/public/lm/lmcsc10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
 ic/lm/lmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmmi12.pfb>
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files/
-MiKTeX 2.9/fonts/type1/public/lm/lmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
-ype1/public/lm/lmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmri
-12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmro12.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/lm/lmss12.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/lm/lmss17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/lm/lmssbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.p
-fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Fil
-es/MiKTeX 2.9/fonts/type1/public/lm/lmtt12.pfb>
-Output written on my_mrmthesis.pdf (29 pages, 546799 bytes).
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmmi6.pfb><C:/Program Files/
+MiKTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
+ype1/public/lm/lmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmr
+6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmr8.pfb><C:/Program F
+iles/MiKTeX 2.9/fonts/type1/public/lm/lmri12.pfb><C:/Program Files/MiKTeX 2.9/f
+onts/type1/public/lm/lmro12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public
+/lm/lmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmss17.pfb><C
+:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmssbx10.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/lm/lmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/l
+mtt12.pfb>
+Output written on my_mrmthesis.pdf (31 pages, 609231 bytes).
 PDF statistics:
- 380 PDF objects out of 1000 (max. 8388607)
- 69 named destinations out of 1000 (max. 500000)
- 23264 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 431 PDF objects out of 1000 (max. 8388607)
+ 80 named destinations out of 1000 (max. 500000)
+ 23288 words of extra memory for PDF output out of 24883 (max. 10000000)
 

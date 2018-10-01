@@ -19,6 +19,141 @@
 
 \refsection{0}
   \datalist[entry]{anyvt/global//global/global}
+    \entry{opencv_wikipedia}{online}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=e2ceeea38f8620383cfbd3e99c5c0cd8}{%
+           family={contributors},
+           familyi={c\bibinitperiod},
+           given={Wikipedia},
+           giveni={W\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{e2ceeea38f8620383cfbd3e99c5c0cd8}
+      \strng{fullhash}{e2ceeea38f8620383cfbd3e99c5c0cd8}
+      \strng{bibnamehash}{e2ceeea38f8620383cfbd3e99c5c0cd8}
+      \strng{authorbibnamehash}{e2ceeea38f8620383cfbd3e99c5c0cd8}
+      \strng{authornamehash}{e2ceeea38f8620383cfbd3e99c5c0cd8}
+      \strng{authorfullhash}{e2ceeea38f8620383cfbd3e99c5c0cd8}
+      \field{labelalpha}{con18}
+      \field{sortinit}{c}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{10}
+      \field{month}{9}
+      \field{title}{Wikipedia - OpenCV}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://de.wikipedia.org/wiki/OpenCV
+      \endverb
+      \verb{url}
+      \verb https://de.wikipedia.org/wiki/OpenCV
+      \endverb
+    \endentry
+    \entry{opencv_nvidia}{online}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=61a23953300b78e83f381e02ca45c5e4}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={NVIDIA},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{fullhash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{bibnamehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authorbibnamehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authornamehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authorfullhash}{61a23953300b78e83f381e02ca45c5e4}
+      \field{labelalpha}{Cor18}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{10}
+      \field{month}{9}
+      \field{title}{NVidia - What is OpenCV?}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.nvidia.com/opencv
+      \endverb
+      \verb{url}
+      \verb https://developer.nvidia.com/opencv
+      \endverb
+    \endentry
+    \entry{matching_cost}{online}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=0691d09d93239609afa1850a130d1216}{%
+           family={Fusiello},
+           familyi={F\bibinitperiod},
+           given={Andrea},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{0691d09d93239609afa1850a130d1216}
+      \strng{fullhash}{0691d09d93239609afa1850a130d1216}
+      \strng{bibnamehash}{0691d09d93239609afa1850a130d1216}
+      \strng{authorbibnamehash}{0691d09d93239609afa1850a130d1216}
+      \strng{authornamehash}{0691d09d93239609afa1850a130d1216}
+      \strng{authorfullhash}{0691d09d93239609afa1850a130d1216}
+      \field{labelalpha}{Fus18}
+      \field{sortinit}{F}
+      \field{sortinithash}{669c706c6f1fbf3b5a83d26f1d9e9e72}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{15}
+      \field{month}{8}
+      \field{title}{Stereo Matching: an Overview}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb http://www.diegm.uniud.it/fusiello/teaching/mvg/stereo.pdf
+      \endverb
+      \verb{url}
+      \verb http://www.diegm.uniud.it/fusiello/teaching/mvg/stereo.pdf
+      \endverb
+    \endentry
+    \entry{stereo_globallocal}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,uniquepart=base,hash=b14ac2b508357476f1391a183a077ab3}{%
+           family={Scharstein},
+           familyi={S\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{uniquename=0,uniquepart=base,hash=f2e556c93256e7d70895d67702e14f1a}{%
+           family={Szeliski},
+           familyi={S\bibinitperiod},
+           given={Richard},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{uniquename=0,uniquepart=base,hash=8f6083f506ec8ce96ff44e09f6cb4337}{%
+           family={Zabih},
+           familyi={Z\bibinitperiod},
+           given={Ramin},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{570a0838d4a3d2b8317e614d56769738}
+      \strng{fullhash}{570a0838d4a3d2b8317e614d56769738}
+      \strng{bibnamehash}{570a0838d4a3d2b8317e614d56769738}
+      \strng{authorbibnamehash}{570a0838d4a3d2b8317e614d56769738}
+      \strng{authornamehash}{570a0838d4a3d2b8317e614d56769738}
+      \strng{authorfullhash}{570a0838d4a3d2b8317e614d56769738}
+      \field{labelalpha}{SSZ18}
+      \field{sortinit}{S}
+      \field{sortinithash}{322b1d5276f2f6c1bccdcd15920dbee6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{15}
+      \field{month}{5}
+      \field{title}{A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algrithms}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \warn{\item Overwriting field 'year' with year value from field 'date' for entry 'stereo_globallocal'}
+    \endentry
     \entry{opencv}{online}{}
       \name{author}{1}{}{%
         {{uniquename=0,uniquepart=base,hash=130dc0ed0466637ba68365942ab3233b}{%

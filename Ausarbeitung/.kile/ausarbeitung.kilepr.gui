@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=doc/imageprocessing.tex
+lastDocument=doc/stereocomputation.tex
 
 [document-settings,item:doc/backgroundsubtraction.tex]
 Bookmarks=
@@ -153,8 +153,8 @@ open=false
 order=5
 
 [item:doc/stereocomputation.tex]
-open=false
-order=3
+open=true
+order=2
 
 [item:my_mrmthesis.bib]
 open=false
@@ -228,11 +228,11 @@ TextFolding=[]
 ViMarks=.,3,34,[,3,13,],3,34
 
 [view-settings,view=0,item:doc/stereocomputation.tex]
-CursorColumn=33
-CursorLine=18
+CursorColumn=0
+CursorLine=21
 JumpList=
 TextFolding=[]
-ViMarks=.,4,2,[,4,2,],4,2
+ViMarks=.,20,0,[,19,105,],20,102
 
 [view-settings,view=0,item:my_mrmthesis.bib]
 CursorColumn=30

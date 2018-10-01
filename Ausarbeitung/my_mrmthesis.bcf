@@ -1975,7 +1975,11 @@
     <bcf:datasource type="file" datatype="bibtex">my_mrmthesis.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">opencv</bcf:citekey>
+    <bcf:citekey order="1">stereo_globallocal</bcf:citekey>
+    <bcf:citekey order="2">matching_cost</bcf:citekey>
+    <bcf:citekey order="3">opencv</bcf:citekey>
+    <bcf:citekey order="4">opencv_nvidia</bcf:citekey>
+    <bcf:citekey order="4">opencv_wikipedia</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="anyvt">

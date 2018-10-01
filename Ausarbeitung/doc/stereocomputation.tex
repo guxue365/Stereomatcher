@@ -14,6 +14,24 @@ Minimierung einer globalen Energiefunktion:
  E_{smooth} &=& \sum_{(x, y)} p(d(x, y)-d(x+1, y))+p(d(x, y)-d(x, y+1))
 \end{eqnarray}\cite{stereo_globallocal}
 
+\renewcommand{\arraystretch}{2.2}
+\begin{tabular}{| l | l |}
+\hline 
+  Sum of Absolute Differences  &  \( \sum_{u, v} |I_1(u, v)-I_2(u+d, v) | \) \\ \hline
+  Sum of Squared Differences & \( \sum_{u, v} (I_1(u, v)-I_2(u+d, v))^2 \) \\ \hline
+    Normalized Cross-Correlation & \( \frac{\sum_{u, v} (I_1(u, v)-\bar{I_1})\cdot(I_2(u+d, v)-\bar{I_2})}{\sqrt{\sum_{u, v} (I_1(u, v)-\bar{I_1})^2\cdot(I_2(u+d, v)-\bar{I_2})^2}} \) \\ \hline
+  Normalized Sum of Squared Differences & \( \sum_{u, v} 
+  \bigg( \frac{(I_1(u, v)-\bar{I_1})}{\sqrt{\sum_{u, v} (I_1(u, v)-\bar{I_1})^2}} -
+  \frac{(I_2(u, v)-\bar{I_2})}{\sqrt{\sum_{u, v} (I_2(u, v)-\bar{I_2})^2}} \bigg)^2 \) \\ \hline
+  Rank & \( \sum_{u, v}(\hat{I_1}(u, v)-\hat{I_2}(u+d, v) \) \\
+  & \( \hat{I_k}(u, v) \coloneqq \sum_{m, n} I_k(m, n)< I_k(u, v) \) \\ \hline
+  Census & \( \sum_{u, v} HAMMING(\hat{I_1}(u, v), \hat{I_2}(u+d, v)) \) \\
+  & \( \hat{I_k}(u, v) \coloneqq BITSTRING_{m, n}(I_k(m, n) < I_k(u, v)) \) \\
+  \hline
+\end{tabular}
+\cite{matching_cost}
+
+
 Boxmatching
 \section{Kombinierte Verfahren}
 \subsection{Semi-Global-Matching}
