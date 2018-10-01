@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -34,49 +35,11 @@ void onMouse(int event, int x, int y, int, void*) {
 	cout << "Mouse Event at: " << x << " | " << y << endl;
 }
 
-
+void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity, vector<double>& rPosition);
 
 int main() {
 
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-
-	cloud->push_back(pcl::PointXYZ(0.0, 0.0, 0.0));
-	cloud->push_back(pcl::PointXYZ(0.0, 2.0, 0.0));
-	cloud->push_back(pcl::PointXYZ(2.0, 0.0, 0.0));
-	cloud->push_back(pcl::PointXYZ(2.0, 2.0, 0.0));
-	cloud->push_back(pcl::PointXYZ(0.0, 0.0, 2.0));
-	cloud->push_back(pcl::PointXYZ(0.0, 2.0, 2.0));
-	cloud->push_back(pcl::PointXYZ(2.0, 0.0, 2.0));
-	cloud->push_back(pcl::PointXYZ(2.0, 2.0, 2.0));
-
-	pcl::MomentOfInertiaEstimation<pcl::PointXYZ> moe;
-	moe.setInputCloud(cloud);
-	moe.compute();
-
-	vector<float> eccentricity;
-	if (!moe.getEccentricity(eccentricity)) {
-		cout << "Error: getEccentricity" << endl;
-	}
-
-	Eigen::Vector3f com;
-	if (!moe.getMassCenter(com)) {
-		cout << "Error: masscenter" << endl;
-	}
-
-	vector<float> moi;
-	if (!moe.getMomentOfInertia(moi)) {
-		cout << "Error: moment of inertia" << endl;
-	}
-
-	cout << "Eccentriyti size: " << eccentricity.size() << endl;
-	cout << "mass center: " <<endl<< com << endl;
-	cout << "moment of inertia size: " << moi.size() << endl;
-
-	for (int i = 0; i < 50; ++i) {
-		cout << "ecc | moi: " << eccentricity[i] << " | " << moi[i] << endl;
-	}
-
-	return 0;
+	
 
 	FileGT file("gt.json");
 
@@ -91,7 +54,7 @@ int main() {
 	}
 
 
-	pcl::search::Search<pcl::PointXYZ>::Ptr oTree = boost::shared_ptr<pcl::search::Search<pcl::PointXYZ> >(new pcl::search::KdTree<pcl::PointXYZ>);
+	/*pcl::search::Search<pcl::PointXYZ>::Ptr oTree = boost::shared_ptr<pcl::search::Search<pcl::PointXYZ> >(new pcl::search::KdTree<pcl::PointXYZ>);
 	pcl::PointCloud <pcl::Normal>::Ptr aNormals(new pcl::PointCloud <pcl::Normal>);
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_estimator;
 	normal_estimator.setSearchMethod(oTree);
@@ -121,7 +84,16 @@ int main() {
 	while (!oViewer.wasStopped())
 	{
 		oViewer.spinOnce(100, true);
-	}
+	}*/
+
+	vector<double> aDimension;
+	vector<double> aEccentricity;
+	vector<double> oPosition;
+	AnalysePointcloud(oCloud, aDimension, aEccentricity, oPosition);
+
+	cout << "Position: " << oPosition[0] << " | " << oPosition[1] << " | " << oPosition[2] << endl;
+	cout << "Dimension: " << aDimension[0] << " | " << aDimension[1] << " | " << aDimension[2] << endl;
+	cout << "Eccentricity: " << aEccentricity[0] << " | " << aEccentricity[1] << endl;
 
 	oImage *= 3;
 	applyColorMap(oImage, oImage, COLORMAP_JET);
@@ -191,4 +163,50 @@ std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity) {
 	}
 	
 	return aResult;
+}
+
+void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity, vector<double>& rPosition)
+{
+	pcl::MomentOfInertiaEstimation<pcl::PointXYZ> MoIEstimation;
+	MoIEstimation.setInputCloud(pCloud);
+	MoIEstimation.compute();
+
+	Eigen::Vector3f oCenterOfMass;
+	if (!MoIEstimation.getMassCenter(oCenterOfMass)) {
+		cout << "Error: masscenter" << endl;
+	}
+
+	pcl::PointXYZ OBBMin;
+	pcl::PointXYZ OBBMax;
+	pcl::PointXYZ OBBPosition;
+	Eigen::Matrix3f OBBRot;
+	if (!MoIEstimation.getOBB(OBBMin, OBBMax, OBBPosition, OBBRot)) {
+		cout << "Error: getOBB" << endl;
+	}
+
+	cout << "OBB min: " << OBBMin << endl;
+	cout << "OBB max: " << OBBMax << endl;
+	cout << "OBB pos: " << OBBPosition << endl;
+
+	cout << "Dimension: " << OBBMax.x - OBBMin.x << endl;
+	cout << "Dimension: " << OBBMax.z - OBBMin.y << endl;
+	cout << "Dimension: " << OBBMax.x - OBBMin.z << endl;
+
+	cout << "mass center: " << endl << oCenterOfMass << endl;
+
+	rDimension.resize(3);
+	rDimension[0] = OBBMax.x - OBBMin.x;
+	rDimension[1] = OBBMax.y - OBBMin.y;
+	rDimension[2] = OBBMax.z - OBBMin.z;
+
+	std::sort(rDimension.begin(), rDimension.end(), std::greater<int>());
+
+	rEccentricity.resize(2);
+	rEccentricity[0] = rDimension[1] / rDimension[0];
+	rEccentricity[1] = rDimension[2] / rDimension[0];
+
+	rPosition.resize(3);
+	rPosition[0] = oCenterOfMass.x();
+	rPosition[1] = oCenterOfMass.y();
+	rPosition[2] = oCenterOfMass.z();
 }
