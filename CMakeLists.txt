@@ -31,7 +31,7 @@ find_package(OpenGL REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS} )
 
 # PCL
-find_package(PCL 1.3 REQUIRED COMPONENTS common visualization)
+find_package(PCL 1.3 REQUIRED COMPONENTS common visualization features segmentation kdtree)
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -45,6 +45,10 @@ include_directories(inc/)
 
 # VTK bugfix
 list(REMOVE_ITEM PCL_VISUALIZATION_LIBRARIES "vtkproj4")
+list(REMOVE_ITEM PCL_KDTREE_LIBRARIES "vtkproj4")
+list(REMOVE_ITEM PCL_IO_LIBRARIES "vtkproj4")
+list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+
 
 # Create targets
 add_executable( run_stereomatcher src/Stereomatcher.cpp
@@ -95,6 +99,7 @@ add_executable( run_pyramidmatcher src/PyramidBlockMatcher.cpp )
 add_executable( run_twostepsegmentation src/TwoStepSegmentation.cpp
     src/segmentation/RegionGrowing.cpp
     src/segmentation/DBSCAN.cpp )
+add_executable (run_creategt src/CreateGT.cpp src/FileGT.cpp )
 
 target_link_libraries( run_stereomatcher ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_bgs ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
@@ -111,3 +116,4 @@ target_link_libraries( run_testpcl ${OpenCV_LIBS} ${PCL_COMMON_LIBRARIES} ${PCL_
 target_link_libraries( run_kittiimprove ${OpenCV_LIBS} )
 target_link_libraries( run_pyramidmatcher ${OpenCV_LIBS} )
 target_link_libraries( run_twostepsegmentation ${OpenCV_LIBS} )
+target_link_libraries( run_creategt ${OpenCV_LIBS} ${PCL_LIBRARIES} ${PCL_FEATURES_LIBRARIES} ${PCL_SEGMENTATION_LIBRARIES} ${PCL_KDTREE_LIBRARIES} )

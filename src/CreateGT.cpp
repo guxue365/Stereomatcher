@@ -16,7 +16,9 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl/segmentation/region_growing.h>
 #include <pcl/features/moment_of_inertia_estimation.h>
-
+#include <pcl/kdtree/kdtree.h>
+#include <pcl/segmentation/extract_clusters.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 
 
 #include <nlohmann/json.hpp>
@@ -27,73 +29,81 @@ using namespace std;
 using namespace cv;
 using json = nlohmann::json;
 
-std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity);
+struct ClusterCenter {
+	int iClusterID;
+	pcl::PointXYZ oPosition;
+};
 
-void onMouse(int event, int x, int y, int, void*) {
+std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity);
+void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity,
+		pcl::PointXYZ& rPosition, pcl::PointXYZ& rOBBPosition, pcl::PointXYZ& rOBBMin, pcl::PointXYZ& rOBBMax, Eigen::Matrix3f& rOBBRot);
+vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloudRaw);
+
+
+vector<ClusterCenter> aClusterCenter;
+Mat oGlobalDisparityImage;
+
+
+void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 	if (event != EVENT_LBUTTONDOWN)		return;
 
-	cout << "Mouse Event at: " << x << " | " << y << endl;
+	cout << "Mouse Event at: " << iMouseX << " | " << iMouseY << endl;
+	if(aClusterCenter.size()>0 && !oGlobalDisparityImage.empty()) {
+		double cx = 1.260414892498634e+03;
+		double cx2 = 1.284997418662109e+03;
+		double cy = 5.260783408403682e+02;
+		double Tx = 483.2905;
+		double f = 2.500744557379985e+03;
+
+		int i = iMouseY;
+		int j = iMouseX;
+		uchar cDisparity = oGlobalDisparityImage.at<uchar>((int)i, (int)j);
+		if (cDisparity > 0) {
+			double x = -((double)(j)-cx);
+			double y = (double)(i)-cy;
+			double z = f;
+			double w = -(double)(cDisparity) / Tx + (cx - cx2) / Tx;
+			x /= w;
+			y /= w;
+			z /= w;
+
+			cout<<"Projected Point: "<<x<<" | "<<y<<" | "<<z<<endl;
+
+			for(ClusterCenter& oCenter: aClusterCenter) {
+				double dx = oCenter.oPosition.x-x;
+				double dy = oCenter.oPosition.y-y;
+				double dz = oCenter.oPosition.z-z;
+
+				double dDistance = sqrt(dx*dx+dy*dy+dz*dz);
+				//cout<<"Distance to Cluster: "<<oCenter.iClusterID<<": "<<dDistance<<endl;
+			}
+
+		}
+	}
 }
 
-void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity, vector<double>& rPosition);
+
+
 
 int main() {
 
-	
-
 	FileGT file("gt.json");
 
-	Mat oImage = imread("E:/sample_images/img_0.png", IMREAD_GRAYSCALE);
+	//Mat oImage = imread("E:/sample_images/img_0.png", IMREAD_GRAYSCALE);
+	Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/sample_images/img_549.png", IMREAD_GRAYSCALE);
+	oGlobalDisparityImage = oImage;
 	auto aPoints3D = Extract3DPoints(oImage);
 
 	cout << "Extracted " << aPoints3D.size() << " Points" << endl;
 
-	pcl::PointCloud<pcl::PointXYZ>::Ptr oCloud(new pcl::PointCloud<pcl::PointXYZ>());
+	pcl::PointCloud<pcl::PointXYZ>::Ptr pCloud(new pcl::PointCloud<pcl::PointXYZ>());
 	for (auto& oPoint : aPoints3D) {
-		oCloud->push_back(oPoint);
+		pCloud->push_back(oPoint);
 	}
 
 
-	/*pcl::search::Search<pcl::PointXYZ>::Ptr oTree = boost::shared_ptr<pcl::search::Search<pcl::PointXYZ> >(new pcl::search::KdTree<pcl::PointXYZ>);
-	pcl::PointCloud <pcl::Normal>::Ptr aNormals(new pcl::PointCloud <pcl::Normal>);
-	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_estimator;
-	normal_estimator.setSearchMethod(oTree);
-	normal_estimator.setInputCloud(oCloud);
-	normal_estimator.setKSearch(50);
-	normal_estimator.compute(*aNormals);
+	aClusterCenter = ClusterAndAnalysePointCloud(pCloud);
 
-	pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> oRegionGrowing;
-	oRegionGrowing.setMinClusterSize(200);
-	oRegionGrowing.setMaxClusterSize(1000000);
-	oRegionGrowing.setSearchMethod(oTree);
-	oRegionGrowing.setNumberOfNeighbours(10);
-	oRegionGrowing.setInputCloud(oCloud);
-	//reg.setIndices (indices);
-	oRegionGrowing.setInputNormals(aNormals);
-	oRegionGrowing.setSmoothnessThreshold(3.0 / 180.0 * M_PI);
-	oRegionGrowing.setCurvatureThreshold(1.0);
-
-	std::vector <pcl::PointIndices> aClusters;
-	oRegionGrowing.extract(aClusters);
-
-	cout << "Number of extracted Clusters: " << aClusters.size() << endl;
-
-	pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = oRegionGrowing.getColoredCloud();
-	pcl::visualization::PCLVisualizer oViewer("Simple Cloud Viewer");
-	oViewer.addPointCloud(colored_cloud);
-	while (!oViewer.wasStopped())
-	{
-		oViewer.spinOnce(100, true);
-	}*/
-
-	vector<double> aDimension;
-	vector<double> aEccentricity;
-	vector<double> oPosition;
-	AnalysePointcloud(oCloud, aDimension, aEccentricity, oPosition);
-
-	cout << "Position: " << oPosition[0] << " | " << oPosition[1] << " | " << oPosition[2] << endl;
-	cout << "Dimension: " << aDimension[0] << " | " << aDimension[1] << " | " << aDimension[2] << endl;
-	cout << "Eccentricity: " << aEccentricity[0] << " | " << aEccentricity[1] << endl;
 
 	oImage *= 3;
 	applyColorMap(oImage, oImage, COLORMAP_JET);
@@ -101,8 +111,6 @@ int main() {
 	imshow("Disp", oImage);
 
 	setMouseCallback("Disp", onMouse);
-
-	
 
 	bool bRunning = true;
 	for (int iFrame = 0; bRunning; ++iFrame) {
@@ -165,7 +173,8 @@ std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity) {
 	return aResult;
 }
 
-void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity, vector<double>& rPosition)
+void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity,
+		pcl::PointXYZ& rPosition, pcl::PointXYZ& rOBBPosition, pcl::PointXYZ& rOBBMin, pcl::PointXYZ& rOBBMax, Eigen::Matrix3f& rOBBRot)
 {
 	pcl::MomentOfInertiaEstimation<pcl::PointXYZ> MoIEstimation;
 	MoIEstimation.setInputCloud(pCloud);
@@ -184,29 +193,108 @@ void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud
 		cout << "Error: getOBB" << endl;
 	}
 
-	cout << "OBB min: " << OBBMin << endl;
-	cout << "OBB max: " << OBBMax << endl;
-	cout << "OBB pos: " << OBBPosition << endl;
-
-	cout << "Dimension: " << OBBMax.x - OBBMin.x << endl;
-	cout << "Dimension: " << OBBMax.z - OBBMin.y << endl;
-	cout << "Dimension: " << OBBMax.x - OBBMin.z << endl;
-
-	cout << "mass center: " << endl << oCenterOfMass << endl;
-
 	rDimension.resize(3);
 	rDimension[0] = OBBMax.x - OBBMin.x;
 	rDimension[1] = OBBMax.y - OBBMin.y;
 	rDimension[2] = OBBMax.z - OBBMin.z;
 
-	std::sort(rDimension.begin(), rDimension.end(), std::greater<int>());
+	//std::sort(rDimension.begin(), rDimension.end(), std::greater<int>());
 
 	rEccentricity.resize(2);
 	rEccentricity[0] = rDimension[1] / rDimension[0];
 	rEccentricity[1] = rDimension[2] / rDimension[0];
 
-	rPosition.resize(3);
-	rPosition[0] = oCenterOfMass.x();
-	rPosition[1] = oCenterOfMass.y();
-	rPosition[2] = oCenterOfMass.z();
+	rPosition.x = oCenterOfMass.x();
+	rPosition.y = oCenterOfMass.y();
+	rPosition.z = oCenterOfMass.z();
+
+	rOBBPosition = OBBPosition;
+	rOBBMin = OBBMin;
+	rOBBMax = OBBMax;
+	rOBBRot = OBBRot;
 }
+
+
+vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloudRaw) {
+	vector<ClusterCenter> aResult;
+
+	pcl::PointCloud<pcl::PointXYZ>::Ptr oCloud(new pcl::PointCloud<pcl::PointXYZ>());
+
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+	sor.setInputCloud (pCloudRaw);
+	sor.setMeanK (200);
+	sor.setStddevMulThresh (0.2);
+	sor.filter (*oCloud);
+
+	cout<<"Cloud Size after Filtering: "<<oCloud->width<<endl;
+
+	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
+	tree->setInputCloud(oCloud);
+
+	std::vector<pcl::PointIndices> cluster_indices;
+	pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+	ec.setClusterTolerance (700.0);
+	ec.setMinClusterSize (1500);
+	ec.setMaxClusterSize (50000);
+	ec.setSearchMethod (tree);
+	ec.setInputCloud (oCloud);
+	ec.extract (cluster_indices);
+
+	cout<<"Extracted "<<cluster_indices.size()<<" Clusters"<<endl;
+
+	pcl::visualization::PCLVisualizer oViewer("Simple Cloud Viewer");
+	//oViewer.addCoordinateSystem(1.0);
+	//oViewer.initCameraParameters();
+	int iCloudCount = 1;
+	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it) {
+		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZ>);
+		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); ++pit) {
+			cloud_cluster->points.push_back (oCloud->points[*pit]);
+		}
+		cloud_cluster->width = cloud_cluster->points.size ();
+		cloud_cluster->height = 1;
+		cloud_cluster->is_dense = true;
+
+		cout<<"Cluster "<<iCloudCount<<" size: "<<cloud_cluster->width<<endl;
+
+		pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> single_color(cloud_cluster, 256-35*iCloudCount, 35*iCloudCount, 0);
+
+		oViewer.addPointCloud(cloud_cluster, single_color, "cloud_"+std::to_string(iCloudCount));
+
+		vector<double> aDimension;
+		vector<double> aEccentricity;
+		pcl::PointXYZ oPosition;
+		pcl::PointXYZ oOBBPosition;
+		pcl::PointXYZ oOBBMin;
+		pcl::PointXYZ oOBBMax;
+		Eigen::Matrix3f oOBBRot;
+
+		AnalysePointcloud(cloud_cluster, aDimension, aEccentricity, oPosition, oOBBPosition, oOBBMin, oOBBMax, oOBBRot);
+
+		Eigen::Vector3f position (oOBBPosition.x, oOBBPosition.y, oOBBPosition.z);
+		Eigen::Quaternionf quat (oOBBRot);
+		//oViewer.addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
+
+		oViewer.addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
+		cout<<"Sphere: "<<oPosition<<endl;
+
+		cout << "Position: " << oPosition.x << " | " << oPosition.y << " | " << oPosition.z << endl;
+		cout << "OBBPosition: " << oOBBPosition.x << " | " << oOBBPosition.y << " | " << oOBBPosition.z << endl;
+		cout << "Dimension: " << aDimension[0] << " | " << aDimension[1] << " | " << aDimension[2] << endl;
+		cout << "Eccentricity: " << aEccentricity[0] << " | " << aEccentricity[1] << endl;
+		cout<<"---------------------------------------------------------------------"<<endl;
+
+		aResult.push_back({iCloudCount, oPosition});
+
+		++iCloudCount;
+	}
+
+
+	while(!oViewer.wasStopped()) {
+		oViewer.spinOnce(100, true);
+	}
+
+	return aResult;
+}
+
+
