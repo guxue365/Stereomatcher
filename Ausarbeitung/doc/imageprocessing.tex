@@ -55,3 +55,30 @@ Analogie zentrale Differenz:
  S_v &= \frac{1}{8} \begin{bmatrix}[r] -2&-1&0 \\ -1&0&1 \\ 0&1&2 \end{bmatrix}
 \end{align*}
 \end{multicols}
+
+\section{Interpolation}
+
+Interpolation: Suche 
+\( f: \mathbb{R}^2\mapsto\mathbb{R}, f(x_n)=f_n, n=1,...,4 \)
+
+Nearest-Neighbor-Interpolation:
+\begin{equation*}
+f: \mathbb{R}^2\mapsto\mathbb{R},f(x)=x_k,k=\underset{{l \in {1,..., 4}}}{arg\,min} (||x-x_l||)
+\end{equation*}
+
+
+Bilineare Interpolation:
+\begin{eqnarray*}
+ f: \mathbb{R}^2\mapsto\mathbb{R}, f(x, y)&=&\sum_{i=0}^1 \sum_{j=0}^1 a_{ij}x^iy^j \\
+&=&a_{00}+a_{10}x+a_{01}y+a_{11}xy
+\end{eqnarray*}
+
+Bikubische Interpolation:
+\begin{equation*}
+ f: \mathbb{R}^2\mapsto\mathbb{R}, f(x, y)=\sum_{i=0}^3 \sum_{j=0}^3 a_{ij}x^iy^j
+\end{equation*}
+
+Die Parameter \(a_{ij} \) vorher analytisch berechnen.
+
+\section{Morphologische Operationen}
+
