@@ -228,11 +228,11 @@ TextFolding=[]
 ViMarks=.,3,34,[,3,13,],3,34
 
 [view-settings,view=0,item:doc/stereocomputation.tex]
-CursorColumn=0
-CursorLine=21
+CursorColumn=31
+CursorLine=35
 JumpList=
 TextFolding=[]
-ViMarks=.,20,0,[,19,105,],20,102
+ViMarks=.,31,19,[,31,0,],31,19
 
 [view-settings,view=0,item:my_mrmthesis.bib]
 CursorColumn=30
@@ -243,7 +243,7 @@ ViMarks=.,0,0,[,0,0,],0,0
 
 [view-settings,view=0,item:my_mrmthesis.tex]
 CursorColumn=0
-CursorLine=47
+CursorLine=42
 JumpList=
 TextFolding=[]
-ViMarks=.,46,12,[,42,0,],-1,-1
+ViMarks=.,41,0,[,41,0,],41,21

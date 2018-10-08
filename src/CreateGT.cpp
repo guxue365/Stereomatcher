@@ -6,6 +6,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
 
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
@@ -35,14 +36,39 @@ struct ClusterCenter {
 };
 
 std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity);
+std::vector<pcl::PointXYZ> Extract3DPointsOpenCV(const cv::Mat& rDisparity);
+
 void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud, vector<double>& rDimension, vector<double>& rEccentricity,
 		pcl::PointXYZ& rPosition, pcl::PointXYZ& rOBBPosition, pcl::PointXYZ& rOBBMin, pcl::PointXYZ& rOBBMax, Eigen::Matrix3f& rOBBRot);
-vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloudRaw);
+vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visualization::PCLVisualizer> pViewer, boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloudRaw);
 
 
 vector<ClusterCenter> aClusterCenter;
 Mat oGlobalDisparityImage;
+boost::shared_ptr<pcl::visualization::PCLVisualizer> pGlobalViewer;
 
+string type2str(int type) {
+	string r;
+
+	uchar depth = type & CV_MAT_DEPTH_MASK;
+	uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+	switch (depth) {
+	case CV_8U:  r = "8U"; break;
+	case CV_8S:  r = "8S"; break;
+	case CV_16U: r = "16U"; break;
+	case CV_16S: r = "16S"; break;
+	case CV_32S: r = "32S"; break;
+	case CV_32F: r = "32F"; break;
+	case CV_64F: r = "64F"; break;
+	default:     r = "User"; break;
+	}
+
+	r += "C";
+	r += (chans + '0');
+
+	return r;
+}
 
 void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 	if (event != EVENT_LBUTTONDOWN)		return;
@@ -67,7 +93,10 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 			y /= w;
 			z /= w;
 
-			cout<<"Projected Point: "<<x<<" | "<<y<<" | "<<z<<endl;
+			cout << i << " | " << j << " -> " << x << " | " << y << " | " << z << " - Disparity: " << (int)cDisparity << endl;
+
+			pcl::PointXYZ oSphere(x, y, z);
+			pGlobalViewer->updateSphere(oSphere, 10.0, 1.0, 0.0, 1.0, "mouse_sphere");
 
 			for(ClusterCenter& oCenter: aClusterCenter) {
 				double dx = oCenter.oPosition.x-x;
@@ -75,7 +104,7 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 				double dz = oCenter.oPosition.z-z;
 
 				double dDistance = sqrt(dx*dx+dy*dy+dz*dz);
-				//cout<<"Distance to Cluster: "<<oCenter.iClusterID<<": "<<dDistance<<endl;
+				cout<<"Distance to Cluster: "<<oCenter.iClusterID<<": "<<dDistance<<endl;
 			}
 
 		}
@@ -89,9 +118,11 @@ int main() {
 
 	FileGT file("gt.json");
 
-	//Mat oImage = imread("E:/sample_images/img_0.png", IMREAD_GRAYSCALE);
-	Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/sample_images/img_549.png", IMREAD_GRAYSCALE);
-	oGlobalDisparityImage = oImage;
+	Mat oImage = imread("E:/sample_images/img_549.png", IMREAD_GRAYSCALE);
+	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/sample_images/img_549.png", IMREAD_GRAYSCALE);
+
+	oImage.copyTo(oGlobalDisparityImage);
+
 	auto aPoints3D = Extract3DPoints(oImage);
 
 	cout << "Extracted " << aPoints3D.size() << " Points" << endl;
@@ -101,13 +132,18 @@ int main() {
 		pCloud->push_back(oPoint);
 	}
 
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> pViewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
+	pGlobalViewer = pViewer;
 
-	aClusterCenter = ClusterAndAnalysePointCloud(pCloud);
+	aClusterCenter = ClusterAndAnalysePointCloud(pViewer, pCloud);
+
+	pcl::PointXYZ pSphere(0.0, 0.0, 0.0);
+	pViewer->add
 
 
 	oImage *= 3;
 	applyColorMap(oImage, oImage, COLORMAP_JET);
-
+	
 	imshow("Disp", oImage);
 
 	setMouseCallback("Disp", onMouse);
@@ -115,7 +151,9 @@ int main() {
 	bool bRunning = true;
 	for (int iFrame = 0; bRunning; ++iFrame) {
 
-		int iKeyCode = waitKey(0);
+		int iKeyCode = waitKey(100);
+
+		pViewer->spinOnce(100, true);
 
 		if (iKeyCode == 27)	break;
 
@@ -138,7 +176,6 @@ std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity) {
 	assert(rDisparity.type() == CV_8UC1);
 
 	std::vector<pcl::PointXYZ> aResult;
-	size_t iNumPoints = 0;
 
 
 	double cx = 1.260414892498634e+03;
@@ -165,11 +202,41 @@ std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity) {
 				oPoint.z = (float)z;
 
 				aResult.push_back(oPoint);
-				iNumPoints++;
 			}
 		}
 	}
 	
+	return aResult;
+}
+
+std::vector<pcl::PointXYZ> Extract3DPointsOpenCV(const cv::Mat& rDisparity) {
+	assert(rDisparity.type() == CV_8UC1);
+
+	std::vector<pcl::PointXYZ> aResult;
+
+	double QData[] = { 1.0, 0.0, 0.0, -690.7654724121094, 0.0, 1.0, 0.0, -531.5912857055664, 0.0, 0.0, 0.0, 1597.788948308794, 0.0, 0.0, 0.014676885509634826, -0.6669165936325461 };
+	Mat Q = cv::Mat(4, 4, CV_64F, QData);
+
+	Mat o3DImage;
+
+	reprojectImageTo3D(rDisparity, o3DImage, Q);
+
+	for (int i = 0; i < rDisparity.rows; ++i) {
+		for (int j = 0; j < rDisparity.cols; ++j) {
+			uchar cDisparity = rDisparity.at<uchar>(i, j);
+			if (cDisparity > 0) {
+				cv::Vec3f Point3D = o3DImage.at<cv::Vec3f>(i, j);
+
+				pcl::PointXYZ oPoint;
+				oPoint.x = Point3D[0];
+				oPoint.y = Point3D[1];
+				oPoint.z = Point3D[2];
+
+				aResult.push_back(oPoint);
+			}
+		}
+	}
+
 	return aResult;
 }
 
@@ -215,7 +282,7 @@ void AnalysePointcloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloud
 }
 
 
-vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloudRaw) {
+vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visualization::PCLVisualizer> pViewer, boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pCloudRaw) {
 	vector<ClusterCenter> aResult;
 
 	pcl::PointCloud<pcl::PointXYZ>::Ptr oCloud(new pcl::PointCloud<pcl::PointXYZ>());
@@ -242,9 +309,6 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCl
 
 	cout<<"Extracted "<<cluster_indices.size()<<" Clusters"<<endl;
 
-	pcl::visualization::PCLVisualizer oViewer("Simple Cloud Viewer");
-	//oViewer.addCoordinateSystem(1.0);
-	//oViewer.initCameraParameters();
 	int iCloudCount = 1;
 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it) {
 		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZ>);
@@ -259,7 +323,7 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCl
 
 		pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> single_color(cloud_cluster, 256-35*iCloudCount, 35*iCloudCount, 0);
 
-		oViewer.addPointCloud(cloud_cluster, single_color, "cloud_"+std::to_string(iCloudCount));
+		pViewer->addPointCloud(cloud_cluster, single_color, "cloud_"+std::to_string(iCloudCount));
 
 		vector<double> aDimension;
 		vector<double> aEccentricity;
@@ -273,9 +337,9 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCl
 
 		Eigen::Vector3f position (oOBBPosition.x, oOBBPosition.y, oOBBPosition.z);
 		Eigen::Quaternionf quat (oOBBRot);
-		//oViewer.addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
+		pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
 
-		oViewer.addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
+		//pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
 		cout<<"Sphere: "<<oPosition<<endl;
 
 		cout << "Position: " << oPosition.x << " | " << oPosition.y << " | " << oPosition.z << endl;
@@ -287,11 +351,6 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::PointCl
 		aResult.push_back({iCloudCount, oPosition});
 
 		++iCloudCount;
-	}
-
-
-	while(!oViewer.wasStopped()) {
-		oViewer.spinOnce(100, true);
 	}
 
 	return aResult;
