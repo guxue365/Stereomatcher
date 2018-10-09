@@ -36,7 +36,8 @@ enum E_POSTPROCESSOR {
 
 enum E_SEGMENTATION {
 	E_REGIONGROWING,
-	E_DBSCAN
+	E_DBSCAN,
+	E_PCLSEGMENTATION
 };
 
 struct StereoOptions {
@@ -96,6 +97,7 @@ E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor) {
 E_SEGMENTATION convertSegmentation(const std::string& sSegmentation) {
 	if (sSegmentation == "regiongrowing") 	return E_SEGMENTATION::E_REGIONGROWING;
 	if (sSegmentation == "dbscan") 		return E_SEGMENTATION::E_DBSCAN;
+	if(sSegmentation=="pclsegmentation") 	return E_SEGMENTATION::E_PCLSEGMENTATION;
 	throw std::invalid_argument("invalid segmentation conversion");
 }
 
@@ -169,6 +171,10 @@ std::ostream& operator << (std::ostream& os, E_SEGMENTATION eSegmentation) {
 	}
 	case E_SEGMENTATION::E_DBSCAN: {
 		os << "DBSCAN";
+		break;
+	}
+	case E_SEGMENTATION::E_PCLSEGMENTATION: {
+		os<<" PCL Segmentation";
 		break;
 	}
 	default: throw std::invalid_argument("Unknown eSegmentatoin");

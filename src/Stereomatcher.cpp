@@ -34,8 +34,9 @@
 #include <postprocess/BasePostprocessor.h>
 #include <postprocess/PostInterpolation.h>
 
-#include "segmentation/RegionGrowing.h"
-#include "segmentation/DBSCAN.h"
+#include <segmentation/RegionGrowing.h>
+#include <segmentation/DBSCAN.h>
+#include <segmentation/PCLSegmentation.h>
 
 #include <stereomatch/BasicBlockMatcher.h>
 #include <stereomatch/BasicBPMatcher.h>
@@ -49,6 +50,7 @@ using namespace std;
 using namespace cv;
 using json = nlohmann::json;
 
+void SaveClusterToJson(const std::string& sFilename, const std::vector<std::vector<Cluster> >& aFrameClusters);
 
 int main() {
 
@@ -75,6 +77,7 @@ int main() {
 
 	RegionGrowing oRegionGrowing;
 	DBSCAN oDBSCAN;
+	PCLSegmentation oPCLSegmentation;
 
 	ifstream oConfigFile("config.json", ios::in);
 	if(!oConfigFile.is_open()) {
@@ -236,6 +239,10 @@ int main() {
 					pSegmentation = &oDBSCAN;
 					break;
 				}
+				case E_SEGMENTATION::E_PCLSEGMENTATION: {
+					pSegmentation = &oPCLSegmentation;
+					break;
+				}
 				default: throw std::invalid_argument("Invalid Segmentation");
 			}
 
@@ -284,6 +291,8 @@ int main() {
 
 					imwrite(sSegmentationFolder+sFilename, oImageControl.getSegmentation()[i]);
 				}
+
+				SaveClusterToJson(rRun.msResultfolder+"result_cluster.json", oImageControl.getCluster());
 			}
 		}
 
@@ -294,4 +303,37 @@ int main() {
 	cout<<"Finished"<<endl;
 
 	return 0;
+}
+
+void SaveClusterToJson(const std::string& sFilename, const std::vector<std::vector<Cluster> >& aFrameClusters) {
+	json aJsonFrames;
+
+	int iCount = 0;
+	for(int i=0; i<aFrameClusters.size(); ++i) {
+		auto& aCluster = aFrameClusters[i];
+
+		json aJsonClusters;
+		for(auto& oCluster: aCluster) {
+			json oJsonCluster;
+			oJsonCluster["id"] = iCount;
+			oJsonCluster["frame"] = i;
+			oJsonCluster["position"] = {oCluster.oPosition.val[0], oCluster.oPosition.val[1], oCluster.oPosition.val[2]};
+			oJsonCluster["dimension"] = {oCluster.aDimension.val[0], oCluster.aDimension.val[1], oCluster.aDimension.val[2]};
+			oJsonCluster["eccentricity"] = {oCluster.aEccentricity.val[0], oCluster.aEccentricity.val[1]};
+
+			aJsonClusters.push_back(oJsonCluster);
+			++iCount;
+		}
+
+		aJsonFrames.push_back(aJsonClusters);
+	}
+
+	ofstream oJsonFile(sFilename.c_str(), ios::out);
+	if (!oJsonFile.is_open()) {
+		throw std::invalid_argument("Cannot save GT File");
+	}
+
+	oJsonFile << aJsonFrames.dump(5);
+
+	oJsonFile.close();
 }

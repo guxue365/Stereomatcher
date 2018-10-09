@@ -46,6 +46,7 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visuali
 vector<ClusterCenter> aClusterCenter;
 Mat oGlobalDisparityImage;
 boost::shared_ptr<pcl::visualization::PCLVisualizer> pGlobalViewer;
+pcl::PointXYZ oGlobalMousePosition(0.0, 0.0, 0.0);
 
 string type2str(int type) {
 	string r;
@@ -95,8 +96,10 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 
 			cout << i << " | " << j << " -> " << x << " | " << y << " | " << z << " - Disparity: " << (int)cDisparity << endl;
 
-			pcl::PointXYZ oSphere(x, y, z);
-			pGlobalViewer->updateSphere(oSphere, 10.0, 1.0, 0.0, 1.0, "mouse_sphere");
+			oGlobalMousePosition.x = (float)x;
+			oGlobalMousePosition.y = (float)y;
+			oGlobalMousePosition.z = (float)z;
+			pGlobalViewer->updateSphere(oGlobalMousePosition, 100.0, 1.0, 1.0, 1.0, "mouse_sphere");
 
 			for(ClusterCenter& oCenter: aClusterCenter) {
 				double dx = oCenter.oPosition.x-x;
@@ -116,57 +119,111 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 
 int main() {
 
-	FileGT file("gt.json");
+	FileGT oFileGT("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/gt.json");
 
-	Mat oImage = imread("E:/sample_images/img_549.png", IMREAD_GRAYSCALE);
+	//Mat oImage = imread("E:/sample_images/img_549.png", IMREAD_GRAYSCALE);
 	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/sample_images/img_549.png", IMREAD_GRAYSCALE);
 
-	oImage.copyTo(oGlobalDisparityImage);
-
-	auto aPoints3D = Extract3DPoints(oImage);
-
-	cout << "Extracted " << aPoints3D.size() << " Points" << endl;
-
-	pcl::PointCloud<pcl::PointXYZ>::Ptr pCloud(new pcl::PointCloud<pcl::PointXYZ>());
-	for (auto& oPoint : aPoints3D) {
-		pCloud->push_back(oPoint);
-	}
-
-	boost::shared_ptr<pcl::visualization::PCLVisualizer> pViewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-	pGlobalViewer = pViewer;
-
-	aClusterCenter = ClusterAndAnalysePointCloud(pViewer, pCloud);
-
-	pcl::PointXYZ pSphere(0.0, 0.0, 0.0);
-	pViewer->add
 
 
-	oImage *= 3;
-	applyColorMap(oImage, oImage, COLORMAP_JET);
+	pGlobalViewer = boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer("3D Viewer"));
+
+
+
+	pGlobalViewer->removeAllPointClouds();
 	
-	imshow("Disp", oImage);
 
-	setMouseCallback("Disp", onMouse);
+	cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/postprocess/img_%d.png");
+	cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/preprocess/img_%d_c0.png");
 
-	bool bRunning = true;
-	for (int iFrame = 0; bRunning; ++iFrame) {
+	Mat oFrame;
+	Mat oFrameColor;
 
-		int iKeyCode = waitKey(100);
+	for (int iFrame = 0;; ++iFrame) {
 
-		pViewer->spinOnce(100, true);
+		oImages>>oFrame;
+		oImagesColor>>oFrameColor;
 
-		if (iKeyCode == 27)	break;
+		if(oFrame.empty() || oFrameColor.empty()) 	break;
 
-		switch (iKeyCode) {
-		case 49: {
-			cout << "Setting Label 1" << endl;
-			break;
+		cvtColor(oFrame, oFrame, CV_BGR2GRAY);
+
+		oFrame.copyTo(oGlobalDisparityImage);
+
+		auto aPoints3D = Extract3DPoints(oFrame);
+
+		cout << "Extracted " << aPoints3D.size() << " Points" << endl;
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr pCloud(new pcl::PointCloud<pcl::PointXYZ>());
+		for (auto& oPoint : aPoints3D) {
+			pCloud->push_back(oPoint);
 		}
-		case 50: {
-			cout << "Setting Label 2" << endl;
-			break;
+
+		aClusterCenter = ClusterAndAnalysePointCloud(pGlobalViewer, pCloud);
+
+		oFrame *= 3;
+		applyColorMap(oFrame, oFrame, COLORMAP_JET);
+
+		imshow("Disp", oFrame);
+		imshow("Disp Color", oFrameColor);
+		setMouseCallback("Disp", onMouse);
+
+		pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
+
+		for(;;) {
+
+			int iKeyCode = waitKey(100);
+
+			pGlobalViewer->spinOnce(100, true);
+
+			if (iKeyCode == 27)	break;
+			if(iKeyCode==13) 	break;
+
+			switch (iKeyCode) {
+				case 49: {
+					FrameGT oFrameGT;
+					oFrameGT.miFrame = iFrame;
+					oFrameGT.miLabel = 1;
+					oFrameGT.mdX = oGlobalMousePosition.x;
+					oFrameGT.mdY = oGlobalMousePosition.y;
+					oFrameGT.mdZ = oGlobalMousePosition.z;
+
+					oFileGT.AddFrameGT(oFrameGT);
+
+					cout << "Setting Label 1" << endl;
+					break;
+				}
+				case 50: {
+					FrameGT oFrameGT;
+					oFrameGT.miFrame = iFrame;
+					oFrameGT.miLabel = 2;
+					oFrameGT.mdX = oGlobalMousePosition.x;
+					oFrameGT.mdY = oGlobalMousePosition.y;
+					oFrameGT.mdZ = oGlobalMousePosition.z;
+
+					oFileGT.AddFrameGT(oFrameGT);
+
+					cout << "Setting Label 2" << endl;
+					break;
+				}
+				case 51: {
+					FrameGT oFrameGT;
+					oFrameGT.miFrame = iFrame;
+					oFrameGT.miLabel = 3;
+					oFrameGT.mdX = oGlobalMousePosition.x;
+					oFrameGT.mdY = oGlobalMousePosition.y;
+					oFrameGT.mdZ = oGlobalMousePosition.z;
+
+					oFileGT.AddFrameGT(oFrameGT);
+
+					cout<<"Setting Label 3"<<endl;
+					break;
+				}
+			}
 		}
-		}
+
+		pGlobalViewer->removeAllPointClouds();
+		pGlobalViewer->removeAllShapes();
 	}
 
 	return 0;
@@ -214,8 +271,10 @@ std::vector<pcl::PointXYZ> Extract3DPointsOpenCV(const cv::Mat& rDisparity) {
 
 	std::vector<pcl::PointXYZ> aResult;
 
-	double QData[] = { 1.0, 0.0, 0.0, -690.7654724121094, 0.0, 1.0, 0.0, -531.5912857055664, 0.0, 0.0, 0.0, 1597.788948308794, 0.0, 0.0, 0.014676885509634826, -0.6669165936325461 };
-	Mat Q = cv::Mat(4, 4, CV_64F, QData);
+	//double QData[] = { 1.0, 0.0, 0.0, -690.7654724121094, 0.0, 1.0, 0.0, -531.5912857055664, 0.0, 0.0, 0.0, 1597.788948308794, 0.0, 0.0, 0.014676885509634826, -0.6669165936325461 };
+	float QData[] = { 1.0, 0.0, 0.0, -1092.9328918457031, 0.0, 1.0, 0.0, -539.3284683227539, 0.0, 0.0, 0.0, 1650.4421002399172, 0.0, 0.0, 0.0020691487390760484, -0.13932939622620283 };
+
+	Mat Q = cv::Mat(4, 4, CV_32F, QData);
 
 	Mat o3DImage;
 
@@ -228,8 +287,8 @@ std::vector<pcl::PointXYZ> Extract3DPointsOpenCV(const cv::Mat& rDisparity) {
 				cv::Vec3f Point3D = o3DImage.at<cv::Vec3f>(i, j);
 
 				pcl::PointXYZ oPoint;
-				oPoint.x = Point3D[0];
-				oPoint.y = Point3D[1];
+				oPoint.x = -Point3D[0];
+				oPoint.y = -Point3D[1];
 				oPoint.z = Point3D[2];
 
 				aResult.push_back(oPoint);
@@ -337,9 +396,9 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visuali
 
 		Eigen::Vector3f position (oOBBPosition.x, oOBBPosition.y, oOBBPosition.z);
 		Eigen::Quaternionf quat (oOBBRot);
-		pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
+		//pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
 
-		//pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
+		pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
 		cout<<"Sphere: "<<oPosition<<endl;
 
 		cout << "Position: " << oPosition.x << " | " << oPosition.y << " | " << oPosition.z << endl;

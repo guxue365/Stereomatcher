@@ -13,7 +13,8 @@ public:
 	void setEps(double dEps);
 	void setMinPts(unsigned int iMinPoints);
 
-	cv::Mat Segment(const cv::Mat& rImage);
+	//cv::Mat Segment(const cv::Mat& rImage);
+	std::vector<Cluster> Segment(const cv::Mat& rImage);
 private:
 	double mdEps;
 	unsigned int miMinPoints;

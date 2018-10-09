@@ -27,6 +27,7 @@ public:
 	const std::vector<cv::Mat>& getDisparity() const;
 	const std::vector<cv::Mat>& getPostprocessImages() const;
 	const std::vector<cv::Mat>& getSegmentation() const;
+	const std::vector<std::vector<Cluster> >& getCluster() const;
 private:
 	IImageLoader& mrImageLoader;
 	IPreprocessing& mrPreprocessor;
@@ -45,4 +46,5 @@ private:
 	std::vector<cv::Mat> maDisparity;
 	std::vector<cv::Mat> maPostprocessImages;
 	std::vector<cv::Mat> maSegmentation;
+	std::vector<std::vector<Cluster> > maCluster;
 };

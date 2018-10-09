@@ -54,6 +54,11 @@ void ImageControl::Run() {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
 
+		for(int k=0; k<20; ++k) {
+			oLeftImage = mrImageLoader.getNextLeftImage();
+			oRightImage = mrImageLoader.getNextRightImage();
+		}
+
 
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
@@ -70,8 +75,9 @@ void ImageControl::Run() {
 
 		cv::Mat oPostprocess = mrPostprocessor.Postprocess(oDisparity);
 
-		cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
-		//cv::Mat oSegmentation = oPostprocess;
+		vector<Cluster> aCluster = mrSegmentation.Segment(oPostprocess);
+		//cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
+		cv::Mat oSegmentation = oPostprocess;
 
 		normalize(oSegmentation, oSegmentation, 255.0, 0.0, CV_MINMAX);
 
@@ -85,6 +91,7 @@ void ImageControl::Run() {
 		maDisparity.push_back(oDisparity);
 		maPostprocessImages.push_back(oPostprocess);
 		maSegmentation.push_back(oSegmentation);
+		maCluster.push_back(aCluster);
 
 
 		int iWidth = 960;
@@ -123,7 +130,7 @@ void ImageControl::Run() {
 		oVideoOut.write(oResult);*/
 
 
-		int c = (char)waitKey(25);
+		int c = (char)waitKey(10);
 		if(c==27) 	break;
 	}
 
@@ -155,4 +162,8 @@ const std::vector<cv::Mat>& ImageControl::getPostprocessImages() const  {
 
 const std::vector<cv::Mat>& ImageControl::getSegmentation() const {
 	return maSegmentation;
+}
+
+const std::vector<std::vector<Cluster> >& ImageControl::getCluster() const {
+	return maCluster;
 }
