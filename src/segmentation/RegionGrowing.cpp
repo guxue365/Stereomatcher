@@ -15,9 +15,13 @@ RegionGrowing::~RegionGrowing() {
 
 }
 
-cv::Mat RegionGrowing::Segment(const cv::Mat& rImage) {
-	return GrowRegion(rImage);
+std::vector<Cluster> RegionGrowing::Segment(const cv::Mat& rImage) {
+	return vector<Cluster>();
 }
+
+/*cv::Mat RegionGrowing::Segment(const cv::Mat& rImage) {
+	return GrowRegion(rImage);
+}*/
 
 cv::Mat RegionGrowing::GrowRegion(const cv::Mat& rInput) {
 	assert(rInput.type() == CV_8U);

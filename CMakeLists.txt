@@ -11,12 +11,12 @@ find_package(OpenCV 3.0 REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS} ) 
 
 # Boost
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF)
-set(BOOST_ROOT /opt/boost/boost-1.67.0)
-find_package(Boost REQUIRED COMPONENTS system filesystem) 
-include_directories(${Boost_INCLUDE_DIRS}) 
+#set(Boost_USE_STATIC_LIBS OFF) 
+#set(Boost_USE_MULTITHREADED ON)  
+#set(Boost_USE_STATIC_RUNTIME OFF)
+#set(BOOST_ROOT /opt/boost/boost-1.67.0)
+#find_package(Boost REQUIRED COMPONENTS system filesystem) 
+#include_directories(${Boost_INCLUDE_DIRS}) 
 
 # Json
 set(NLOHMANN_JSON_INCLUDE_DIR /home/jung/2018EntwicklungStereoalgorithmus/nlohmann_json/include)
@@ -68,6 +68,7 @@ add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/stereomatch/BasicBPMatcher.cpp
     src/segmentation/RegionGrowing.cpp
     src/segmentation/DBSCAN.cpp
+    src/segmentation/PCLSegmentation.cpp
     src/postprocess/BasePostprocessor.cpp
     src/postprocess/PostInterpolation.cpp
     src/ImageControl.cpp )
@@ -96,12 +97,12 @@ add_executable( run_testviz src/Testviz.cpp )
 add_executable( run_testpcl src/TestPCL.cpp )
 add_executable( run_kittiimprove src/KittiImprovement.cpp )
 add_executable( run_pyramidmatcher src/PyramidBlockMatcher.cpp )
-add_executable( run_twostepsegmentation src/TwoStepSegmentation.cpp
-    src/segmentation/RegionGrowing.cpp
-    src/segmentation/DBSCAN.cpp )
+#add_executable( run_twostepsegmentation src/TwoStepSegmentation.cpp
+#    src/segmentation/RegionGrowing.cpp
+#    src/segmentation/DBSCAN.cpp )
 add_executable (run_creategt src/CreateGT.cpp src/FileGT.cpp )
 
-target_link_libraries( run_stereomatcher ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
+target_link_libraries( run_stereomatcher ${OpenCV_LIBS} ${PCL_LIBRARIES} ${PCL_FEATURES_LIBRARIES} ${PCL_SEGMENTATION_LIBRARIES} ${PCL_KDTREE_LIBRARIES} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_bgs ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
 target_link_libraries( run_dbscan ${OpenCV_LIBS} )
 target_link_libraries( run_evalbackground ${OpenCV_LIBS} "/home/jung/2018EntwicklungStereoalgorithmus/bgslibrary/build/libbgs.a")
@@ -115,5 +116,5 @@ target_link_libraries( run_testviz ${OpenCV_LIBS} )
 target_link_libraries( run_testpcl ${OpenCV_LIBS} ${PCL_COMMON_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES} )
 target_link_libraries( run_kittiimprove ${OpenCV_LIBS} )
 target_link_libraries( run_pyramidmatcher ${OpenCV_LIBS} )
-target_link_libraries( run_twostepsegmentation ${OpenCV_LIBS} )
+#target_link_libraries( run_twostepsegmentation ${OpenCV_LIBS} )
 target_link_libraries( run_creategt ${OpenCV_LIBS} ${PCL_LIBRARIES} ${PCL_FEATURES_LIBRARIES} ${PCL_SEGMENTATION_LIBRARIES} ${PCL_KDTREE_LIBRARIES} )

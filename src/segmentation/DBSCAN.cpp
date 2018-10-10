@@ -28,7 +28,11 @@ void DBSCAN::setMinPts(unsigned int iMinPoints) {
 	miMinPoints = iMinPoints;
 }
 
-cv::Mat DBSCAN::Segment(const cv::Mat& rImage) {
+std::vector<Cluster> DBSCAN::Segment(const cv::Mat& rImage) {
+	return vector<Cluster>();
+}
+
+/*cv::Mat DBSCAN::Segment(const cv::Mat& rImage) {
 	cv::Mat oResult;
 
 	auto aPoints = ExtractPoints(rImage);
@@ -39,7 +43,7 @@ cv::Mat DBSCAN::Segment(const cv::Mat& rImage) {
 	oResult = CreateImageFromLabels(rImage, aPoints, aLabels);
 
 	return oResult;
-}
+}*/
 
 std::vector<cv::Point3d> DBSCAN::ExtractPoints(const cv::Mat& rImage) {
 	assert(rImage.type()==CV_8U);
