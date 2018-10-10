@@ -354,8 +354,9 @@ int main() {
 				hconcat(oCustomDisparity, oEvalDispRMS, oRow2);
 				vconcat(oRow1, oRow2, oOverview);
 
-				//imshow("Overview", oOverview);
-				//waitKey(1);
+				/*imshow("Overview", oOverview);
+				cout << "BPP: " << dEvalBPP << endl;
+				waitKey();*/
 
 				imwrite(sFilenameBPP, oEvalDispBPP);
 				imwrite(sFilenameRMS, oEvalDispRMS);

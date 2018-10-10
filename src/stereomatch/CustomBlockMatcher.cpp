@@ -83,7 +83,6 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityGray(const cv::Mat& rLeft, con
 				//compute cost for pixel (i, j) and (i, k)
 				double dCost = ComputeMatchingCostGray(i, j, k, rLeft, rRight, miBlockWidth, miBlockHeight);
 				aDisp[j - k] = dCost;
-				
 				if (dCost < dMin) {
 					dMin = dCost;
 					iCustomDisp = j - k;
@@ -167,7 +166,7 @@ double CustomBlockMatcher::ComputeMatchingCostGray(int iRow, int iColLeft, int i
 		}
 	}
 
-	return dResult;
+	return sqrt(dResult/(double)(iBlockWidth*iBlockHeight));
 }
 
 double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int iColRight, const cv::Mat& rLeft, const cv::Mat& rRight, int iBlockWidth, int iBlockHeight) {
