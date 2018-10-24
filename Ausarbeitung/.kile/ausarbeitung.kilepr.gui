@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=doc/imageprocessing.tex
+lastDocument=doc/backgroundsubtraction.tex
 
 [document-settings,item:doc/backgroundsubtraction.tex]
 Bookmarks=
@@ -117,24 +117,24 @@ open=false
 order=-1
 
 [item:doc/backgroundsubtraction.tex]
-open=false
-order=3
+open=true
+order=4
 
 [item:doc/calibration.tex]
 open=false
 order=4
 
 [item:doc/car_detection.tex]
-open=false
-order=9
+open=true
+order=2
 
 [item:doc/classification.tex]
 open=false
 order=2
 
 [item:doc/datasets.tex]
-open=false
-order=1
+open=true
+order=3
 
 [item:doc/evaluation_background.tex]
 open=false
@@ -153,7 +153,7 @@ open=false
 order=5
 
 [item:doc/stereocomputation.tex]
-open=true
+open=false
 order=2
 
 [item:my_mrmthesis.bib]
@@ -165,11 +165,11 @@ open=true
 order=0
 
 [view-settings,view=0,item:doc/backgroundsubtraction.tex]
-CursorColumn=0
-CursorLine=3
+CursorColumn=7
+CursorLine=35
 JumpList=
 TextFolding=[]
-ViMarks=.,1,33,[,1,31,],1,33
+ViMarks=.,35,1,[,35,1,],35,6
 
 [view-settings,view=0,item:doc/calibration.tex]
 CursorColumn=24
@@ -179,11 +179,11 @@ TextFolding=[]
 ViMarks=.,3,23,[,1,28,],3,23
 
 [view-settings,view=0,item:doc/car_detection.tex]
-CursorColumn=27
-CursorLine=0
+CursorColumn=12
+CursorLine=7
 JumpList=
 TextFolding=[]
-ViMarks=.,0,26,[,0,0,],0,26
+ViMarks=.,4,26,[,4,26,],4,26
 
 [view-settings,view=0,item:doc/classification.tex]
 CursorColumn=25
@@ -194,7 +194,7 @@ ViMarks=.,3,24,[,2,24,],3,24
 
 [view-settings,view=0,item:doc/datasets.tex]
 CursorColumn=0
-CursorLine=67
+CursorLine=15
 JumpList=
 TextFolding=[]
 ViMarks=.,66,18,[,67,0,],-1,-1
@@ -215,10 +215,10 @@ ViMarks=.,0,36,[,0,26,],0,36
 
 [view-settings,view=0,item:doc/imageprocessing.tex]
 CursorColumn=0
-CursorLine=83
+CursorLine=133
 JumpList=
 TextFolding=[]
-ViMarks=.,83,0,[,82,19,],-1,-1
+ViMarks=.,136,68,[,136,65,],136,68
 
 [view-settings,view=0,item:doc/segmentation.tex]
 CursorColumn=35

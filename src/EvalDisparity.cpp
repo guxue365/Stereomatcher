@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-//#include <Windows.h>
+#include <Windows.h>
 #include <sys/stat.h>
 #include <chrono>
 #include <ctime>
@@ -293,8 +293,8 @@ int main() {
 			Mat oEvalDispBPP;
 			Mat oEvalDispRMS;
 
-			//CreateDirectory(rRun.msResultfolder.c_str(), NULL);
-			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+			CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			//mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;
@@ -315,7 +315,8 @@ int main() {
 
 				auto tStart = std::chrono::high_resolution_clock::now();
 
-				oCustomDisparity = pStereomatch->Match(oFrameLeftGray, oFrameRightGray);
+				//oCustomDisparity = pStereomatch->Match(oFrameLeftGray, oFrameRightGray);
+				oCustomDisparity = pStereomatch->Match(oFrameLeftColor, oFrameRightColor);
 
 				oCustomDisparity = pPostprocessor->Postprocess(oCustomDisparity);
 

@@ -198,7 +198,7 @@ double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int 
 		}
 	}
 
-	return sqrt(dResult);
+	return sqrt(dResult/3.0/(double)(iBlockWidth*iBlockHeight));
 }
 
 bool CustomBlockMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance) {
