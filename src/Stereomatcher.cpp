@@ -260,6 +260,7 @@ int main() {
 
 			cout<<"Creating result folder: "<<rRun.msResultfolder<<endl;
 
+			std::string sOriginalFolder = rRun.msResultfolder+"original/";
 			std::string sPreprocessFolder = rRun.msResultfolder+"preprocess/";
 			std::string sForegroundFolder = rRun.msResultfolder+"foreground/";
 			std::string sDisparityFolder = rRun.msResultfolder+"disparity/";
@@ -268,6 +269,7 @@ int main() {
 
 			if(bWriteResult) {
 				mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+				mkdir(sOriginalFolder.c_str(), ACCESSPERMS);
 				mkdir(sPreprocessFolder.c_str(), ACCESSPERMS);
 				mkdir(sForegroundFolder.c_str(), ACCESSPERMS);
 				mkdir(sDisparityFolder.c_str(), ACCESSPERMS);
@@ -278,6 +280,9 @@ int main() {
 					std::string sFilename = "img_"+std::to_string(i)+".png";
 					std::string sNameLeft = "img_"+std::to_string(i)+"_c0.png";
 					std::string sNameRight = "img_"+std::to_string(i)+"_c1.png";
+
+					imwrite(sOriginalFolder+sNameLeft, oImageControl.getLeftImages()[i]);
+					imwrite(sOriginalFolder+sNameRight, oImageControl.getRightImages()[i]);
 
 					imwrite(sPreprocessFolder+sNameLeft, oImageControl.getPreprocessLeft()[i]);
 					imwrite(sPreprocessFolder+sNameRight, oImageControl.getPreprocessRight()[i]);

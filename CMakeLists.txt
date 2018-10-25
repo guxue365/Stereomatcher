@@ -84,6 +84,8 @@ add_executable( run_evaldisparity src/EvalDisparity.cpp
     src/stereomatch/CustomCannyMatcher.cpp
     src/stereomatch/CustomDiffMatcher.cpp
     src/stereomatch/CustomPyramidMatcher.cpp
+    src/stereomatch/CustomMultiBoxMatcher.cpp
+    src/stereomatch/CustomBlockCannyMatcher.cpp
     src/postprocess/BasePostprocessor.cpp
     src/postprocess/PostInterpolation.cpp
     src/evaluation/EvaluateBPP.cpp

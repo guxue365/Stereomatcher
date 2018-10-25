@@ -1,0 +1,51 @@
+Auto
+
+Dimension: 5035.28 | 1352.6 | 539.022
+Eccentricity: 0.268625 | 0.107049
+
+Dimension: 4416.21 | 869.012 | 496.909
+Eccentricity: 0.196778 | 0.112519
+
+Dimension: 1423.23 | 863.58 | 503.61
+Eccentricity: 0.606775 | 0.35385
+
+Dimension: 842.019 | 391.935 | 0.000482619
+Eccentricity: 0.465471 | 5.73168e-07
+
+Dimension: 3570.28 | 1175.08 | 552.917
+Eccentricity: 0.329129 | 0.154867
+
+Dimension: 688.649 | 372.438 | 0.062514
+Eccentricity: 0.540824 | 9.07777e-05
+
+Dimension: 2602.27 | 670.858 | 363.034
+Eccentricity: 0.257797 | 0.139507
+
+Dimension: 4300.22 | 1068.34 | 576.725
+Eccentricity: 0.248438 | 0.134115
+
+Dimension: 3621.03 | 818.046 | 468.873
+Eccentricity: 0.225915 | 0.129486
+
+Dimension: 7747.88 | 1492.76 | 594.861
+Eccentricity: 0.192667 | 0.0767773
+
+Mensch
+
+Dimension: 3017.42 | 395.33 | 328.066
+Eccentricity: 0.131016 | 0.108724
+
+Dimension: 4192.84 | 260.765 | 170.261
+Eccentricity: 0.0621929 | 0.0406075
+
+Dimension: 2529.4 | 416.668 | 372.195
+Eccentricity: 0.16473 | 0.147147
+
+Dimension: 1237.54 | 335.17 | 279.53
+Eccentricity: 0.270836 | 0.225876
+
+Dimension: 2050.78 | 459.973 | 313.598
+Eccentricity: 0.224292 | 0.152916
+
+Dimension: 1339.38 | 517.262 | 427.182
+Eccentricity: 0.386196 | 0.31894

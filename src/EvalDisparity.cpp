@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <Windows.h>
+//#include <Windows.h>
 #include <sys/stat.h>
 #include <chrono>
 #include <ctime>
@@ -21,12 +21,13 @@
 #include <stereomatch/CustomPyramidMatcher.h>
 #include <stereomatch/CustomDiffMatcher.h>
 #include <stereomatch/CustomCannyMatcher.h>
-
+#include <stereomatch/CustomMultiBoxMatcher.h>
 #include <postprocess/BasePostprocessor.h>
 #include <postprocess/PostInterpolation.h>
 
 #include <evaluation/EvaluateBPP.h>
 #include <evaluation/EvaluateRMS.h>
+#include <stereomatch/CustomBlockCannyMatcher.h>
 
 using namespace std;
 using namespace cv;
@@ -106,6 +107,12 @@ int main() {
 				if (!oJsonOptions["scalingheight"].empty()) {
 					oRun.moStereoOptions.mdScalingHeight = oJsonOptions["scalingheight"];
 				}
+				if(!oJsonOptions["scalingboxwidth"].empty()) {
+					oRun.moStereoOptions.mdBoxScalingWidth = oJsonOptions["scalingboxwidth"];
+				}
+				if(!oJsonOptions["scalingboxheight"].empty()) {
+					oRun.moStereoOptions.mdBoxScalingHeight = oJsonOptions["scalingboxheight"];
+				}
 			}
 
 			aRuns.push_back(oRun);
@@ -124,6 +131,8 @@ int main() {
 			CustomDiffMatcher oCustomDiffMatcher;
 			CustomCannyMatcher oCustomCannyMatcher;
 			CustomPyramidMatcher oCustomPyramidMatcher(&oCustomBlockMatcher);
+			CustomMultiBoxMatcher oCustomMultiBoxMatcher;
+			CustomBlockCannyMatcher oCustomBlockCannyMatcher;
 
 			BasePostprocessor oBasePostprocessor;
 			PostInterpolation oPostInterpolation;
@@ -164,6 +173,13 @@ int main() {
 					pStereomatch = &oCustomPyramidMatcher;
 					break;
 				}
+				case E_STEREOMATCHER::CUSTOM_MULTIBOX: {
+					pStereomatch = &oCustomMultiBoxMatcher;
+					break;
+				}
+				case E_STEREOMATCHER::CUSTOM_BLOCK_CANNY: {
+					pStereomatch = &oCustomBlockCannyMatcher;
+				}
 				default: {
 					throw std::invalid_argument("Invalid Stereomatcher");
 				}
@@ -186,6 +202,12 @@ int main() {
 				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
 				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
 
+				oCustomMultiBoxMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomMultiBoxMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomBlockCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomBlockCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
 				cout << "- Blocksize: " << rRun.moStereoOptions.miBlocksize << endl;
 			}
 			if(rRun.moStereoOptions.miBlockWidth!=0) {
@@ -193,6 +215,8 @@ int main() {
 				oCustomDiffMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
 				oCustomCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
 				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomMultiBoxMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomBlockCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
 
 				cout<<"- Block Width: "<<rRun.moStereoOptions.miBlockWidth;
 			}
@@ -201,6 +225,8 @@ int main() {
 				oCustomDiffMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
 				oCustomCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
 				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomMultiBoxMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomBlockCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
 
 				cout<<"- Block Height: "<<rRun.moStereoOptions.miBlockHeight;
 			}
@@ -212,6 +238,8 @@ int main() {
 				oCustomDiffMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
 				oCustomCannyMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
 				oCustomPyramidMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomMultiBoxMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomBlockCannyMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
 
 				cout << "- Disparity Range: " << rRun.moStereoOptions.miDisparityRange << endl;
 			}
@@ -220,6 +248,8 @@ int main() {
 				oCustomDiffMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
 				oCustomCannyMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
 				oCustomPyramidMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomMultiBoxMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomBlockCannyMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
 
 				cout<<"- Valid Tolerance: "<<rRun.moStereoOptions.mdValidTolerance<<endl;
 			}
@@ -240,11 +270,13 @@ int main() {
 			}
 			if (rRun.moStereoOptions.mdCannyThreshold1 != 0.0) {
 				oCustomCannyMatcher.setThreshold1(rRun.moStereoOptions.mdCannyThreshold1);
+				oCustomBlockCannyMatcher.setThreshold1(rRun.moStereoOptions.mdCannyThreshold1);
 
 				cout << "- Canny Threshold1: " << rRun.moStereoOptions.mdCannyThreshold1 << endl;
 			}
 			if (rRun.moStereoOptions.mdCannyThreshold2 != 0.0) {
 				oCustomCannyMatcher.setThreshold2(rRun.moStereoOptions.mdCannyThreshold2);
+				oCustomBlockCannyMatcher.setThreshold2(rRun.moStereoOptions.mdCannyThreshold2);
 
 				cout << "- Canny Threshold2: " << rRun.moStereoOptions.mdCannyThreshold2 << endl;
 			}
@@ -257,6 +289,16 @@ int main() {
 				oCustomPyramidMatcher.setScalingHeight(rRun.moStereoOptions.mdScalingHeight);
 
 				cout << "- Scaling Height: " << rRun.moStereoOptions.mdScalingHeight << endl;
+			}
+			if(rRun.moStereoOptions.mdBoxScalingWidth != 0.0) {
+				oCustomMultiBoxMatcher.setBoxWidthScaling(rRun.moStereoOptions.mdBoxScalingWidth);
+
+				cout<<"- Box Width Scaling: "<<rRun.moStereoOptions.mdBoxScalingWidth<<endl;
+			}
+			if(rRun.moStereoOptions.mdBoxScalingHeight != 0.0) {
+				oCustomMultiBoxMatcher.setBoxHeightScaling(rRun.moStereoOptions.mdBoxScalingHeight);
+
+				cout<<"- Box Height Scaling: "<<rRun.moStereoOptions.mdBoxScalingHeight<<endl;
 			}
 
 			cout << "Setting Postprocessor: " << rRun.mePostProcessor << endl;
@@ -293,8 +335,8 @@ int main() {
 			Mat oEvalDispBPP;
 			Mat oEvalDispRMS;
 
-			CreateDirectory(rRun.msResultfolder.c_str(), NULL);
-			//mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+			//CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;

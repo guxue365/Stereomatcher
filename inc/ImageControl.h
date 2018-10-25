@@ -19,7 +19,6 @@ public:
 
 	const std::vector<cv::Mat>& getLeftImages() const;
 	const std::vector<cv::Mat>& getRightImages() const;
-
 	const std::vector<cv::Mat>& getPreprocessLeft() const;
 	const std::vector<cv::Mat>& getPreprocessRight() const;
 	const std::vector<cv::Mat>& getForegroundLeft() const;
@@ -38,7 +37,6 @@ private:
 
 	std::vector<cv::Mat> maLeftImages;
 	std::vector<cv::Mat> maRightImages;
-
 	std::vector<cv::Mat> maPreprocessLeft;
 	std::vector<cv::Mat> maPreprocessRight;
 	std::vector<cv::Mat> maForegroundLeft;

@@ -26,7 +26,9 @@ enum E_STEREOMATCHER {
 	CUSTOM_BLOCK,  // custom block matcher
 	CUSTOM_DIFF,  // custom diff matcher
 	CUSTOM_CANNY, // custom canny matcher
-	CUSTOM_PYRAMID  // custom pyramid matcher
+	CUSTOM_PYRAMID,  // custom pyramid matcher
+	CUSTOM_MULTIBOX,  // custom multi box matcher
+	CUSTOM_BLOCK_CANNY  // custom block+canny matcher
 };
 
 enum E_POSTPROCESSOR {
@@ -53,6 +55,8 @@ struct StereoOptions {
 	double mdCannyThreshold2 = 0.0;
 	double mdScalingWidth = 0.0;
 	double mdScalingHeight = 0.0;
+	double mdBoxScalingWidth = 0.0;
+	double mdBoxScalingHeight = 0.0;
 };
 
 struct Run {
@@ -108,13 +112,15 @@ E_POSTPROCESSOR convertPostprocessor(const std::string& sPostprocessor) {
 }
 
 E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher) {
-	if (sStereomatcher == "basicbm") 		return E_STEREOMATCHER::BASIC_BLOCK;
-	if (sStereomatcher == "basicsg") 		return E_STEREOMATCHER::BASIC_SG;
-	if (sStereomatcher == "basicbp") 		return E_STEREOMATCHER::BASIC_BP;
-	if (sStereomatcher == "custombm")		return E_STEREOMATCHER::CUSTOM_BLOCK;
-	if (sStereomatcher == "customdiff")		return E_STEREOMATCHER::CUSTOM_DIFF;
-	if (sStereomatcher == "customcanny")	return E_STEREOMATCHER::CUSTOM_CANNY;
-	if (sStereomatcher == "custompyramid")	return E_STEREOMATCHER::CUSTOM_PYRAMID;
+	if (sStereomatcher == "basicbm") 			return E_STEREOMATCHER::BASIC_BLOCK;
+	if (sStereomatcher == "basicsg") 			return E_STEREOMATCHER::BASIC_SG;
+	if (sStereomatcher == "basicbp") 			return E_STEREOMATCHER::BASIC_BP;
+	if (sStereomatcher == "custombm")			return E_STEREOMATCHER::CUSTOM_BLOCK;
+	if (sStereomatcher == "customdiff")			return E_STEREOMATCHER::CUSTOM_DIFF;
+	if (sStereomatcher == "customcanny")		return E_STEREOMATCHER::CUSTOM_CANNY;
+	if (sStereomatcher == "custompyramid")		return E_STEREOMATCHER::CUSTOM_PYRAMID;
+	if( sStereomatcher == "custommultibox") 	return E_STEREOMATCHER::CUSTOM_MULTIBOX;
+	if( sStereomatcher == "customblockcanny") 	return E_STEREOMATCHER::CUSTOM_BLOCK_CANNY;
 	throw std::invalid_argument("invalid stereomatcher conversion");
 }
 
@@ -225,6 +231,14 @@ std::ostream& operator << (std::ostream& os, E_STEREOMATCHER eStereomatch) {
 	}
 	case E_STEREOMATCHER::CUSTOM_PYRAMID: {
 		os << "Custom Pyramid Match";
+		break;
+	}
+	case E_STEREOMATCHER::CUSTOM_MULTIBOX: {
+		os << "Custom Multibox Match";
+		break;
+	}
+	case E_STEREOMATCHER::CUSTOM_BLOCK_CANNY: {
+		os<<"Custom Block+Canny Match";
 		break;
 	}
 	default: throw std::invalid_argument("Unknown eStereomatch");

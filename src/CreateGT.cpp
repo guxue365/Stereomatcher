@@ -119,7 +119,7 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 
 int main() {
 
-	FileGT oFileGT("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/gt.json");
+	FileGT oFileGT("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/gt.json");
 
 	//Mat oImage = imread("E:/sample_images/img_549.png", IMREAD_GRAYSCALE);
 	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/sample_images/img_549.png", IMREAD_GRAYSCALE);
@@ -133,16 +133,20 @@ int main() {
 	pGlobalViewer->removeAllPointClouds();
 	
 
-	cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/postprocess/img_%d.png");
-	cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm/preprocess/img_%d_c0.png");
+	cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
+	cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
 
 	Mat oFrame;
 	Mat oFrameColor;
 
 	for (int iFrame = 0;; ++iFrame) {
-
+		cout<<"--------------------------------------------------------------------------------------------"<<endl<<endl;
 		oImages>>oFrame;
 		oImagesColor>>oFrameColor;
+		if(iFrame==0) {
+			oImages>>oFrame;
+			oImagesColor>>oFrameColor;
+		}
 
 		if(oFrame.empty() || oFrameColor.empty()) 	break;
 
@@ -401,7 +405,7 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visuali
 		pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
 		cout<<"Sphere: "<<oPosition<<endl;
 
-		cout << "Position: " << oPosition.x << " | " << oPosition.y << " | " << oPosition.z << endl;
+		cout << "Position: " << oPosition.x << ", " << oPosition.y << ", " << oPosition.z << endl;
 		cout << "OBBPosition: " << oOBBPosition.x << " | " << oOBBPosition.y << " | " << oOBBPosition.z << endl;
 		cout << "Dimension: " << aDimension[0] << " | " << aDimension[1] << " | " << aDimension[2] << endl;
 		cout << "Eccentricity: " << aEccentricity[0] << " | " << aEccentricity[1] << endl;

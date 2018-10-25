@@ -48,28 +48,24 @@ ImageControl::~ImageControl() {
 
 void ImageControl::Run() {
 
-	//VideoWriter oVideoOut("outcpp.avi",CV_FOURCC('M','J','P','G'), 15.0, Size(640, 480));
+	VideoWriter oVideoOut("outcpp.avi",CV_FOURCC('M','J','P','G'), 15.0, Size(640, 480));
+
+	int iFrameCount = 0;
 
 	for(size_t i=0;;++i) {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
-
-		for(int k=0; k<20; ++k) {
-			oLeftImage = mrImageLoader.getNextLeftImage();
-			oRightImage = mrImageLoader.getNextRightImage();
-		}
-
 
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
 		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage, -1);
 		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage, 1);
 
-
 		cv::Mat oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
 		cv::Mat oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
 
-		if(i<5) 	continue;
+		if(i<480) 	continue;
+		if(i>=520) 	break;
 
 		cv::Mat oDisparity = mrStereomatcher.Match(oForegroundLeft, oForegroundRight);
 
@@ -134,6 +130,14 @@ void ImageControl::Run() {
 		if(c==27) 	break;
 	}
 
+}
+
+const std::vector<cv::Mat>& ImageControl::getLeftImages() const {
+	return maLeftImages;
+}
+
+const std::vector<cv::Mat>& ImageControl::getRightImages() const {
+	return maRightImages;
 }
 
 const std::vector<cv::Mat>& ImageControl::getPreprocessLeft() const  {
