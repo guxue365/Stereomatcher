@@ -186,6 +186,72 @@
       \verb https://opencv.org/about.html
       \endverb
     \endentry
+    \entry{imageprocessing_edgedetection}{misc}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,uniquepart=base,hash=91eae26fedc0f93e5dd2b2437d9344e1}{%
+           family={Wagner},
+           familyi={W\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{91eae26fedc0f93e5dd2b2437d9344e1}
+      \strng{fullhash}{91eae26fedc0f93e5dd2b2437d9344e1}
+      \strng{bibnamehash}{91eae26fedc0f93e5dd2b2437d9344e1}
+      \strng{authorbibnamehash}{91eae26fedc0f93e5dd2b2437d9344e1}
+      \strng{authornamehash}{91eae26fedc0f93e5dd2b2437d9344e1}
+      \strng{authorfullhash}{91eae26fedc0f93e5dd2b2437d9344e1}
+      \field{labelalpha}{Wag06}
+      \field{sortinit}{W}
+      \field{sortinithash}{ecb89ff85896a47dc313960773ac311d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Kantenextraktion - Klassische Verfahren}
+      \field{year}{2006}
+    \endentry
+    \entry{background_threeframediff}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,uniquepart=base,hash=7714f5970742763cb8f86caf624329e5}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Z.},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{uniquename=0,uniquepart=base,hash=84feb515519431c80c5479697032f133}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{uniquename=0,uniquepart=base,hash=20f9f8392eb130e9934587cc646cfd15}{%
+           family={Du},
+           familyi={D\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{c562ef04ff1ca06b0e5241256169bbc3}
+      \strng{fullhash}{c562ef04ff1ca06b0e5241256169bbc3}
+      \strng{bibnamehash}{c562ef04ff1ca06b0e5241256169bbc3}
+      \strng{authorbibnamehash}{c562ef04ff1ca06b0e5241256169bbc3}
+      \strng{authornamehash}{c562ef04ff1ca06b0e5241256169bbc3}
+      \strng{authorfullhash}{c562ef04ff1ca06b0e5241256169bbc3}
+      \field{labelalpha}{XZD17}
+      \field{sortinit}{X}
+      \field{sortinithash}{b0b62a29ee4a21a0e618fed53a0313cc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2017 International Conference on Industrial Informatics - Computing Technology, Intelligent Technology, Industrial Information Integration (ICIICII)}
+      \field{month}{12}
+      \field{title}{Moving Object Detection Based on Improved Three Frame Difference and Background Subtraction}
+      \field{year}{2017}
+      \field{pages}{79\bibrangedash 82}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/ICIICII.2017.79
+      \endverb
+      \keyw{Gaussian processes;image motion analysis;mixture models;object detection;background subtraction;moving object detection algorithm;Gaussian mixture model algorithm;traditional three frame difference method;comprehensive foreground image;three frame difference;foreground extraction;AND operation;Gaussian distribution;Gaussian mixture model;Object detection;Computational modeling;Optical flow;Automation;improvement of three frame difference;mixture of Gaussian model;moving object detection}
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

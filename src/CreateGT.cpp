@@ -133,22 +133,25 @@ int main() {
 	pGlobalViewer->removeAllPointClouds();
 	
 
-	cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
-	cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
+	//cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
+	cv::VideoCapture oImages("E:/result_bm_scene1/postprocess/img_%d.png");
+	//cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
 
 	Mat oFrame;
-	Mat oFrameColor;
+	//Mat oFrameColor;
 
 	for (int iFrame = 0;; ++iFrame) {
 		cout<<"--------------------------------------------------------------------------------------------"<<endl<<endl;
 		oImages>>oFrame;
-		oImagesColor>>oFrameColor;
+		//oImagesColor >>oFrameColor;
 		if(iFrame==0) {
 			oImages>>oFrame;
-			oImagesColor>>oFrameColor;
+			//oImagesColor >>oFrameColor;
 		}
 
-		if(oFrame.empty() || oFrameColor.empty()) 	break;
+		oFrame = imread("E:/result_bm_scene1/postprocess/img_0.png");
+
+		if(oFrame.empty() /*|| oFrameColor.empty()*/) 	break;
 
 		cvtColor(oFrame, oFrame, CV_BGR2GRAY);
 
@@ -169,10 +172,10 @@ int main() {
 		applyColorMap(oFrame, oFrame, COLORMAP_JET);
 
 		imshow("Disp", oFrame);
-		imshow("Disp Color", oFrameColor);
+		//imshow("Disp Color", oFrameColor);
 		setMouseCallback("Disp", onMouse);
 
-		pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
+		//pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
 
 		for(;;) {
 
@@ -400,9 +403,9 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visuali
 
 		Eigen::Vector3f position (oOBBPosition.x, oOBBPosition.y, oOBBPosition.z);
 		Eigen::Quaternionf quat (oOBBRot);
-		//pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
+		pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
 
-		pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
+		//pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
 		cout<<"Sphere: "<<oPosition<<endl;
 
 		cout << "Position: " << oPosition.x << ", " << oPosition.y << ", " << oPosition.z << endl;

@@ -14,9 +14,9 @@ def getFeatureMatrix(aData):
     return X
 
 
-aObjects = LoadFromFile("result_cluster.json")
+aObjects = LoadClusterResultFromFile("E:/result_bm_scene1/result_cluster.json")
 
-M = np.loadtxt("traindata.txt", delimiter=",")
+M = np.loadtxt("traindata2.txt", delimiter=",")
 YTrain = M[:, 0]
 XTrain = M[:, 1:]
 
@@ -32,5 +32,5 @@ for i in range(0, len(aObjects)):
     oClassResult = ClassResult(aObjects[i].mID, aObjects[i].mFrame, aObjects[i].mPosition, Y[i])
     aClassResult.append(oClassResult.todic())
 
-with open("result_class.json", "w") as write_file:
+with open("E:/result_bm_scene1/result_class.json", "w") as write_file:
     json.dump(aClassResult, write_file, indent=4)

@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=doc/backgroundsubtraction.tex
+lastDocument=doc/imageprocessing.tex
 
 [document-settings,item:doc/backgroundsubtraction.tex]
 Bookmarks=
@@ -117,7 +117,7 @@ open=false
 order=-1
 
 [item:doc/backgroundsubtraction.tex]
-open=true
+open=false
 order=4
 
 [item:doc/calibration.tex]
@@ -126,14 +126,14 @@ order=4
 
 [item:doc/car_detection.tex]
 open=true
-order=2
+order=3
 
 [item:doc/classification.tex]
-open=false
+open=true
 order=2
 
 [item:doc/datasets.tex]
-open=true
+open=false
 order=3
 
 [item:doc/evaluation_background.tex]
@@ -165,8 +165,8 @@ open=true
 order=0
 
 [view-settings,view=0,item:doc/backgroundsubtraction.tex]
-CursorColumn=7
-CursorLine=35
+CursorColumn=0
+CursorLine=39
 JumpList=
 TextFolding=[]
 ViMarks=.,35,1,[,35,1,],35,6
@@ -180,17 +180,17 @@ ViMarks=.,3,23,[,1,28,],3,23
 
 [view-settings,view=0,item:doc/car_detection.tex]
 CursorColumn=12
-CursorLine=7
+CursorLine=26
 JumpList=
 TextFolding=[]
-ViMarks=.,4,26,[,4,26,],4,26
+ViMarks=.,45,79,[,45,66,],45,79
 
 [view-settings,view=0,item:doc/classification.tex]
-CursorColumn=25
-CursorLine=3
+CursorColumn=398
+CursorLine=76
 JumpList=
 TextFolding=[]
-ViMarks=.,3,24,[,2,24,],3,24
+ViMarks=.,76,397,[,76,376,],76,397
 
 [view-settings,view=0,item:doc/datasets.tex]
 CursorColumn=0
@@ -214,11 +214,11 @@ TextFolding=[]
 ViMarks=.,0,36,[,0,26,],0,36
 
 [view-settings,view=0,item:doc/imageprocessing.tex]
-CursorColumn=0
-CursorLine=133
+CursorColumn=36
+CursorLine=64
 JumpList=
 TextFolding=[]
-ViMarks=.,136,68,[,136,65,],136,68
+ViMarks=.,64,35,[,63,36,],64,35
 
 [view-settings,view=0,item:doc/segmentation.tex]
 CursorColumn=35

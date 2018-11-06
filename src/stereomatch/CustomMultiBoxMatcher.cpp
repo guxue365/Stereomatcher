@@ -80,7 +80,9 @@ cv::Mat CustomMultiBoxMatcher::ComputeCustomDisparityGray(const cv::Mat& rLeft, 
 	cv::Mat oResult(m, n, CV_8U, Scalar(0));
 
 	int iBlockWidthBox = (int)((double)(miBlockWidth)*mdBoxWidthScaling);
+	if (iBlockWidthBox % 2 == 1)		iBlockWidthBox++;
 	int iBlockHeightBox = (int)((double)(miBlockHeight)*mdBoxHeightScaling);
+	if (iBlockHeightBox % 2 == 1)		iBlockHeightBox++;
 
 	for (int i = 3; i < m - 3; ++i) {
 		for (int j = miNumDisparities; j < n - miNumDisparities; ++j) {

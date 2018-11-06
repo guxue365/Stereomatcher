@@ -34,7 +34,7 @@ Die Variable \( \sigma \) ergibt sich aus der Standardnormalverteilung mit \( \m
  
 \end{multicols}
 
-
+\section{Kantendetektion}
 
 Sobelfilter zur Kantendetektion:
 Analogie zentrale Differenz:
@@ -55,6 +55,14 @@ Analogie zentrale Differenz:
  S_v &= \frac{1}{8} \begin{bmatrix}[r] -2&-1&0 \\ -1&0&1 \\ 0&1&2 \end{bmatrix}
 \end{align*}
 \end{multicols}
+
+Canny Algorithmus: Berechne Kantenbild \(D(x, y)\) und Gradientenrichtung \( \phi(x, y) \)
+\begin{eqnarray*}
+D(x, y)=\sqrt{g_x(x, y)^2+g_y(x, y)^2} \\
+\phi (x, y)= \tan^{-1}\bigg( \frac{g_y(x, y)}{g_x(x, y)} \bigg)
+\end{eqnarray*}
+Wegen 8er Nachbarschaft: Runden auf \( 45^\circ \)
+\cite{imageprocessing_edgedetection}
 
 \section{Interpolation}
 

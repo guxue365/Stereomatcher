@@ -13,8 +13,8 @@ def CreateFrameObjectMap(aData):
         aResult[oObject.mFrame][oObject.mID] = oObject
     return aResult
 
-aResultData = LoadClassResultFromFile("test_class4.json")
-aGTData = LoadClassResultFromFile("gt_class.json")
+aResultData = LoadClassResultFromFile("E:/result_bm_scene1/result_class.json")
+aGTData = LoadClassResultFromFile("E:/result_bm_scene1/gt.json")
 
 aResultObjectMap = CreateFrameObjectMap(aResultData)
 aGTObjectMap = CreateFrameObjectMap(aGTData)
@@ -37,7 +37,7 @@ for iFrame in aGTObjectMap:
         for iResultID in aResultObjectMap[iFrame]:
             oResultObject = aResultObjectMap[iFrame][iResultID]
             dDist = np.linalg.norm(oGTObject.mPosition-oResultObject.mPosition, ord=2)
-            if dDist<200:
+            if dDist<1000:
                 nObjectFound = True
                 del aResultObjectMap[iFrame][iID]
                 if oGTObject.mLabel!=oResultObject.mLabel:

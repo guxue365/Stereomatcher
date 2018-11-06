@@ -1,7 +1,7 @@
 import numpy as np
 import json
 
-def LoadFromFile(sFilename):
+def LoadClusterResultFromFile(sFilename):
     with open(sFilename) as f:
         aData = json.load(f)
 

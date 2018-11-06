@@ -1,18 +1,19 @@
 [0] Config.pm:302> INFO - This is Biber 2.11
 [0] Config.pm:305> INFO - Logfile is 'my_mrmthesis.blg'
-[34] biber-MSWIN64:313> INFO - === 
-[66] Biber.pm:371> INFO - Reading 'my_mrmthesis.bcf'
-[164] Biber.pm:857> INFO - Found 5 citekeys in bib section 0
-[181] Biber.pm:3976> INFO - Processing section 0
-[197] Biber.pm:4136> INFO - Looking for bibtex format file 'my_mrmthesis.bib' for section 0
-[200] bibtex.pm:1500> INFO - LaTeX decoding ...
-[209] bibtex.pm:1316> INFO - Found BibTeX data source 'my_mrmthesis.bib'
-[217] Utils.pm:193> WARN - Overwriting field 'year' with year value from field 'date' for entry 'stereo_globallocal'
-[234] Utils.pm:193> WARN - BibTeX subsystem: C:\Users\danie\AppData\Local\Temp\hsUp0I_rwc\my_mrmthesis.bib_8196.utf8, line 15, warning: 63 characters of junk seen at toplevel
-[252] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'variable = shifted' with 'variable = non-ignorable'
-[252] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[253] Biber.pm:3804> INFO - Sorting list 'anyvt/global//global/global' of type 'entry' with template 'anyvt' and locale 'de-DE'
-[253] Biber.pm:3810> INFO - No sort tailoring available for locale 'de-DE'
-[265] bbl.pm:617> INFO - Writing 'my_mrmthesis.bbl' with encoding 'UTF-8'
-[268] bbl.pm:720> INFO - Output to my_mrmthesis.bbl
-[272] Biber.pm:110> INFO - WARNINGS: 2
+[37] biber-MSWIN64:313> INFO - === 
+[72] Biber.pm:371> INFO - Reading 'my_mrmthesis.bcf'
+[171] Biber.pm:857> INFO - Found 7 citekeys in bib section 0
+[188] Biber.pm:3976> INFO - Processing section 0
+[205] Biber.pm:4136> INFO - Looking for bibtex format file 'my_mrmthesis.bib' for section 0
+[209] bibtex.pm:1500> INFO - LaTeX decoding ...
+[223] bibtex.pm:1316> INFO - Found BibTeX data source 'my_mrmthesis.bib'
+[234] Utils.pm:193> WARN - month field 'Dec' in entry 'background_threeframediff' is not an integer - this will probably not sort properly.
+[241] Utils.pm:193> WARN - Overwriting field 'year' with year value from field 'date' for entry 'stereo_globallocal'
+[259] Utils.pm:193> WARN - BibTeX subsystem: C:\Users\danie\AppData\Local\Temp\XKX0SYgBkc\my_mrmthesis.bib_14236.utf8, line 15, warning: 63 characters of junk seen at toplevel
+[280] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'variable = shifted' with 'variable = non-ignorable'
+[280] UCollate.pm:68> INFO - Overriding locale 'de-DE' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[280] Biber.pm:3804> INFO - Sorting list 'anyvt/global//global/global' of type 'entry' with template 'anyvt' and locale 'de-DE'
+[280] Biber.pm:3810> INFO - No sort tailoring available for locale 'de-DE'
+[296] bbl.pm:617> INFO - Writing 'my_mrmthesis.bbl' with encoding 'UTF-8'
+[300] bbl.pm:720> INFO - Output to my_mrmthesis.bbl
+[305] Biber.pm:110> INFO - WARNINGS: 3
