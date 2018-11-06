@@ -54,6 +54,7 @@ list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
 add_executable( run_stereomatcher src/Stereomatcher.cpp
     src/imageloader/BaseImageloader.cpp
     src/imageloader/CustomImageloader.cpp
+    src/imageloader/SkipImageloader.cpp
     src/preprocess/BasePreprocessor.cpp
     src/preprocess/PreprocessMask.cpp
     src/bgsubtraction/CustomPixelBasedAdaptiveSegmenter.cpp

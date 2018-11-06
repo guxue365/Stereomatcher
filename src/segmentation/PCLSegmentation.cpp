@@ -69,7 +69,7 @@ std::vector<Cluster> PCLSegmentation::Segment(const cv::Mat& rImage) {
 	return aCluster;
 }
 
-std::vector<pcl::PointXYZ> Extract3DPoints(const cv::Mat& rDisparity) {
+std::vector<pcl::PointXYZ> PCLSegmentation::Extract3DPoints(const cv::Mat& rDisparity) {
 	assert(rDisparity.type() == CV_8UC1);
 
 	std::vector<pcl::PointXYZ> aResult;

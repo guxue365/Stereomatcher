@@ -11,10 +11,13 @@ def CreateFrameObjectMap(aData):
         if oObject.mFrame not in aResult:
             aResult[oObject.mFrame] = {}
         aResult[oObject.mFrame][oObject.mID] = oObject
+
     return aResult
 
-aResultData = LoadClassResultFromFile("E:/result_bm_scene1/result_class.json")
-aGTData = LoadClassResultFromFile("E:/result_bm_scene1/gt.json")
+#aResultData = LoadClassResultFromFile("E:/result_bm_scene1/result_class.json")
+aResultData = LoadClassResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/result_class.json")
+#aGTData = LoadClassResultFromFile("E:/result_bm_scene1/gt.json")
+aGTData = LoadClassResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/gt.json")
 
 aResultObjectMap = CreateFrameObjectMap(aResultData)
 aGTObjectMap = CreateFrameObjectMap(aGTData)
@@ -22,12 +25,11 @@ aGTObjectMap = CreateFrameObjectMap(aGTData)
 iTruePositive = 0
 iFalsePositive = 0
 iFalseNegative = 0
+iTrueLabel = 0
 iErrorLabel = 0
-iErrorCount = 0
 
 for iFrame in aGTObjectMap:
     if iFrame not in aResultObjectMap:
-        iErrorCount+=len(aGTObjectMap[iFrame])
         iFalseNegative+=len(aGTObjectMap[iFrame])
         continue
         
@@ -39,21 +41,20 @@ for iFrame in aGTObjectMap:
             dDist = np.linalg.norm(oGTObject.mPosition-oResultObject.mPosition, ord=2)
             if dDist<1000:
                 nObjectFound = True
-                del aResultObjectMap[iFrame][iID]
+                iTruePositive+=1
+                del aResultObjectMap[iFrame][iResultID]
                 if oGTObject.mLabel!=oResultObject.mLabel:
                     iErrorLabel+=1
-                    iErrorCount+=1
                 else:
-                    iTruePositive+=1
+                    iTrueLabel+=1
                 break
         if nObjectFound==False:
             iFalseNegative+=1
-            iErrorCount+=1
 
 
 for iFrame in aResultObjectMap:
     iFalsePositive+=len(aResultObjectMap[iFrame])
-    iErrorCount+=len(aResultObjectMap[iFrame])
+    
 
-print("Overall Errors: {}\nTrue Positive: {}\nFalse Positive: {}\nFalse Negative: {}\nWrong Labels: {}".format(iErrorCount, iTruePositive, iFalsePositive, iFalseNegative, iErrorLabel))
+print("True Positive: {}\nFalse Positive: {}\nFalse Negative: {}\nRight Labels: {}\nWrong Labels: {}".format( iTruePositive, iFalsePositive, iFalseNegative, iTrueLabel, iErrorLabel))
 

@@ -24,6 +24,7 @@
 
 #include "imageloader/BaseImageloader.h"
 #include "imageloader/CustomImageloader.h"
+#include "imageloader/SkipImageloader.h"
 
 #include "preprocess/BasePreprocessor.h"
 #include "preprocess/PreprocessMask.h"
@@ -57,6 +58,7 @@ int main() {
 	vector<Run> aRuns;
 	BaseImageloader oBaseImageloader;
 	CustomImageloader oCustomImageloader;
+	SkipImageloader oSkipImageloader;
 
 	BasePreprocessor oBasePreprocessor;
 	PreprocessMask oPreprocessMask;
@@ -97,6 +99,8 @@ int main() {
 	cout<<"Title: "<<sTitle<<endl;
 	bool bWriteResult = oJsonConfig["write_result"];
 	cout<<"Write Result: "<<(bWriteResult ? "true" : "false")<<endl;
+	bool bSkipBGS = oJsonConfig["skip_bgs"];
+	cout<<"Skip BGS: "<<(bSkipBGS ? "true" : "false")<<endl;
 
 	for(auto& oJsonRun: oJsonConfig["runs"]) {
 		Run oRun;
@@ -135,6 +139,10 @@ int main() {
 				}
 				case E_IMAGELOADER::LOADER_CUSTOM: {
 					pImageloader = &oCustomImageloader;
+					break;
+				}
+				case E_IMAGELOADER::LOADER_SKIP: {
+					pImageloader = &oSkipImageloader;
 					break;
 				}
 				default: {
@@ -251,7 +259,7 @@ int main() {
 			cout<<"Starting Computation"<<endl;
 			auto oTimestart = chrono::high_resolution_clock::now();
 
-			oImageControl.Run();
+			oImageControl.Run(bSkipBGS);
 
 			auto oTimeend = chrono::high_resolution_clock::now();
 			chrono::duration<double> oDuration = oTimeend-oTimestart;
@@ -265,7 +273,6 @@ int main() {
 			std::string sForegroundFolder = rRun.msResultfolder+"foreground/";
 			std::string sDisparityFolder = rRun.msResultfolder+"disparity/";
 			std::string sPostprocessFolder = rRun.msResultfolder+"postprocess/";
-			std::string sSegmentationFolder = rRun.msResultfolder+"segmentation/";
 
 			if(bWriteResult) {
 				mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
@@ -274,7 +281,6 @@ int main() {
 				mkdir(sForegroundFolder.c_str(), ACCESSPERMS);
 				mkdir(sDisparityFolder.c_str(), ACCESSPERMS);
 				mkdir(sPostprocessFolder.c_str(), ACCESSPERMS);
-				mkdir(sSegmentationFolder.c_str(), ACCESSPERMS);
 
 				for(size_t i=0; i<oImageControl.getPreprocessLeft().size(); ++i) {
 					std::string sFilename = "img_"+std::to_string(i)+".png";
@@ -293,8 +299,6 @@ int main() {
 					imwrite(sDisparityFolder+sFilename, oImageControl.getDisparity()[i]);
 
 					imwrite(sPostprocessFolder+sFilename, oImageControl.getPostprocessImages()[i]);
-
-					imwrite(sSegmentationFolder+sFilename, oImageControl.getSegmentation()[i]);
 				}
 
 				SaveClusterToJson(rRun.msResultfolder+"result_cluster.json", oImageControl.getCluster());

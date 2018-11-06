@@ -20,6 +20,9 @@
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
 
 
 #include <nlohmann/json.hpp>
@@ -133,25 +136,23 @@ int main() {
 	pGlobalViewer->removeAllPointClouds();
 	
 
-	//cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
-	cv::VideoCapture oImages("E:/result_bm_scene1/postprocess/img_%d.png");
-	//cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
+	cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
+	//cv::VideoCapture oImages("E:/result_bm_scene1/postprocess/img_%d.png");
+	cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
 
 	Mat oFrame;
-	//Mat oFrameColor;
+	Mat oFrameColor;
 
 	for (int iFrame = 0;; ++iFrame) {
 		cout<<"--------------------------------------------------------------------------------------------"<<endl<<endl;
 		oImages>>oFrame;
-		//oImagesColor >>oFrameColor;
+		oImagesColor >>oFrameColor;
 		if(iFrame==0) {
 			oImages>>oFrame;
-			//oImagesColor >>oFrameColor;
+			oImagesColor >>oFrameColor;
 		}
 
-		oFrame = imread("E:/result_bm_scene1/postprocess/img_0.png");
-
-		if(oFrame.empty() /*|| oFrameColor.empty()*/) 	break;
+		if(oFrame.empty() || oFrameColor.empty()) 	break;
 
 		cvtColor(oFrame, oFrame, CV_BGR2GRAY);
 
@@ -166,16 +167,28 @@ int main() {
 			pCloud->push_back(oPoint);
 		}
 
-		aClusterCenter = ClusterAndAnalysePointCloud(pGlobalViewer, pCloud);
+		cout<<"Size before sampling: "<<pCloud->width*pCloud->height<<endl;
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr pCloudSampled(new pcl::PointCloud<pcl::PointXYZ>());
+
+		pcl::VoxelGrid<pcl::PointXYZ> sor;
+		sor.setInputCloud(pCloud);
+		sor.setLeafSize(15.0f, 15.0f, 15.0f);
+		sor.filter(*pCloudSampled);
+
+		cout<<"Size after sampling: "<<pCloudSampled->width*pCloudSampled->height<<endl;
+
+
+		aClusterCenter = ClusterAndAnalysePointCloud(pGlobalViewer, pCloudSampled);
 
 		oFrame *= 3;
 		applyColorMap(oFrame, oFrame, COLORMAP_JET);
 
 		imshow("Disp", oFrame);
-		//imshow("Disp Color", oFrameColor);
+		imshow("Disp Color", oFrameColor);
 		setMouseCallback("Disp", onMouse);
 
-		//pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
+		pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
 
 		for(;;) {
 
@@ -405,7 +418,7 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visuali
 		Eigen::Quaternionf quat (oOBBRot);
 		pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
 
-		//pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
+		pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
 		cout<<"Sphere: "<<oPosition<<endl;
 
 		cout << "Position: " << oPosition.x << ", " << oPosition.y << ", " << oPosition.z << endl;

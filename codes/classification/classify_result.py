@@ -14,7 +14,8 @@ def getFeatureMatrix(aData):
     return X
 
 
-aObjects = LoadClusterResultFromFile("E:/result_bm_scene1/result_cluster.json")
+#aObjects = LoadClusterResultFromFile("E:/result_bm_scene1/result_cluster.json")
+aObjects = LoadClusterResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/result_cluster.json")
 
 M = np.loadtxt("traindata2.txt", delimiter=",")
 YTrain = M[:, 0]
@@ -32,5 +33,6 @@ for i in range(0, len(aObjects)):
     oClassResult = ClassResult(aObjects[i].mID, aObjects[i].mFrame, aObjects[i].mPosition, Y[i])
     aClassResult.append(oClassResult.todic())
 
-with open("E:/result_bm_scene1/result_class.json", "w") as write_file:
+#with open("E:/result_bm_scene1/result_class.json", "w") as write_file:
+with open("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/result_class.json", "w") as write_file:
     json.dump(aClassResult, write_file, indent=4)

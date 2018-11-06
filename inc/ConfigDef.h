@@ -6,7 +6,8 @@
 
 enum E_IMAGELOADER {
 	LOADER_BASE,
-	LOADER_CUSTOM
+	LOADER_CUSTOM,
+	LOADER_SKIP
 };
 
 enum E_PREPROCESSOR {
@@ -83,6 +84,7 @@ struct RunEvalDisparity {
 E_IMAGELOADER convertImageloader(const std::string& sImageloader) {
 	if (sImageloader == "base") 	return E_IMAGELOADER::LOADER_BASE;
 	if (sImageloader == "custom") 	return E_IMAGELOADER::LOADER_CUSTOM;
+	if (sImageloader == "skip" ) 	return E_IMAGELOADER::LOADER_SKIP;
 	throw std::invalid_argument("invalid imageloader conversion");
 }
 
@@ -132,6 +134,10 @@ std::ostream& operator << (std::ostream& os, E_IMAGELOADER eImageloader) {
 	}
 	case E_IMAGELOADER::LOADER_CUSTOM: {
 		os << "custom";
+		break;
+	}
+	case E_IMAGELOADER::LOADER_SKIP: {
+		os << "skip";
 		break;
 	}
 	default: throw std::invalid_argument("Unknown eImageloader");

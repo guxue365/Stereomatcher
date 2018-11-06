@@ -46,37 +46,42 @@ ImageControl::~ImageControl() {
 
 }
 
-void ImageControl::Run() {
+void ImageControl::Run(bool bSkipBGS) {
 
 	VideoWriter oVideoOut("outcpp.avi",CV_FOURCC('M','J','P','G'), 15.0, Size(640, 480));
 
-	int iFrameCount = 0;
-
-	for(size_t i=0;;++i) {
+ 	for(size_t i=0;;++i) {
 		cv::Mat oLeftImage = mrImageLoader.getNextLeftImage();
 		cv::Mat oRightImage = mrImageLoader.getNextRightImage();
 
 		if(oLeftImage.empty() || oRightImage.empty())	 break;
 
-		cv::Mat oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage, -1);
-		cv::Mat oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage, 1);
+		cv::Mat oLeftPreprocessed, oRightPreprocessed;
+		cv::Mat oForegroundLeft, oForegroundRight;
 
-		cv::Mat oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
-		cv::Mat oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
+		if(!bSkipBGS) {
+			oLeftPreprocessed = mrPreprocessor.Preprocess(oLeftImage, -1);
+			oRightPreprocessed = mrPreprocessor.Preprocess(oRightImage, 1);
 
-		if(i<480) 	continue;
-		if(i>=520) 	break;
+			oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
+			oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
+		} else {
+			cvtColor(oLeftImage, oLeftPreprocessed, CV_BGR2GRAY);
+			cvtColor(oRightImage, oRightPreprocessed, CV_BGR2GRAY);
+
+			oLeftPreprocessed.copyTo(oForegroundLeft);
+			oRightPreprocessed.copyTo(oForegroundRight);
+		}
+
+		if(i<1000) 	continue;
+		if(i>=1030) 	break;
+		cout<<i<<endl;
 
 		cv::Mat oDisparity = mrStereomatcher.Match(oForegroundLeft, oForegroundRight);
 
 		cv::Mat oPostprocess = mrPostprocessor.Postprocess(oDisparity);
 
 		vector<Cluster> aCluster = mrSegmentation.Segment(oPostprocess);
-		//cv::Mat oSegmentation = mrSegmentation.Segment(oPostprocess);
-		cv::Mat oSegmentation = oPostprocess;
-
-		normalize(oSegmentation, oSegmentation, 255.0, 0.0, CV_MINMAX);
-
 
 		maLeftImages.push_back(oLeftImage);
 		maRightImages.push_back(oRightImage);
@@ -86,22 +91,20 @@ void ImageControl::Run() {
 		maForegroundRight.push_back(oForegroundRight);
 		maDisparity.push_back(oDisparity);
 		maPostprocessImages.push_back(oPostprocess);
-		maSegmentation.push_back(oSegmentation);
 		maCluster.push_back(aCluster);
 
 
 		int iWidth = 960;
 		int iHeight = 240;
 
+
 		//cvtColor(oLeftImage, oLeftImage, CV_GRAY2BGR);
 		cvtColor(oLeftPreprocessed, oLeftPreprocessed, CV_GRAY2BGR);
 		cvtColor(oForegroundLeft, oForegroundLeft, CV_GRAY2BGR);
 		cvtColor(oForegroundRight, oForegroundRight, CV_GRAY2BGR);
 		cvtColor(oPostprocess, oPostprocess, CV_GRAY2BGR);
-		cvtColor(oSegmentation, oSegmentation, CV_GRAY2BGR);
 
 		applyColorMap(oDisparity, oDisparity, COLORMAP_JET);
-		applyColorMap(oSegmentation, oSegmentation, COLORMAP_JET);
 
 		cv::Mat oLeftPrep;
 		hconcat(oLeftImage, oLeftPreprocessed, oLeftPrep);
@@ -112,9 +115,8 @@ void ImageControl::Run() {
 		resize(oForeground, oForeground, Size(iWidth, iHeight));
 
 		cv::Mat oStereoPostp;
-		hconcat(oPostprocess, oSegmentation, oStereoPostp);
+		hconcat(oPostprocess, oPostprocess, oStereoPostp);
 		resize(oStereoPostp, oStereoPostp, Size(iWidth, iHeight));
-
 
 		cv::Mat oResult;
 		vconcat(oLeftPrep, oForeground, oResult);
@@ -162,10 +164,6 @@ const std::vector<cv::Mat>& ImageControl::getDisparity() const  {
 
 const std::vector<cv::Mat>& ImageControl::getPostprocessImages() const  {
 	return maPostprocessImages;
-}
-
-const std::vector<cv::Mat>& ImageControl::getSegmentation() const {
-	return maSegmentation;
 }
 
 const std::vector<std::vector<Cluster> >& ImageControl::getCluster() const {
