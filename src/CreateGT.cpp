@@ -78,7 +78,7 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 	if (event != EVENT_LBUTTONDOWN)		return;
 
 	cout << "Mouse Event at: " << iMouseX << " | " << iMouseY << endl;
-	if(aClusterCenter.size()>0 && !oGlobalDisparityImage.empty()) {
+	if(!oGlobalDisparityImage.empty()) {
 		double cx = 1.260414892498634e+03;
 		double cx2 = 1.284997418662109e+03;
 		double cy = 5.260783408403682e+02;
@@ -102,7 +102,7 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 			oGlobalMousePosition.x = (float)x;
 			oGlobalMousePosition.y = (float)y;
 			oGlobalMousePosition.z = (float)z;
-			pGlobalViewer->updateSphere(oGlobalMousePosition, 100.0, 1.0, 1.0, 1.0, "mouse_sphere");
+			//pGlobalViewer->updateSphere(oGlobalMousePosition, 100.0, 1.0, 1.0, 1.0, "mouse_sphere");
 
 			for(ClusterCenter& oCenter: aClusterCenter) {
 				double dx = oCenter.oPosition.x-x;
@@ -122,7 +122,8 @@ void onMouse(int event, int iMouseX, int iMouseY, int, void*) {
 
 int main() {
 
-	FileGT oFileGT("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/gt.json");
+	//FileGT oFileGT("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/gt.json");
+	FileGT oFileGT("E:/result_bm_scene4/gt.json");
 
 	//Mat oImage = imread("E:/sample_images/img_549.png", IMREAD_GRAYSCALE);
 	//Mat oImage = imread("/home/jung/2018EntwicklungStereoalgorithmus/sample_images/img_549.png", IMREAD_GRAYSCALE);
@@ -136,9 +137,14 @@ int main() {
 	pGlobalViewer->removeAllPointClouds();
 	
 
-	cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
-	//cv::VideoCapture oImages("E:/result_bm_scene1/postprocess/img_%d.png");
-	cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
+	//cv::VideoCapture oImages("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/postprocess/img_%d.png");
+	cv::VideoCapture oImages("E:/result_bm_scene4/postprocess/img_%0d.png");
+	if (!oImages.isOpened()) {
+		cout << "Error opening images" << endl;
+	}
+	//cv::VideoCapture oImagesColor("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/preprocess/img_%d_c0.png");
+	cv::VideoCapture oImagesColor("E:/result_bm_scene4/foreground/img_%0d_c0.png");
+
 
 	Mat oFrame;
 	Mat oFrameColor;
@@ -147,14 +153,15 @@ int main() {
 		cout<<"--------------------------------------------------------------------------------------------"<<endl<<endl;
 		oImages>>oFrame;
 		oImagesColor >>oFrameColor;
-		if(iFrame==0) {
+
+		/*if(iFrame==0) {
 			oImages>>oFrame;
-			oImagesColor >>oFrameColor;
-		}
+			//oImagesColor >>oFrameColor;
+		}*/
 
 		if(oFrame.empty() || oFrameColor.empty()) 	break;
 
-		cvtColor(oFrame, oFrame, CV_BGR2GRAY);
+		//cvtColor(oFrame, oFrame, CV_BGR2GRAY);
 
 		oFrame.copyTo(oGlobalDisparityImage);
 
@@ -188,8 +195,9 @@ int main() {
 		imshow("Disp Color", oFrameColor);
 		setMouseCallback("Disp", onMouse);
 
-		pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
+		//pGlobalViewer->addSphere(oGlobalMousePosition, 10.0, "mouse_sphere");
 
+		
 		for(;;) {
 
 			int iKeyCode = waitKey(100);
@@ -237,6 +245,19 @@ int main() {
 					oFileGT.AddFrameGT(oFrameGT);
 
 					cout<<"Setting Label 3"<<endl;
+					break;
+				}
+				case 52: {
+					FrameGT oFrameGT;
+					oFrameGT.miFrame = iFrame;
+					oFrameGT.miLabel = 4;
+					oFrameGT.mdX = oGlobalMousePosition.x;
+					oFrameGT.mdY = oGlobalMousePosition.y;
+					oFrameGT.mdZ = oGlobalMousePosition.z;
+
+					oFileGT.AddFrameGT(oFrameGT);
+
+					cout << "Setting Label 4" << endl;
 					break;
 				}
 			}
@@ -418,7 +439,7 @@ vector<ClusterCenter> ClusterAndAnalysePointCloud(boost::shared_ptr<pcl::visuali
 		Eigen::Quaternionf quat (oOBBRot);
 		pViewer->addCube(position, quat, oOBBMax.x - oOBBMin.x, oOBBMax.y - oOBBMin.y, oOBBMax.z - oOBBMin.z, "OBB_"+std::to_string(iCloudCount));
 
-		pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
+		//pViewer->addSphere(oPosition, 100.0, "sphere_"+std::to_string(iCloudCount));
 		cout<<"Sphere: "<<oPosition<<endl;
 
 		cout << "Position: " << oPosition.x << ", " << oPosition.y << ", " << oPosition.z << endl;

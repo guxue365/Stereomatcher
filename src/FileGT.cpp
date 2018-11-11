@@ -51,10 +51,10 @@ std::vector<FrameGT> FileGT::LoadFramesFromFile(const std::string& sFile) {
 
 	vector<FrameGT> aResult;
 
-	if (oJsonFile["frames"].empty() || !oJsonFile["frames"].is_array()) {
+	if (!oJsonFile.is_array()) {
 		throw std::invalid_argument("GT File is invalid");
 	}
-	for (json oJsonFrame : oJsonFile["frames"]) {
+	for (json oJsonFrame : oJsonFile) {
 		FrameGT oFrame;
 
 		oFrame.miID = oJsonFrame["id"];
@@ -88,7 +88,7 @@ void FileGT::SaveFramesToFile(const std::string& sFile, const std::vector<FrameG
 
 		aJsonFrames.push_back(oJsonFrame);
 	}
-	oJsonResult["frames"] = aJsonFrames;
+	oJsonResult = aJsonFrames;
 
 	ofstream oJsonFile(sFile.c_str(), ios::out);
 	if (!oJsonFile.is_open()) {
