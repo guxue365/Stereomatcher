@@ -3,8 +3,14 @@
 #include <iostream>
 #include <vector>
 
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
+
+#include <SegmentationHelper.h>
+
 using namespace std;
 using namespace cv;
+
 
 RegionGrowing::RegionGrowing() {
 
@@ -16,14 +22,55 @@ RegionGrowing::~RegionGrowing() {
 }
 
 std::vector<Cluster> RegionGrowing::Segment(const cv::Mat& rImage) {
-	return vector<Cluster>();
+	std::vector<Cluster> aResult;
+
+	uchar rNumLabel;
+	cv::Mat oRegion = GrowRegion(rImage, rNumLabel);
+
+	int iNumLabel = (int)rNumLabel;
+
+	for(int iLabel = 1; iLabel<=iNumLabel; ++iLabel) {
+
+		cv::Mat oDummyMat = cv::Mat::zeros(rImage.rows, rImage.cols, CV_8U);
+
+		for(int i=0; i<oRegion.rows; ++i) {
+			for(int j=0; j<oRegion.cols; ++j) {
+				if((int)(oRegion.at<uchar>(i, j))==iLabel) {
+					oDummyMat.at<uchar>(i, j) = rImage.at<uchar>(i, j);
+				}
+			}
+		}
+
+		auto aPoints = Extract3DPoints(oDummyMat);
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr pCloud(new pcl::PointCloud<pcl::PointXYZ>());
+		for (auto& oPoint : aPoints) {
+			pCloud->push_back(oPoint);
+		}
+
+		vector<double> aDimension;
+		vector<double> aEccentricity;
+		pcl::PointXYZ oPosition;
+		pcl::PointXYZ oOBBPosition;
+		pcl::PointXYZ oOBBMin;
+		pcl::PointXYZ oOBBMax;
+		Eigen::Matrix3f oOBBRot;
+
+		AnalysePointcloud(pCloud, aDimension, aEccentricity, oPosition, oOBBPosition, oOBBMin, oOBBMax, oOBBRot);
+
+		Eigen::Vector3f position (oOBBPosition.x, oOBBPosition.y, oOBBPosition.z);
+		Eigen::Quaternionf quat (oOBBRot);
+
+		cv::Vec3d oCVPosition = {oPosition.x, oPosition.y, oPosition.z};
+		cv::Vec3d oCVDimension = {aDimension[0], aDimension[1], aDimension[2]};
+		cv::Vec2d oCVEccentricity = {aEccentricity[0], aEccentricity[1]};
+		aResult.push_back({oCVPosition, oCVDimension, oCVEccentricity});
+	}
+
+	return aResult;
 }
 
-/*cv::Mat RegionGrowing::Segment(const cv::Mat& rImage) {
-	return GrowRegion(rImage);
-}*/
-
-cv::Mat RegionGrowing::GrowRegion(const cv::Mat& rInput) {
+cv::Mat RegionGrowing::GrowRegion(const cv::Mat& rInput, uchar& rNumLabel) {
 	assert(rInput.type() == CV_8U);
 	int m = rInput.rows;
 	int n = rInput.cols;
@@ -58,6 +105,9 @@ cv::Mat RegionGrowing::GrowRegion(const cv::Mat& rInput) {
 			}
 		}
 	}
+
+	rNumLabel = iLabel;
+
 	return oResult;
 }
 

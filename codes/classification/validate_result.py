@@ -15,9 +15,9 @@ def CreateFrameObjectMap(aData):
     return aResult
 
 #aResultData = LoadClassResultFromFile("E:/result_bm_scene1/result_class.json")
-aResultData = LoadClassResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/result_class.json")
+aResultData = LoadClassResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher/results/class_bm_scene4.json")
 #aGTData = LoadClassResultFromFile("E:/result_bm_scene1/gt.json")
-aGTData = LoadClassResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher_eclipse/result_bm_scene1/gt.json")
+aGTData = LoadClassResultFromFile("/home/jung/2018EntwicklungStereoalgorithmus/Stereomatcher/results/gt_scene4.json")
 
 aResultObjectMap = CreateFrameObjectMap(aResultData)
 aGTObjectMap = CreateFrameObjectMap(aGTData)

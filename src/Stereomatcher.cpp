@@ -11,26 +11,26 @@
 #include <nlohmann/json.hpp>
 #include <stereomatch/BasicBlockMatcher.h>
 
-#include "ImageControl.h"
+#include <ImageControl.h>
 
-#include "IImageLoader.h"
-#include "IPreprocessing.h"
-#include "IBackgroundSubtraction.h"
-#include "ISegmentation.h"
-#include "IPostprocessing.h"
-#include "IStereoMatch.h"
+#include <IImageLoader.h>
+#include <IPreprocessing.h>
+#include <IBackgroundSubtraction.h>
+#include <ISegmentation.h>
+#include <IPostprocessing.h>
+#include <IStereoMatch.h>
 
 #include <ConfigDef.h>
 
-#include "imageloader/BaseImageloader.h"
-#include "imageloader/CustomImageloader.h"
-#include "imageloader/SkipImageloader.h"
+#include <imageloader/BaseImageloader.h>
+#include <imageloader/CustomImageloader.h>
+#include <imageloader/SkipImageloader.h>
 
-#include "preprocess/BasePreprocessor.h"
-#include "preprocess/PreprocessMask.h"
+#include <preprocess/BasePreprocessor.h>
+#include <preprocess/PreprocessMask.h>
 
-#include "bgsubtraction/CustomPixelBasedAdaptiveSegmenter.h"
-#include "bgsubtraction/CustomFrameDifference.h"
+#include <bgsubtraction/CustomPixelBasedAdaptiveSegmenter.h>
+#include <bgsubtraction/CustomFrameDifference.h>
 
 #include <postprocess/BasePostprocessor.h>
 #include <postprocess/PostInterpolation.h>
@@ -38,6 +38,7 @@
 #include <segmentation/RegionGrowing.h>
 #include <segmentation/DBSCAN.h>
 #include <segmentation/PCLSegmentation.h>
+#include <segmentation/TwoStepSegmentation.h>
 
 #include <stereomatch/BasicBlockMatcher.h>
 #include <stereomatch/BasicBPMatcher.h>
@@ -46,6 +47,8 @@
 #include <stereomatch/CustomPyramidMatcher.h>
 #include <stereomatch/CustomDiffMatcher.h>
 #include <stereomatch/CustomCannyMatcher.h>
+#include <stereomatch/CustomMultiBoxMatcher.h>
+#include <stereomatch/CustomBlockCannyMatcher.h>
 
 using namespace std;
 using namespace cv;
@@ -56,30 +59,6 @@ void SaveClusterToJson(const std::string& sFilename, const std::vector<std::vect
 int main() {
 
 	vector<Run> aRuns;
-	BaseImageloader oBaseImageloader;
-	CustomImageloader oCustomImageloader;
-	SkipImageloader oSkipImageloader;
-
-	BasePreprocessor oBasePreprocessor;
-	PreprocessMask oPreprocessMask;
-
-	CustomPixelBasedAdaptiveSegmenter oPBAS;
-	CustomFrameDifference oFD;
-
-	BasicBlockMatcher oBasicBlockMatcher;
-	BasicSGMatcher oBasicSGMatcher;
-	BasicBPMatcher oBasicBPMatcher;
-	CustomBlockMatcher oCustomBlockMatcher;
-	CustomDiffMatcher oCustomDiffMatcher;
-	CustomCannyMatcher oCustomCannyMatcher;
-	CustomPyramidMatcher oCustomPyramidMatcher(&oBasicBPMatcher);
-
-	BasePostprocessor oBasePostprocessor;
-	PostInterpolation oPostInterpolation;
-
-	RegionGrowing oRegionGrowing;
-	DBSCAN oDBSCAN;
-	PCLSegmentation oPCLSegmentation;
 
 	ifstream oConfigFile("config.json", ios::in);
 	if(!oConfigFile.is_open()) {
@@ -115,6 +94,52 @@ int main() {
 		oRun.mePostProcessor 	= convertPostprocessor(oJsonRun["postprocessor"]);
 		oRun.meSegmentation 	= convertSegmentation(oJsonRun["segmentation"]);
 
+		if (!oJsonRun["stereooptions"].empty()) {
+			json& oJsonOptions = oJsonRun["stereooptions"];
+			if (!oJsonOptions["blocksize"].empty()) {
+				oRun.moStereoOptions.miBlocksize = oJsonOptions["blocksize"];
+			}
+			if (!oJsonOptions["blockwidth"].empty()) {
+				oRun.moStereoOptions.miBlockWidth = oJsonOptions["blockwidth"];
+			}
+			if (!oJsonOptions["blockheight"].empty()) {
+				oRun.moStereoOptions.miBlockHeight = oJsonOptions["blockheight"];
+			}
+			if (!oJsonOptions["disparityrange"].empty()) {
+				oRun.moStereoOptions.miDisparityRange = oJsonOptions["disparityrange"];
+			}
+			if (!oJsonOptions["validtolerance"].empty()) {
+				oRun.moStereoOptions.mdValidTolerance = oJsonOptions["validtolerance"];
+			}
+			if (!oJsonOptions["difforderx"].empty()) {
+				oRun.moStereoOptions.miDiffOrderX = oJsonOptions["difforderx"];
+			}
+			if (!oJsonOptions["diffordery"].empty()) {
+				oRun.moStereoOptions.miDiffOrderY = oJsonOptions["diffordery"];
+			}
+			if (!oJsonOptions["sobelkernelsize"].empty()) {
+				oRun.moStereoOptions.miSobelKernelSize = oJsonOptions["sobelkernelsize"];
+			}
+			if (!oJsonOptions["cannythreshold1"].empty()) {
+				oRun.moStereoOptions.mdCannyThreshold1 = oJsonOptions["cannythreshold1"];
+			}
+			if (!oJsonOptions["cannythreshold2"].empty()) {
+				oRun.moStereoOptions.mdCannyThreshold2 = oJsonOptions["cannythreshold2"];
+			}
+			if (!oJsonOptions["scalingwidth"].empty()) {
+				oRun.moStereoOptions.mdScalingWidth = oJsonOptions["scalingwidth"];
+			}
+			if (!oJsonOptions["scalingheight"].empty()) {
+				oRun.moStereoOptions.mdScalingHeight = oJsonOptions["scalingheight"];
+			}
+			if(!oJsonOptions["scalingboxwidth"].empty()) {
+				oRun.moStereoOptions.mdBoxScalingWidth = oJsonOptions["scalingboxwidth"];
+			}
+			if(!oJsonOptions["scalingboxheight"].empty()) {
+				oRun.moStereoOptions.mdBoxScalingHeight = oJsonOptions["scalingboxheight"];
+			}
+		}
+
 		aRuns.push_back(oRun);
 	}
 
@@ -123,6 +148,34 @@ int main() {
 			cout<<endl<<"---------------------------------------------------------------"<<endl;
 			cout<<"Starting run: "<<rRun.msTitle<<endl<<endl;
 			cout<<"Image folder: "<<rRun.msImagefolder<<endl;
+
+			BaseImageloader oBaseImageloader;
+			CustomImageloader oCustomImageloader;
+			SkipImageloader oSkipImageloader;
+
+			BasePreprocessor oBasePreprocessor;
+			PreprocessMask oPreprocessMask;
+
+			CustomPixelBasedAdaptiveSegmenter oPBAS;
+			CustomFrameDifference oFD;
+
+			BasicBlockMatcher oBasicBlockMatcher;
+			BasicSGMatcher oBasicSGMatcher;
+			BasicBPMatcher oBasicBPMatcher;
+			CustomBlockMatcher oCustomBlockMatcher;
+			CustomDiffMatcher oCustomDiffMatcher;
+			CustomCannyMatcher oCustomCannyMatcher;
+			CustomPyramidMatcher oCustomPyramidMatcher(&oCustomBlockMatcher);
+			CustomMultiBoxMatcher oCustomMultiBoxMatcher;
+			CustomBlockCannyMatcher oCustomBlockCannyMatcher;
+
+			BasePostprocessor oBasePostprocessor;
+			PostInterpolation oPostInterpolation;
+
+			RegionGrowing oRegionGrowing;
+			DBSCAN oDBSCAN;
+			PCLSegmentation oPCLSegmentation;
+			TwoStepSegmentation oTwoStepSegmentation;
 
 			IImageLoader* pImageloader;
 			IPreprocessing* pPreprocessor;
@@ -222,6 +275,122 @@ int main() {
 				}
 			}
 
+			cout << "Setting Stereo Options: " << endl;
+			if (rRun.moStereoOptions.miBlocksize != 0) {
+				oBasicBlockMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
+				oBasicSGMatcher.setBlockSize(rRun.moStereoOptions.miBlocksize);
+
+				oCustomBlockMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomBlockMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomDiffMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomDiffMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomMultiBoxMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomMultiBoxMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				oCustomBlockCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomBlockCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
+				cout << "- Blocksize: " << rRun.moStereoOptions.miBlocksize << endl;
+			}
+			if(rRun.moStereoOptions.miBlockWidth!=0) {
+				oCustomBlockMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomDiffMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomMultiBoxMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomBlockCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+
+				cout<<"- Block Width: "<<rRun.moStereoOptions.miBlockWidth;
+			}
+			if(rRun.moStereoOptions.miBlockHeight!=0) {
+				oCustomBlockMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomDiffMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomMultiBoxMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomBlockCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+
+				cout<<"- Block Height: "<<rRun.moStereoOptions.miBlockHeight;
+			}
+			if (rRun.moStereoOptions.miDisparityRange != 0) {
+				oBasicBlockMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oBasicSGMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oBasicBPMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomBlockMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomDiffMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomCannyMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomPyramidMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomMultiBoxMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomBlockCannyMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+
+				cout << "- Disparity Range: " << rRun.moStereoOptions.miDisparityRange << endl;
+			}
+			if(rRun.moStereoOptions.mdValidTolerance!=0.0) {
+				oCustomBlockMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomDiffMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomCannyMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomPyramidMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomMultiBoxMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomBlockCannyMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+
+				cout<<"- Valid Tolerance: "<<rRun.moStereoOptions.mdValidTolerance<<endl;
+			}
+			if(rRun.moStereoOptions.miDiffOrderX!=0) {
+				oCustomDiffMatcher.setDiffOrderX(rRun.moStereoOptions.miDiffOrderX);
+
+				cout<<"- Diff Order X: "<<rRun.moStereoOptions.miDiffOrderX;
+			}
+			if(rRun.moStereoOptions.miDiffOrderY!=0) {
+				oCustomDiffMatcher.setDiffOrderY(rRun.moStereoOptions.miDiffOrderY);
+
+				cout<<"- Diff Order Y: "<<rRun.moStereoOptions.miDiffOrderY;
+			}
+			if(rRun.moStereoOptions.miSobelKernelSize!=0) {
+				oCustomDiffMatcher.setSobelKernelSize(rRun.moStereoOptions.miSobelKernelSize);
+
+				cout<<"- Sobel Kernel Size: "<<rRun.moStereoOptions.miSobelKernelSize;
+			}
+			if (rRun.moStereoOptions.mdCannyThreshold1 != 0.0) {
+				oCustomCannyMatcher.setThreshold1(rRun.moStereoOptions.mdCannyThreshold1);
+				oCustomBlockCannyMatcher.setThreshold1(rRun.moStereoOptions.mdCannyThreshold1);
+
+				cout << "- Canny Threshold1: " << rRun.moStereoOptions.mdCannyThreshold1 << endl;
+			}
+			if (rRun.moStereoOptions.mdCannyThreshold2 != 0.0) {
+				oCustomCannyMatcher.setThreshold2(rRun.moStereoOptions.mdCannyThreshold2);
+				oCustomBlockCannyMatcher.setThreshold2(rRun.moStereoOptions.mdCannyThreshold2);
+
+				cout << "- Canny Threshold2: " << rRun.moStereoOptions.mdCannyThreshold2 << endl;
+			}
+			if (rRun.moStereoOptions.mdScalingWidth != 0.0) {
+				oCustomPyramidMatcher.setScalingWidth(rRun.moStereoOptions.mdScalingWidth);
+
+				cout << "- Scaling Width: " << rRun.moStereoOptions.mdScalingWidth << endl;
+			}
+			if (rRun.moStereoOptions.mdScalingHeight != 0.0) {
+				oCustomPyramidMatcher.setScalingHeight(rRun.moStereoOptions.mdScalingHeight);
+
+				cout << "- Scaling Height: " << rRun.moStereoOptions.mdScalingHeight << endl;
+			}
+			if(rRun.moStereoOptions.mdBoxScalingWidth != 0.0) {
+				oCustomMultiBoxMatcher.setBoxWidthScaling(rRun.moStereoOptions.mdBoxScalingWidth);
+
+				cout<<"- Box Width Scaling: "<<rRun.moStereoOptions.mdBoxScalingWidth<<endl;
+			}
+			if(rRun.moStereoOptions.mdBoxScalingHeight != 0.0) {
+				oCustomMultiBoxMatcher.setBoxHeightScaling(rRun.moStereoOptions.mdBoxScalingHeight);
+
+				cout<<"- Box Height Scaling: "<<rRun.moStereoOptions.mdBoxScalingHeight<<endl;
+			}
+
 			cout << "Setting Postprocessor: " << rRun.mePostProcessor << endl;
 			switch (rRun.mePostProcessor) {
 				case E_POSTPROCESSOR::POSTPROC_BASE: {
@@ -251,8 +420,14 @@ int main() {
 					pSegmentation = &oPCLSegmentation;
 					break;
 				}
+				case E_SEGMENTATION::E_TWOSTEPSEGMENTATION: {
+					pSegmentation = &oTwoStepSegmentation;
+					break;
+				}
 				default: throw std::invalid_argument("Invalid Segmentation");
 			}
+
+
 
 			ImageControl oImageControl(*pImageloader, *pPreprocessor, *pBackgroundSubtraction, *pStereomatch, *pPostprocessor, *pSegmentation);
 

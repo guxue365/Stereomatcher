@@ -65,6 +65,8 @@ void ImageControl::Run(bool bSkipBGS) {
 
 			oForegroundLeft = mrBackgroundSubtraction.SubtractLeft(oLeftPreprocessed);
 			oForegroundRight = mrBackgroundSubtraction.SubtractRight(oRightPreprocessed);
+
+			if(i<10) 	continue;
 		} else {
 			cvtColor(oLeftImage, oLeftPreprocessed, CV_BGR2GRAY);
 			cvtColor(oRightImage, oRightPreprocessed, CV_BGR2GRAY);
@@ -73,9 +75,9 @@ void ImageControl::Run(bool bSkipBGS) {
 			oRightPreprocessed.copyTo(oForegroundRight);
 		}
 
-		if(i<1000) 	continue;
-		if(i>=1030) 	break;
-		cout<<i<<endl;
+		/*if(i<1550) 	continue;
+		if(i>=1580) 	break;
+		cout<<i<<endl;*/
 
 		cv::Mat oDisparity = mrStereomatcher.Match(oForegroundLeft, oForegroundRight);
 

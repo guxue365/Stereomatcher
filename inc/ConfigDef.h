@@ -40,7 +40,8 @@ enum E_POSTPROCESSOR {
 enum E_SEGMENTATION {
 	E_REGIONGROWING,
 	E_DBSCAN,
-	E_PCLSEGMENTATION
+	E_PCLSEGMENTATION,
+	E_TWOSTEPSEGMENTATION
 };
 
 struct StereoOptions {
@@ -68,6 +69,7 @@ struct Run {
 	E_PREPROCESSOR mePreprocessor;
 	E_BGSUBTRACTOR meBGSubtractor;
 	E_STEREOMATCHER meStereomatcher;
+	StereoOptions moStereoOptions;
 	E_POSTPROCESSOR mePostProcessor;
 	E_SEGMENTATION meSegmentation;
 };
@@ -96,14 +98,15 @@ E_PREPROCESSOR convertPreprocessor(const std::string& sPreprocessor) {
 
 E_BGSUBTRACTOR convertBGSubtractor(const std::string& sBGSubtractor) {
 	if (sBGSubtractor == "pbas") 	return E_BGSUBTRACTOR::BG_PBAS;
-	if (sBGSubtractor == "fd") 	return E_BGSUBTRACTOR::BG_FD;
+	if (sBGSubtractor == "fd") 		return E_BGSUBTRACTOR::BG_FD;
 	throw std::invalid_argument("invalid bgsubtractor conversion");
 }
 
 E_SEGMENTATION convertSegmentation(const std::string& sSegmentation) {
-	if (sSegmentation == "regiongrowing") 	return E_SEGMENTATION::E_REGIONGROWING;
-	if (sSegmentation == "dbscan") 		return E_SEGMENTATION::E_DBSCAN;
-	if(sSegmentation=="pclsegmentation") 	return E_SEGMENTATION::E_PCLSEGMENTATION;
+	if (sSegmentation == "regiongrowing") 			return E_SEGMENTATION::E_REGIONGROWING;
+	if (sSegmentation == "dbscan") 					return E_SEGMENTATION::E_DBSCAN;
+	if( sSegmentation == "pclsegmentation") 		return E_SEGMENTATION::E_PCLSEGMENTATION;
+	if( sSegmentation == "twostepsegmentation") 	return E_SEGMENTATION::E_TWOSTEPSEGMENTATION;
 	throw std::invalid_argument("invalid segmentation conversion");
 }
 
@@ -186,7 +189,11 @@ std::ostream& operator << (std::ostream& os, E_SEGMENTATION eSegmentation) {
 		break;
 	}
 	case E_SEGMENTATION::E_PCLSEGMENTATION: {
-		os<<" PCL Segmentation";
+		os<<"PCL Segmentation";
+		break;
+	}
+	case E_SEGMENTATION::E_TWOSTEPSEGMENTATION: {
+		os<<"Two Step Segmentation";
 		break;
 	}
 	default: throw std::invalid_argument("Unknown eSegmentatoin");

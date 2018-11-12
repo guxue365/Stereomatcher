@@ -49,3 +49,45 @@ Eccentricity: 0.224292 | 0.152916
 
 Dimension: 1339.38 | 517.262 | 427.182
 Eccentricity: 0.386196 | 0.31894
+
+
+Zweirad
+
+Dimension: 885.863 | 621.544 | 3.10838e-05
+Eccentricity: 0.701626 | 3.50887e-08
+
+Dimension: 826.93 | 570.972 | 5.71162e-05
+Eccentricity: 0.690472 | 6.90701e-08
+
+Dimension: 1291.81 | 903.042 | 0.478634
+Eccentricity: 0.699053 | 0.000370515
+
+Dimension: 886.757 | 662.086 | 0.222689
+Eccentricity: 0.746637 | 0.000251127
+
+Dimension: 848.814 | 535.294 | 5.465e-06
+Eccentricity: 0.630638 | 6.4384e-09
+
+Dimension: 880.717 | 548.648 | 0.0937525
+Eccentricity: 0.622955 | 0.00010645
+
+
+Bus
+
+Dimension: 4881.07 | 4842.41 | 2035.55
+Eccentricity: 0.992079 | 0.417028
+
+Dimension: 5137.46 | 5160.21 | 2108.01
+Eccentricity: 1.00443 | 0.410322
+
+Dimension: 5897.91 | 5969.73 | 2309.02
+Eccentricity: 1.01218 | 0.391498
+
+Dimension: 6402.84 | 5090.47 | 2196.39
+Eccentricity: 0.795032 | 0.343033
+
+Dimension: 6930.79 | 4655.07 | 2302.67
+Eccentricity: 0.671652 | 0.332238
+
+Dimension: 7557.73 | 4988.75 | 2252.01
+Eccentricity: 0.660086 | 0.297974
