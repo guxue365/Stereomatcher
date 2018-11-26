@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-//#include <Windows.h>
+#include <Windows.h>
 #include <sys/stat.h>
 #include <chrono>
 #include <ctime>
@@ -22,6 +22,8 @@
 #include <stereomatch/CustomDiffMatcher.h>
 #include <stereomatch/CustomCannyMatcher.h>
 #include <stereomatch/CustomMultiBoxMatcher.h>
+#include <stereomatch/CustomAdaptiveMatcher.h>
+
 #include <postprocess/BasePostprocessor.h>
 #include <postprocess/PostInterpolation.h>
 
@@ -35,10 +37,15 @@ using json = nlohmann::json;
 
 std::tuple<double, double> ComputeMeanVar(const std::vector<double>& aValues);
 
-int main() {
+int main(int argc, char** argv) {
 	vector<RunEvalDisparity> aRuns;
 
-	ifstream oConfigFile("config_eval_disp_multi.json", ios::in);
+	std::string sConfigName = "config_eval_disp.json";
+	if (argc == 2) {
+		sConfigName = argv[1];
+	}
+
+	ifstream oConfigFile(sConfigName, ios::in);
 	if (!oConfigFile.is_open()) {
 		cout << "Error: Cannot open config file" << endl;
 		return -1;
@@ -51,7 +58,7 @@ int main() {
 	oConfigFile.close();
 
 	try {
-		cout << "Loading config.json" << endl;
+		cout << "Loading "<< sConfigName << endl;
 		cout << "Version: " << oJsonConfig["version"] << endl;
 		string sTitle = oJsonConfig["title"];
 		cout << "Title: " << sTitle << endl;
@@ -113,6 +120,9 @@ int main() {
 				if(!oJsonOptions["scalingboxheight"].empty()) {
 					oRun.moStereoOptions.mdBoxScalingHeight = oJsonOptions["scalingboxheight"];
 				}
+				if (!oJsonOptions["usestricttolerance"].empty()) {
+					oRun.moStereoOptions.mbUseStrictTolerance = oJsonOptions["usestricttolerance"];
+				}
 			}
 
 			aRuns.push_back(oRun);
@@ -133,6 +143,7 @@ int main() {
 			CustomPyramidMatcher oCustomPyramidMatcher(&oCustomBlockMatcher);
 			CustomMultiBoxMatcher oCustomMultiBoxMatcher;
 			CustomBlockCannyMatcher oCustomBlockCannyMatcher;
+			CustomAdaptiveMatcher oCustomAdaptiveMatcher;
 
 			BasePostprocessor oBasePostprocessor;
 			PostInterpolation oPostInterpolation;
@@ -179,6 +190,11 @@ int main() {
 				}
 				case E_STEREOMATCHER::CUSTOM_BLOCK_CANNY: {
 					pStereomatch = &oCustomBlockCannyMatcher;
+					break;
+				}
+				case E_STEREOMATCHER::CUSTOM_ADAPTIVE: {
+					pStereomatch = &oCustomAdaptiveMatcher;
+					break;
 				}
 				default: {
 					throw std::invalid_argument("Invalid Stereomatcher");
@@ -208,6 +224,9 @@ int main() {
 				oCustomBlockCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
 				oCustomBlockCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
 
+				oCustomAdaptiveMatcher.setBlockWidth(rRun.moStereoOptions.miBlocksize);
+				oCustomAdaptiveMatcher.setBlockHeight(rRun.moStereoOptions.miBlocksize);
+
 				cout << "- Blocksize: " << rRun.moStereoOptions.miBlocksize << endl;
 			}
 			if(rRun.moStereoOptions.miBlockWidth!=0) {
@@ -217,6 +236,7 @@ int main() {
 				oCustomPyramidMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
 				oCustomMultiBoxMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
 				oCustomBlockCannyMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
+				oCustomAdaptiveMatcher.setBlockWidth(rRun.moStereoOptions.miBlockWidth);
 
 				cout<<"- Block Width: "<<rRun.moStereoOptions.miBlockWidth;
 			}
@@ -227,6 +247,7 @@ int main() {
 				oCustomPyramidMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
 				oCustomMultiBoxMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
 				oCustomBlockCannyMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
+				oCustomAdaptiveMatcher.setBlockHeight(rRun.moStereoOptions.miBlockHeight);
 
 				cout<<"- Block Height: "<<rRun.moStereoOptions.miBlockHeight;
 			}
@@ -240,6 +261,7 @@ int main() {
 				oCustomPyramidMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
 				oCustomMultiBoxMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
 				oCustomBlockCannyMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
+				oCustomAdaptiveMatcher.setNumDisparities(rRun.moStereoOptions.miDisparityRange);
 
 				cout << "- Disparity Range: " << rRun.moStereoOptions.miDisparityRange << endl;
 			}
@@ -250,6 +272,7 @@ int main() {
 				oCustomPyramidMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
 				oCustomMultiBoxMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
 				oCustomBlockCannyMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
+				oCustomAdaptiveMatcher.setValidTolerance(rRun.moStereoOptions.mdValidTolerance);
 
 				cout<<"- Valid Tolerance: "<<rRun.moStereoOptions.mdValidTolerance<<endl;
 			}
@@ -300,6 +323,11 @@ int main() {
 
 				cout<<"- Box Height Scaling: "<<rRun.moStereoOptions.mdBoxScalingHeight<<endl;
 			}
+			if (rRun.moStereoOptions.mbUseStrictTolerance != true) {
+				oCustomBlockMatcher.setUseStrictTolerance(rRun.moStereoOptions.mbUseStrictTolerance);
+
+				cout << "- Use Strict Tolerance: " << (rRun.moStereoOptions.mbUseStrictTolerance ? "true" : "false") << endl;
+			}
 
 			cout << "Setting Postprocessor: " << rRun.mePostProcessor << endl;
 			switch (rRun.mePostProcessor) {
@@ -335,8 +363,8 @@ int main() {
 			Mat oEvalDispBPP;
 			Mat oEvalDispRMS;
 
-			//CreateDirectory(rRun.msResultfolder.c_str(), NULL);
-			mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
+			CreateDirectory(rRun.msResultfolder.c_str(), NULL);
+			//mkdir(rRun.msResultfolder.c_str(), ACCESSPERMS);
 			
 			vector<double> aBPPError;
 			vector<double> aRMSError;
@@ -397,9 +425,9 @@ int main() {
 				hconcat(oCustomDisparity, oEvalDispRMS, oRow2);
 				vconcat(oRow1, oRow2, oOverview);
 
-				/*imshow("Overview", oOverview);
+				imshow("Overview", oOverview);
 				cout << "BPP: " << dEvalBPP << endl;
-				waitKey();*/
+				waitKey();
 
 				imwrite(sFilenameBPP, oEvalDispBPP);
 				imwrite(sFilenameRMS, oEvalDispRMS);

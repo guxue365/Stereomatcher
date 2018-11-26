@@ -29,7 +29,8 @@ enum E_STEREOMATCHER {
 	CUSTOM_CANNY, // custom canny matcher
 	CUSTOM_PYRAMID,  // custom pyramid matcher
 	CUSTOM_MULTIBOX,  // custom multi box matcher
-	CUSTOM_BLOCK_CANNY  // custom block+canny matcher
+	CUSTOM_BLOCK_CANNY,  // custom block+canny matcher
+	CUSTOM_ADAPTIVE // custom adaptive matcher
 };
 
 enum E_POSTPROCESSOR {
@@ -59,6 +60,7 @@ struct StereoOptions {
 	double mdScalingHeight = 0.0;
 	double mdBoxScalingWidth = 0.0;
 	double mdBoxScalingHeight = 0.0;
+	bool mbUseStrictTolerance = true;
 };
 
 struct Run {
@@ -126,6 +128,7 @@ E_STEREOMATCHER convertStereomatcher(const std::string& sStereomatcher) {
 	if (sStereomatcher == "custompyramid")		return E_STEREOMATCHER::CUSTOM_PYRAMID;
 	if( sStereomatcher == "custommultibox") 	return E_STEREOMATCHER::CUSTOM_MULTIBOX;
 	if( sStereomatcher == "customblockcanny") 	return E_STEREOMATCHER::CUSTOM_BLOCK_CANNY;
+	if (sStereomatcher == "customadaptive")		return E_STEREOMATCHER::CUSTOM_ADAPTIVE;
 	throw std::invalid_argument("invalid stereomatcher conversion");
 }
 
@@ -252,6 +255,10 @@ std::ostream& operator << (std::ostream& os, E_STEREOMATCHER eStereomatch) {
 	}
 	case E_STEREOMATCHER::CUSTOM_BLOCK_CANNY: {
 		os<<"Custom Block+Canny Match";
+		break;
+	}
+	case E_STEREOMATCHER::CUSTOM_ADAPTIVE: {
+		os << "Custom Adaptive Matcher";
 		break;
 	}
 	default: throw std::invalid_argument("Unknown eStereomatch");

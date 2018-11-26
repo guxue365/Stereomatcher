@@ -11,7 +11,8 @@ CustomBlockMatcher::CustomBlockMatcher() :
 	miNumDisparities(64),
 	miBlockWidth(9),
 	miBlockHeight(9),
-	mdTolerance(15.0) {
+	mdTolerance(0.5),
+	mbUseStrictTolerance(true) {
 
 }
 
@@ -44,6 +45,10 @@ void CustomBlockMatcher::setValidTolerance(double dTolerance) {
 	assert(dTolerance>0.0);
 
 	mdTolerance = dTolerance;
+}
+
+void CustomBlockMatcher::setUseStrictTolerance(bool bUseStrictTolerance) {
+	mbUseStrictTolerance = bUseStrictTolerance;
 }
 
 cv::Mat CustomBlockMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight) {
@@ -93,8 +98,15 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityGray(const cv::Mat& rLeft, con
 			int iMin = (int)std::distance(aDisp.begin(), itMin);
 			double dMinVal = *itMin;
 
-			if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
-				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
+			if (mbUseStrictTolerance) {
+				if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
+					oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
+				}
+			}
+			else {
+				if (isValidMinimumRelative(dMinVal, iMin, aDisp, mdTolerance)) {
+					oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
+				}
 			}
 		}
 	}
@@ -136,8 +148,15 @@ cv::Mat CustomBlockMatcher::ComputeCustomDisparityColor(const cv::Mat& rLeft, co
 			int iMin = (int)std::distance(aDisp.begin(), itMin);
 			double dMinVal = *itMin;
 			
-			if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
-				oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
+			if (mbUseStrictTolerance) {
+				if (isValidMinimumStrict(dMinVal, iMin, aDisp, mdTolerance)) {
+					oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
+				}
+			}
+			else {
+				if (isValidMinimumRelative(dMinVal, iMin, aDisp, mdTolerance)) {
+					oResult.at<uchar>(i, j) = (uchar)(iCustomDisp);
+				}
 			}
 
 		}
@@ -204,12 +223,23 @@ double CustomBlockMatcher::ComputeMatchingCostColor(int iRow, int iColLeft, int 
 bool CustomBlockMatcher::isValidMinimumStrict(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance) {
 	for (size_t l = 0; l < aValues.size(); ++l) {
 		if (l == iIndexMin)		continue;
-		if (abs(aValues[l] - dValMin) < dTolerance || abs(aValues[l] - dValMin)/(abs(dValMin))<0.05) {
+		if (abs(aValues[l] - dValMin) < dTolerance ) {
 			return false;
 		}
 	}
 	return true;
 }
+
+bool CustomBlockMatcher::isValidMinimumRelative(double dValMin, int iIndexMin, const std::vector<double>& aValues, double dTolerance) {
+	for (size_t l = 0; l < aValues.size(); ++l) {
+		if (l == iIndexMin)		continue;
+		if (abs(aValues[l] - dValMin) / (abs(dValMin)) < dTolerance) {
+			return false;
+		}
+	}
+	return true;
+}
+
 
 bool CustomBlockMatcher::isValidMinimumVar(double dValMin, int iIndexMin, const std::vector<double>& aValues) {
 	int n = 10;
@@ -239,15 +269,3 @@ bool CustomBlockMatcher::isValidMinimumVar(double dValMin, int iIndexMin, const 
 	return false;
 }
 
-bool CustomBlockMatcher::isValidMinimumStrict2(double dValMin, int iIndexMin, const std::vector<double>& aValues) {
-	vector<double> aCopy(aValues);
-
-	double eps = 0.01;
-
-	sort(aCopy.begin(), aCopy.end());
-
-	if (abs((aCopy[0] - aCopy[1]) / aCopy[0]) < eps) {
-		return false;
-	}
-	return true;
-}

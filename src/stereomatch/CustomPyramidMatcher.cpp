@@ -76,7 +76,7 @@ cv::Mat CustomPyramidMatcher::Match(const cv::Mat& rLeft, const cv::Mat& rRight)
 
 	oDisparityReduced *= (int)mdScalingWidth;
 
-	oResult = ComputeDisparityPyramid(oDisparityReduced, mdScalingWidth, rLeft, rRight);
+	oResult = ComputeDisparityPyramid(oDisparityReduced, (int)mdScalingWidth, rLeft, rRight);
 
 	return oResult;
 }

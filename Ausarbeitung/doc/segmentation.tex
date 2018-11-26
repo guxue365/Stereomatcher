@@ -1,4 +1,63 @@
 \chapter{Segmentierung}
+
+Bei der sogenannten Segmentierung oder auch Clustering geht es darum, aus einer Folge von einzelnen Punkten ein oder mehrere Cluster zu erstellen. Die Entstehung eines solchen Clusters richtet sich dabei nach der Dichte der vorliegenden Punktwolke: Im Bereichen in denen nur wenige Punkte nahe beieinander liegen liegt Rauschen vor und diese Punkte geh\"oren keinem Cluster an. Liegt in einem Bereich jedoch ein hoher Anteil der Gesampunktzahl so sollen diese Punkte als Cluster zusammengefasst werden.
+
 \section{Region Growing Algorithmus}
+
+Der Region-Growing-Algorithmus startet in einem vorgegebenen Gitter an einem vorgegebenen Saatpunkt und arbeitet sich iterativ \"uber das gesamte Bild.
+
+\begin{algorithm}[H]
+ \KwData{Binary Image I, Seedpoint p}
+ \KwResult{Segmented Image S}
+ Queue Q(p) \;
+ Label l = 1 \;
+ \While{ Q not empty}{
+    c = Q.pop() \;
+    N = findAllUnvisitedNeighbors(I, S, c) \;
+    \eIf{n not empty} {
+        MarkPointsAsLabeled(S, l, N) \;
+        Q.push(N) \;
+    }{
+        l++
+    }
+ }
+ \caption{Pseudocode Region-Growing-Algorithmus}
+\end{algorithm}
+
+
 \section{DBScan Algorithmus}
+
+\begin{algorithm}[H]
+ \KwData{Point List PL, eps, minPts}
+ \KwResult{Segmented Point List S}
+ Label l = 1\;
+ \ForEach{p in PL} {
+    \If{p is labeled}{continue\;}
+    N = findAllNeighbors(PL, eps, p) \;
+    \If{size(N)<minPts}{label p as noise\; continue\;}
+    L++\;
+    label p as L \;
+    \ForEach{n in N} {
+        MarkPointsAsLabeled(S, l, N)\;
+        M = findAllNeighbors(PL, eps, n)\;
+        \If{size(M)>minPts}{N.push(M)\;}
+    }
+ }
+ \caption{Pseudocode DBSCan-Algorithmus}
+\end{algorithm}
+
 \section{Kombinierte Segmentierung}
+
+\begin{algorithm}{H}
+ \KwData{Binary Image I, Seedpoint p}
+ \KwResult{Segmented Point List S}
+ I1 = Downsample(I) \;
+ S1 = Segment(I1, p) \;
+ S1 = Upsample(S1) \;
+ A = ExtractAndJoinAreas(S1) \;
+ \ForEach{a in A}{
+    pt = ExtractPoints(I, a) \;
+    Sk = Segment(pt, eps, minPts) \;
+ }
+ \caption{Pseudocode Kombinierte Segmentierung}
+\end{algorithm}

@@ -78,4 +78,40 @@ For the stereo 2015, flow 2015 and scene flow 2015 benchmarks, please cite:
   year   = {2006},
 }
 
+@WWW{matlab_camera_calibration,
+  author = {Matlab},
+  title  = {What Is Camera Calibration?},
+  date   = {2018-08-05},
+  url    = {https://de.mathworks.com/help/vision/ug/camera-calibration.html},
+}
+
+@WWW{calibration_tudresden,
+  author = {D. Schlesinger},
+  title  = {Bildverarbeitung: 3D-Geometrie},
+  date   = {2018-11-07},
+  url    = {http://www1.inf.tu-dresden.de/~ds24/lehre/bvme_ss_2012/bv_3d.pdf},
+}
+
+@WWW{calibration_hsrm,
+  author = {Tim Hofmann},
+  title  = {Geometrische Kamerakalibrierung},
+  date   = {2018-11-07},
+  url    = {http://www.mi.hs-rm.de/~schwan/Projects/CG/CarreraCV/doku/intrinsisch/intrinsisch.htm#5},
+}
+
+@WWW{calibration_opencv,
+  author = {OpenCV team},
+  title  = {Camera Calibration and 3D Reconstruction},
+  date   = {2018-10-05},
+  url    = {https://docs.opencv.org/3.4.1/d9/d0c/group__calib3d.html},
+}
+
+@WWW{calibration_stereoimage,
+  author = {Sourish Ghosh},
+  title  = {Stereo calibration using C++ and OpenCV},
+  year   = {2016},
+  date   = {2018-11-07},
+  url    = {https://sourishghosh.com/2016/stereo-calibration-cpp-opencv/},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}

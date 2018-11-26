@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=doc/imageprocessing.tex
+lastDocument=doc/segmentation.tex
 
 [document-settings,item:doc/backgroundsubtraction.tex]
 Bookmarks=
@@ -121,7 +121,7 @@ open=false
 order=4
 
 [item:doc/calibration.tex]
-open=false
+open=true
 order=4
 
 [item:doc/car_detection.tex]
@@ -133,8 +133,8 @@ open=true
 order=2
 
 [item:doc/datasets.tex]
-open=false
-order=3
+open=true
+order=6
 
 [item:doc/evaluation_background.tex]
 open=false
@@ -149,12 +149,12 @@ open=true
 order=1
 
 [item:doc/segmentation.tex]
-open=false
-order=5
+open=true
+order=7
 
 [item:doc/stereocomputation.tex]
-open=false
-order=2
+open=true
+order=5
 
 [item:my_mrmthesis.bib]
 open=false
@@ -172,11 +172,11 @@ TextFolding=[]
 ViMarks=.,35,1,[,35,1,],35,6
 
 [view-settings,view=0,item:doc/calibration.tex]
-CursorColumn=24
-CursorLine=3
+CursorColumn=262
+CursorLine=110
 JumpList=
 TextFolding=[]
-ViMarks=.,3,23,[,1,28,],3,23
+ViMarks=.,110,306,[,110,280,],110,306
 
 [view-settings,view=0,item:doc/car_detection.tex]
 CursorColumn=12
@@ -186,8 +186,8 @@ TextFolding=[]
 ViMarks=.,45,79,[,45,66,],45,79
 
 [view-settings,view=0,item:doc/classification.tex]
-CursorColumn=398
-CursorLine=76
+CursorColumn=0
+CursorLine=78
 JumpList=
 TextFolding=[]
 ViMarks=.,76,397,[,76,376,],76,397
@@ -214,18 +214,18 @@ TextFolding=[]
 ViMarks=.,0,36,[,0,26,],0,36
 
 [view-settings,view=0,item:doc/imageprocessing.tex]
-CursorColumn=36
-CursorLine=64
+CursorColumn=0
+CursorLine=119
 JumpList=
 TextFolding=[]
 ViMarks=.,64,35,[,63,36,],64,35
 
 [view-settings,view=0,item:doc/segmentation.tex]
-CursorColumn=35
-CursorLine=3
+CursorColumn=2
+CursorLine=22
 JumpList=
 TextFolding=[]
-ViMarks=.,3,34,[,3,13,],3,34
+ViMarks=.,61,46,[,61,14,],61,46
 
 [view-settings,view=0,item:doc/stereocomputation.tex]
 CursorColumn=33
@@ -243,7 +243,7 @@ ViMarks=.,0,0,[,0,0,],0,0
 
 [view-settings,view=0,item:my_mrmthesis.tex]
 CursorColumn=0
-CursorLine=42
+CursorLine=43
 JumpList=
 TextFolding=[]
-ViMarks=.,41,0,[,41,0,],41,21
+ViMarks=.,42,26,[,42,0,],-1,-1

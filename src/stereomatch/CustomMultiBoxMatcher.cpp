@@ -1,4 +1,4 @@
-#include <stereomatch/CustomMultiBoxMatcher.h>.h>
+#include <stereomatch/CustomMultiBoxMatcher.h>
 
 #include <opencv2/imgproc.hpp>
 #include <opencv2/calib3d.hpp>
